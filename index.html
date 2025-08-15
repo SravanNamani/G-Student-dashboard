@@ -14,19 +14,17 @@
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--background-color); color: var(--text-dark-color); }
         .view { display: none; }
         
-        /* Login Page Styles */
         #login-page { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
         .login-container { width: 100%; max-width: 400px; text-align: center; }
-        .login-card { background: var(--card-bg-color); padding: 30px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .login-card { background: var(--card-bg-color); padding: 30px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
         .login-card h1 { margin-bottom: 25px; font-size: 1.8em; }
         .login-form-group { text-align: left; margin-bottom: 20px; }
         .login-form-group label { display: block; font-weight: 600; margin-bottom: 8px; }
         .login-form-group input { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 1em; }
         #login-btn { width: 100%; padding: 12px; background-color: var(--primary-color); color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 1.1em; cursor: pointer; }
         
-        /* Main Dashboard Styles */
         .app-wrapper { display: flex; min-height: 100vh; }
-        .sidebar { width: 260px; background-color: var(--card-bg-color); padding: 20px; display: flex; flex-direction: column; align-items: center; border-right: 1px solid var(--border-color); }
+        .sidebar { width: 260px; background-color: var(--card-bg-color); padding: 20px; display: flex; flex-direction: column; align-items: center; border-right: 1px solid var(--border-color); flex-shrink: 0; }
         .profile { text-align: center; margin-top: 20px; }
         .profile-name { font-size: 1.2em; font-weight: 600; }
         .profile-id { color: var(--text-light-color); margin-bottom: 20px; }
@@ -34,17 +32,14 @@
         .sidebar-nav a { display: block; padding: 12px 15px; border-radius: 8px; text-decoration: none; color: var(--text-dark-color); font-weight: 500; margin-bottom: 5px; transition: background-color 0.2s; cursor: pointer; }
         .sidebar-nav a:hover { background-color: var(--background-color); }
         .sidebar-nav a.active { background-color: var(--primary-color); color: white; font-weight: 600; }
-        .main-content { flex-grow: 1; display: flex; flex-direction: column; }
-        .header { background-color: var(--primary-color); color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; min-height: 60px; }
+        .main-content { flex-grow: 1; display: flex; flex-direction: column; width: 100%; }
+        .header { background-color: var(--primary-color); color: white; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; min-height: 60px; }
         .header-title { font-weight: 600; font-size: 1.2em; }
-        .header-user-info { display: none; }
-        .header-actions { display: flex; gap: 10px; }
-        .header-actions button { font-size: 0.8em; font-weight: 500; background: rgba(255,255,255,0.2); color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; }
-        
+        .logout-btn { font-size: 0.8em; font-weight: 500; background: rgba(255,255,255,0.2); color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; }
+        .hamburger-btn { display: none; background: none; border: none; color: white; font-size: 24px; cursor: pointer; }
         .content-area { padding: 30px; flex-grow: 1; overflow-y: auto; }
         .dashboard-grid { display: grid; gap: 25px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
         .card { background-color: var(--card-bg-color); padding: 20px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid var(--border-color); }
-        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .card-header h2 { margin: 0; font-size: 1.1em; }
 
         /* Grade Estimator Styles */
@@ -68,22 +63,28 @@
         .timetable-table th { background-color: var(--background-color); font-weight: 600; }
         .timetable-table .class-cell { font-weight: 600; color: white; }
         .timetable-tabs { display: none; }
-
-        /* Other Styles */
-        #today-schedule-card ul { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; } #today-schedule-card li { background-color: #e9ecef; padding: 5px 10px; border-radius: 5px; font-size: 0.9em; } #full-day-bunk-btn { width: 100%; margin-top: 15px; padding: 10px; background-color: var(--danger-color); color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; } #total-attendance-card .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; text-align: center; } .stat .label { font-size: 0.9em; color: var(--text-light-color); margin-bottom: 5px; } .stat .value { font-size: 1.8em; font-weight: 600; } #total-attendance-card .bunks-left { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border-color); text-align: center; font-size: 1.2em; font-weight: 600; } #subject-dashboard h2 { margin-bottom: 20px; } .subject-card { border-left: 5px solid var(--primary-color); } .subject-card.is-safe { border-left-color: var(--safe-color); } .subject-card.is-danger { border-left-color: var(--danger-color); } .card-main-stats { display: flex; justify-content: space-around; text-align: center; margin-bottom: 15px; } .action-area { display: flex; gap: 10px; } .action-area button { width: 100%; padding: 8px; font-size: 0.9em; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; } .action-area .bunk-btn { background-color: var(--danger-color); color: white; } .action-area .undo-btn { background-color: var(--dark-grey); color: white; } .bunks-left.safe { color: var(--safe-color); } .bunks-left.danger { color: var(--danger-color); } .controls, .setup-card { display: flex; flex-wrap: wrap; gap: 15px; justify-content: space-between; align-items: center; } .controls input, .setup-card input { padding: 8px; border-radius: 5px; border: 1px solid #ddd; } .setup-card button, .settings-btn { padding: 10px 15px; background-color: var(--primary-color); color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; } .settings-btn { background-color: var(--dark-grey); } .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); justify-content: center; align-items: center; } .modal-content { background: white; padding: 25px; border-radius: 10px; width: 90%; max-width: 500px; max-height: 80vh; overflow-y: auto; } .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 20px; } .modal-header h2 { margin: 0; } .modal-header .close-btn { font-size: 2em; cursor: pointer; font-weight: bold; }
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); justify-content: center; align-items: center; }
+        .modal-content { background: white; padding: 25px; border-radius: 10px; width: 90%; max-width: 500px; max-height: 80vh; overflow-y: auto; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 20px; }
+        .modal-header h2 { margin: 0; }
+        .modal-header .close-btn { font-size: 2em; cursor: pointer; font-weight: bold; }
         
-        /* Responsive Styles */
         @media (max-width: 1024px) {
-            .sidebar { display: none; }
-            .header-title { display: none; }
-            .header-user-info { display: block; text-align: left; }
-            #header-profile-name { font-size: 0.9em; font-weight: 600; }
-            #header-profile-id { font-size: 0.7em; opacity: 0.8; }
+            .app-wrapper { flex-direction: column; }
+            .sidebar {
+                position: fixed; z-index: 2000; height: 100%;
+                transform: translateX(-100%); transition: transform 0.3s ease-in-out;
+            }
+            .sidebar.open { transform: translateX(0); }
+            .hamburger-btn { display: block; }
+            .header { justify-content: space-between; width: 100%; }
+            .header-title { text-align: center; flex-grow: 1; }
+            .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1999; }
+            .overlay.open { display: block; }
         }
         @media (max-width: 768px) {
-            .dashboard-area { padding: 15px; }
-            #total-attendance-card .stats-grid { grid-template-columns: 1fr; gap: 10px; }
-            /* Responsive Timetable */
+            .content-area { padding: 15px; }
+            #total-attendance-card .stats-grid { grid-template-columns: 1fr; }
             #timetable-view .timetable-table { display: none; }
             #timetable-view .timetable-tabs { display: block; }
             .tab-nav { display: flex; overflow-x: auto; border-bottom: 2px solid var(--border-color); margin-bottom: 15px;}
@@ -97,23 +98,22 @@
     </style>
 </head>
 <body>
+
     <div id="login-page">
         <div class="login-container"><div class="login-card"><h1>G-Student Login</h1><form id="login-form"><div class="login-form-group"><label for="regd-no-input">Registration Number</label><input type="text" id="regd-no-input" placeholder="Enter your number" required></div><button type="submit" id="login-btn">Login</button></form></div></div>
     </div>
+
     <div id="dashboard-page">
         <div class="app-wrapper">
-            <aside class="sidebar">
+            <aside id="sidebar" class="sidebar">
                 <div class="profile"><div id="sidebar-profile-name" class="profile-name"></div><div id="sidebar-profile-id" class="profile-id"></div></div>
                 <nav class="sidebar-nav"><a class="active" onclick="showView('attendance-view', this)">Attendance</a><a onclick="showView('grade-estimator-view', this)">Grade Estimator</a><a onclick="showView('timetable-view', this)">Time table</a></nav>
             </aside>
             <div class="main-content">
                 <header class="header">
+                    <button class="hamburger-btn" onclick="toggleMobileMenu()">&#9776;</button>
                     <span class="header-title">G-Student</span>
-                    <div class="header-user-info"><div id="header-profile-name"></div><div id="header-profile-id"></div></div>
-                    <div class="header-actions">
-                        <button onclick="showView('timetable-view')">Time Table</button>
-                        <button class="logout-btn" onclick="logout()">Logout</button>
-                    </div>
+                    <button class="logout-btn" onclick="logout()">Logout</button>
                 </header>
                 <main id="attendance-view" class="content-area view">
                     <div class="dashboard-grid">
@@ -135,24 +135,30 @@
                     <div class="card" id="timetable-container"></div>
                 </main>
             </div>
+            <div id="overlay" class="overlay" onclick="toggleMobileMenu()"></div>
         </div>
     </div>
+    
     <div id="settings-modal" class="modal"> <div class="modal-content"><div class="modal-header"><h2>Settings</h2><span class="close-btn" onclick="closeSettings()">&times;</span></div><p>Enter total classes for each subject.</p><div id="settings-list"></div><button onclick="saveSettings()" style="width: 100%; padding: 12px; background-color: var(--safe-color); color: white; border: none; border-radius: 5px; font-size: 1.1em; font-weight: bold; cursor: pointer; margin-top: 10px;">Save Settings</button></div></div>
-
+    
     <script>
         // --- All JavaScript logic from the previous final version is placed here ---
+        // New functions for mobile menu are added.
         const userDatabase = [ { name: 'SRAVAN NAMANI', regdNo: '2025228568', branch: 'CSE' }, { name: 'DATA SCIENCE FRIEND', regdNo: '2025221234', branch: 'DS' } ];
         const timeSlots = ['08:00-08:50', '09:00-09:50', '10:00-10:50', '11:00-11:50', '11:50-1:00', '1:00-1:50', '2:00-2:50'];
         const timetablesByBranch = { 'CSE': { simple: { 0: [], 1: ['Mathematical Foundations of Computer Science', 'Advanced Data Structures', 'Algorithms and Analysis', 'Research Methodology and IPR', 'Data Science Lab', 'Data Science Lab'], 2: ['Advanced Data Structures Lab', 'Advanced Data Structures Lab', 'Algorithms and Analysis', 'English for Research Paper Writing', 'Algorithms and Analysis Lab', 'Algorithms and Analysis Lab'], 3: ['Machine Learning', 'Mathematical Foundations of Computer Science', 'Advanced Data Structures', 'Data Science', 'Machine Learning Lab', 'Machine Learning Lab'], 4: ['Machine Learning', 'English for Research Paper Writing', 'Algorithms and Analysis', 'Data Science'], 5: ['Machine Learning', 'Research Methodology and IPR', 'Data Science', 'Advanced Data Structures', 'Mathematical Foundations of Computer Science'], 6: [] }, full: { 'Monday': [ { time: '08:00-08:50', subject: 'Mathematical Foundations of Computer Science' }, { time: '09:00-09:50', subject: 'Advanced Data Structures' }, { time: '10:00-10:50', subject: 'Algorithms and Analysis' }, { time: '11:00-11:50', subject: 'Research Methodology and IPR' }, { time: '1:00-1:50', subject: 'Data Science Lab', span: 2 } ], 'Tuesday': [ { time: '08:00-08:50', subject: 'Advanced Data Structures Lab', span: 2 }, { time: '10:00-10:50', subject: 'Algorithms and Analysis' }, { time: '11:00-11:50', subject: 'English for Research Paper Writing' }, { time: '1:00-1:50', subject: 'Algorithms and Analysis Lab', span: 2 } ], 'Wednesday': [ { time: '08:00-08:50', subject: 'Machine Learning' }, { time: '09:00-09:50', subject: 'Mathematical Foundations of Computer Science' }, { time: '10:00-10:50', subject: 'Advanced Data Structures' }, { time: '11:00-11:50', subject: 'Data Science' }, { time: '1:00-1:50', subject: 'Machine Learning Lab', span: 2 } ], 'Thursday': [ { time: '08:00-08:50', subject: 'Machine Learning' }, { time: '10:00-10:50', subject: 'English for Research Paper Writing' }, { time: '11:00-11:50', subject: 'Algorithms and Analysis' }, { time: '1:00-1:50', subject: 'Data Science' } ], 'Friday': [ { time: '08:00-08:50', subject: 'Machine Learning' }, { time: '09:00-09:50', subject: 'Research Methodology and IPR' }, { time: '10:00-10:50', subject: 'Data Science' }, { time: '11:00-11:50', subject: 'Advanced Data Structures' }, { time: '1:00-1:50', subject: 'Mathematical Foundations of Computer Science' } ] }, colors: { 'Mathematical Foundations of Computer Science': '#8e44ad', 'Advanced Data Structures': '#2980b9', 'Algorithms and Analysis': '#27ae60', 'Research Methodology and IPR': '#f39c12', 'Data Science Lab': '#d35400', 'Advanced Data Structures Lab': '#16a085', 'English for Research Paper Writing': '#7f8c8d', 'Algorithms and Analysis Lab': '#2c3e50', 'Machine Learning': '#c0392b', 'Data Science': '#d35400', 'Machine Learning Lab': '#c0392b' } }, 'DS': { simple: { 0: [], 1: ['Advanced Data Structures', 'Algorithms and Analysis', 'Research Methodology & IPR', 'Data Science Lab', 'Data Science Lab'], 2: ['Advanced Data Structures Lab', 'Advanced Data Structures Lab', 'Algorithms and Analysis', 'English for Research Paper Writing', 'Algorithms and Analysis Lab', 'Algorithms and Analysis Lab'], 3: ['Machine Learning', 'Statistical Modeling', 'Advanced Data Structures', 'Data Science', 'Machine Learning Lab', 'Machine Learning Lab'], 4: ['Machine Learning', 'Statistical Modeling', 'English for Research Paper Writing', 'Algorithms and Analysis', 'Data Science'], 5: ['Machine Learning', 'Research Methodology & IPR', 'Data Science', 'Advanced Data Structures', 'Statistical Modeling'], 6: [] }, full: { 'Monday': [ { time: '09:00-09:50', subject: 'Advanced Data Structures' }, { time: '10:00-10:50', subject: 'Algorithms and Analysis' }, { time: '11:00-11:50', subject: 'Research Methodology & IPR' }, { time: '1:00-1:50', subject: 'Data Science Lab', span: 2 } ], 'Tuesday': [ { time: '08:00-08:50', subject: 'Advanced Data Structures Lab', span: 2 }, { time: '10:00-10:50', subject: 'Algorithms and Analysis' }, { time: '11:00-11:50', subject: 'English for Research Paper Writing' }, { time: '1:00-1:50', subject: 'Algorithms and Analysis Lab', span: 2 } ], 'Wednesday': [ { time: '08:00-08:50', subject: 'Machine Learning' }, { time: '09:00-09:50', subject: 'Statistical Modeling' }, { time: '10:00-10:50', subject: 'Advanced Data Structures' }, { time: '11:00-11:50', subject: 'Data Science' }, { time: '1:00-1:50', subject: 'Machine Learning Lab', span: 2 } ], 'Thursday': [ { time: '08:00-08:50', subject: 'Machine Learning' }, { time: '09:00-09:50', subject: 'Statistical Modeling' }, { time: '10:00-10:50', subject: 'English for Research Paper Writing' }, { time: '11:00-11:50', subject: 'Algorithms and Analysis' }, { time: '1:00-1:50', subject: 'Data Science' } ], 'Friday': [ { time: '08:00-08:50', subject: 'Machine Learning' }, { time: '09:00-09:50', subject: 'Research Methodology & IPR' }, { time: '10:00-10:50', subject: 'Data Science' }, { time: '11:00-11:50', subject: 'Advanced Data Structures' }, { time: '1:00-1:50', subject: 'Statistical Modeling' } ] }, colors: { 'Advanced Data Structures': '#2980b9', 'Algorithms and Analysis': '#27ae60', 'Research Methodology & IPR': '#f39c12', 'Data Science Lab': '#d35400', 'Advanced Data Structures Lab': '#16a085', 'English for Research Paper Writing': '#7f8c8d', 'Algorithms and Analysis Lab': '#2c3e50', 'Machine Learning': '#c0392b', 'Data Science': '#d35400', 'Machine Learning Lab': '#c0392b', 'Statistical Modeling': '#8e44ad' } } };
         const courseDetailsByBranch = { 'CSE': { 'Advanced Data Structures': { credits: 4, type: 'Integrated' }, 'Mathematical Foundations of Computer Science': { credits: 3, type: 'Theory' }, 'Algorithms and Analysis': { credits: 4, type: 'Integrated' }, 'Machine Learning': { credits: 4, type: 'Integrated' }, 'Data Science': { credits: 4, type: 'Integrated' }, 'Research Methodology and IPR': { credits: 2, type: 'Theory' }, 'English for Research Paper Writing': { credits: 0, type: 'Theory' }, 'Data Science Lab':{credits:0, type:'Lab'},'Advanced Data Structures Lab':{credits:0, type:'Lab'},'Algorithms and Analysis Lab':{credits:0, type:'Lab'},'Machine Learning Lab':{credits:0, type:'Lab'} }, 'DS': { 'Advanced Data Structures': { credits: 4, type: 'Integrated' }, 'Algorithms and Analysis': { credits: 4, type: 'Integrated' }, 'Research Methodology & IPR': { credits: 2, type: 'Theory' }, 'Data Science': { credits: 4, type: 'Integrated' }, 'Advanced Data Structures Lab': { credits: 0, type: 'Lab' }, 'English for Research Paper Writing': { credits: 0, type: 'Theory' }, 'Algorithms and Analysis Lab': { credits: 0, type: 'Lab' }, 'Machine Learning': { credits: 4, type: 'Integrated' }, 'Statistical Modeling': { credits: 3, type: 'Theory' }, 'Data Science Lab': { credits: 0, type: 'Lab' }, 'Machine Learning Lab': { credits: 0, type: 'Lab' } } };
         let subjectData = {}; let currentUserTimetable = {};
+
         function getCurrentUserRegdNo() { return sessionStorage.getItem('currentUserRegdNo'); }
         function getUserDataKey(regdNo, type) { return `${type}Data_${regdNo}`; }
         function init() { if (!localStorage.getItem('userDatabase')) { localStorage.setItem('userDatabase', JSON.stringify(userDatabase)); } const currentUser = getCurrentUserRegdNo(); if (currentUser) { document.getElementById('login-page').style.display = 'none'; document.getElementById('dashboard-page').style.display = 'block'; loadDashboardForUser(currentUser); } else { document.getElementById('login-page').style.display = 'flex'; document.getElementById('dashboard-page').style.display = 'none'; } }
         function handleLogin(event) { event.preventDefault(); const regdNo = document.getElementById('regd-no-input').value.trim(); if (!regdNo) { alert("Please enter a Registration Number."); return; } const userExists = userDatabase.find(u => u.regdNo === regdNo); if (userExists) { sessionStorage.setItem('currentUserRegdNo', regdNo); init(); } else { alert("Registration Number not found. Please edit the HTML file to add this user."); } }
         function logout() { sessionStorage.removeItem('currentUserRegdNo'); init(); }
-        function showView(viewId, element) { document.querySelectorAll('.content-area.view').forEach(v => v.style.display = 'none'); document.getElementById(viewId).style.display = 'block'; document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active')); if (element) { element.classList.add('active'); } }
-        function loadDashboardForUser(regdNo) { const currentUser = userDatabase.find(u => u.regdNo === regdNo); if (!currentUser) { logout(); return; } const branch = currentUser.branch; if (!timetablesByBranch[branch]) { alert(`Timetable for branch "${branch}" not found!`); logout(); return; } currentUserTimetable = timetablesByBranch[branch]; document.getElementById('sidebar-profile-name').innerText = currentUser.name; document.getElementById('sidebar-profile-id').innerText = `(${currentUser.regdNo} - ${branch})`; document.getElementById('header-profile-name').innerText = currentUser.name; document.getElementById('header-profile-id').innerText = `(${currentUser.regdNo} - ${branch})`; showView('attendance-view', document.querySelector('.sidebar-nav a')); loadData(); renderTodaysSchedule(); renderFullTimetable(); renderGradeEstimator(); }
+
+        function toggleMobileMenu() { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('overlay').classList.toggle('open'); }
+        function showView(viewId, element) { document.querySelectorAll('.content-area.view').forEach(v => v.style.display = 'none'); document.getElementById(viewId).style.display = 'block'; document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active')); if (element) { element.classList.add('active'); } if (document.getElementById('sidebar').classList.contains('open')) { toggleMobileMenu(); } }
+        function loadDashboardForUser(regdNo) { const currentUser = userDatabase.find(u => u.regdNo === regdNo); if (!currentUser) { logout(); return; } const branch = currentUser.branch; if (!timetablesByBranch[branch]) { alert(`Timetable for branch "${branch}" not found!`); logout(); return; } currentUserTimetable = timetablesByBranch[branch]; document.getElementById('sidebar-profile-name').innerText = currentUser.name; document.getElementById('sidebar-profile-id').innerText = `(${currentUser.regdNo} - ${branch})`; showView('attendance-view', document.querySelector('.sidebar-nav a')); loadData(); renderTodaysSchedule(); renderFullTimetable(); renderGradeEstimator(); }
         function loadData() { const regdNo = getCurrentUserRegdNo(); if (!regdNo) return; const savedAttData = localStorage.getItem(getUserDataKey(regdNo, 'attendance')); const savedStartDate = localStorage.getItem(getUserDataKey(regdNo, 'startDate')); if (savedStartDate) document.getElementById('start-date').value = savedStartDate; if (savedAttData) { subjectData = JSON.parse(savedAttData); } else { getUniqueSubjects().forEach(name => { subjectData[name] = { attended: 0, bunked: 0, totalInSem: 0 }; }); } renderDashboard(); populateSettingsModal(); }
         function saveData(type) { const regdNo = getCurrentUserRegdNo(); if (!regdNo) return; if (type === 'attendance') { localStorage.setItem(getUserDataKey(regdNo, 'attendance'), JSON.stringify(subjectData)); const startDate = document.getElementById('start-date').value; if (startDate) localStorage.setItem(getUserDataKey(regdNo, 'startDate'), startDate); } else if (type === 'grades') { const gradeData = {}; getUniqueSubjects().forEach(subjectName => { const details = courseDetailsByBranch[userDatabase.find(u=>u.regdNo === getCurrentUserRegdNo()).branch][subjectName]; if(!details || details.credits === 0) return; const cleanSubName = subjectName.replace(/[\s&/]/g, ''); gradeData[subjectName] = { internal: document.getElementById(`internal_${cleanSubName}`)?.value, external: document.getElementById(`external_${cleanSubName}`)?.value, lab_internal: document.getElementById(`lab_internal_${cleanSubName}`)?.value }; }); localStorage.setItem(getUserDataKey(regdNo, 'grades'), JSON.stringify(gradeData)); } }
         function renderFullTimetable() { const container = document.getElementById('timetable-container'); container.innerHTML = ''; let tableHTML = '<table class="timetable-table"><thead><tr><th>Weekday</th>' + timeSlots.map(slot => `<th>${slot}</th>`).join('') + '</tr></thead><tbody>'; ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'].forEach(day => { tableHTML += `<tr><td class="day-header">${day}</td>`; const daySchedule = currentUserTimetable.full[day] || []; for (let i = 0; i < timeSlots.length; ) { const slot = timeSlots[i]; if (slot === '11:50-1:00') { tableHTML += '<td class="lunch-cell">LUNCH</td>'; i++; continue; } const classInfo = daySchedule.find(c => c.time === slot); if (classInfo) { const span = classInfo.span || 1; const color = currentUserTimetable.colors[classInfo.subject] || '#bdc3c7'; tableHTML += `<td class="class-cell" colspan="${span}" style="background-color: ${color};">${classInfo.subject}</td>`; i += span; } else { tableHTML += '<td>-</td>'; i++; } } tableHTML += '</tr>'; }); tableHTML += '</tbody></table>'; let tabsHTML = '<div class="timetable-tabs"><div class="tab-nav">'; ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'].forEach((day, index) => { tabsHTML += `<button class="tab-nav-btn ${index === 0 ? 'active' : ''}" onclick="openTimetableTab(event, '${day}')">${day.substring(0,3)}</button>`; }); tabsHTML += '</div>'; ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'].forEach((day, index) => { tabsHTML += `<div id="${day}" class="tab-content ${index === 0 ? 'active' : ''}"><ul>`; (currentUserTimetable.full[day] || []).forEach(c => { tabsHTML += `<li><span>${c.time}</span><strong>${c.subject}</strong></li>` }); tabsHTML += `</ul></div>`; }); tabsHTML += '</div>'; container.innerHTML = tableHTML + tabsHTML; }
