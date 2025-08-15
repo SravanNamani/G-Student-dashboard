@@ -32,7 +32,7 @@
         .sidebar-nav a { display: block; padding: 12px 15px; border-radius: 8px; text-decoration: none; color: var(--text-dark-color); font-weight: 500; margin-bottom: 5px; transition: background-color 0.2s; cursor: pointer; }
         .sidebar-nav a:hover { background-color: var(--background-color); }
         .sidebar-nav a.active { background-color: var(--primary-color); color: white; font-weight: 600; }
-        .main-content { flex-grow: 1; display: flex; flex-direction: column; width: 100%; }
+        .main-content { flex-grow: 1; display: flex; flex-direction: column; width: calc(100% - 260px); }
         .header { background-color: var(--primary-color); color: white; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; min-height: 60px; }
         .header-title { font-weight: 600; font-size: 1.2em; }
         .logout-btn { font-size: 0.8em; font-weight: 500; background: rgba(255,255,255,0.2); color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; }
@@ -42,7 +42,6 @@
         .card { background-color: var(--card-bg-color); padding: 20px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid var(--border-color); }
         .card-header h2 { margin: 0; font-size: 1.1em; }
 
-        /* Grade Estimator Styles */
         #grade-estimator-grid { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); }
         .estimator-card h3 { font-size: 1.2em; margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;}
         .estimator-card .input-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px 20px; margin-bottom: 15px; }
@@ -57,44 +56,20 @@
         .sgpa-calculator button { max-width: 300px; }
         #sgpa-result { font-size: 1.5em; font-weight: bold; margin-top: 15px; }
         
-        /* Timetable Styles */
-        .timetable-table { display: table; width: 100%; border-collapse: collapse; font-size: 0.8em; }
-        .timetable-table th, .timetable-table td { border: 1px solid var(--border-color); padding: 8px; text-align: center; }
-        .timetable-table th { background-color: var(--background-color); font-weight: 600; }
-        .timetable-table .class-cell { font-weight: 600; color: white; }
-        .timetable-tabs { display: none; }
-        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); justify-content: center; align-items: center; }
-        .modal-content { background: white; padding: 25px; border-radius: 10px; width: 90%; max-width: 500px; max-height: 80vh; overflow-y: auto; }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 20px; }
-        .modal-header h2 { margin: 0; }
-        .modal-header .close-btn { font-size: 2em; cursor: pointer; font-weight: bold; }
-        
+        #today-schedule-card ul { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; } #today-schedule-card li { background-color: #e9ecef; padding: 5px 10px; border-radius: 5px; font-size: 0.9em; } #full-day-bunk-btn { width: 100%; margin-top: 15px; padding: 10px; background-color: var(--danger-color); color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; } #total-attendance-card .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; text-align: center; } .stat .label { font-size: 0.9em; color: var(--text-light-color); margin-bottom: 5px; } .stat .value { font-size: 1.8em; font-weight: 600; } #total-attendance-card .bunks-left { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border-color); text-align: center; font-size: 1.2em; font-weight: 600; } #subject-dashboard h2 { margin-bottom: 20px; } .subject-card { border-left: 5px solid var(--primary-color); } .subject-card.is-safe { border-left-color: var(--safe-color); } .subject-card.is-danger { border-left-color: var(--danger-color); } .card-main-stats { display: flex; justify-content: space-around; text-align: center; margin-bottom: 15px; } .action-area { display: flex; gap: 10px; } .action-area button { width: 100%; padding: 8px; font-size: 0.9em; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; } .action-area .bunk-btn { background-color: var(--danger-color); color: white; } .action-area .undo-btn { background-color: var(--dark-grey); color: white; } .bunks-left.safe { color: var(--safe-color); } .bunks-left.danger { color: var(--danger-color); } .controls, .setup-card { display: flex; flex-wrap: wrap; gap: 15px; justify-content: space-between; align-items: center; } .controls input, .setup-card input { padding: 8px; border-radius: 5px; border: 1px solid #ddd; } .setup-card button, .settings-btn { padding: 10px 15px; background-color: var(--primary-color); color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; } .settings-btn { background-color: var(--dark-grey); } .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); justify-content: center; align-items: center; } .modal-content { background: white; padding: 25px; border-radius: 10px; width: 90%; max-width: 500px; max-height: 80vh; overflow-y: auto; } .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 20px; } .modal-header h2 { margin: 0; } .modal-header .close-btn { font-size: 2em; cursor: pointer; font-weight: bold; } .timetable-table { display: table; width: 100%; border-collapse: collapse; font-size: 0.8em; } .timetable-table th, .timetable-table td { border: 1px solid var(--border-color); padding: 8px; text-align: center; } .timetable-table th { background-color: var(--background-color); font-weight: 600; } .timetable-table .class-cell { font-weight: 600; color: white; } .timetable-tabs { display: none; }
+        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1999; }
+        .overlay.open { display: block; }
+
         @media (max-width: 1024px) {
             .app-wrapper { flex-direction: column; }
-            .sidebar {
-                position: fixed; z-index: 2000; height: 100%;
-                transform: translateX(-100%); transition: transform 0.3s ease-in-out;
-            }
+            .sidebar { position: fixed; z-index: 2000; height: 100%; transform: translateX(-100%); transition: transform 0.3s ease-in-out; }
             .sidebar.open { transform: translateX(0); }
+            .main-content { width: 100%; }
             .hamburger-btn { display: block; }
             .header { justify-content: space-between; width: 100%; }
             .header-title { text-align: center; flex-grow: 1; }
-            .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1999; }
-            .overlay.open { display: block; }
         }
-        @media (max-width: 768px) {
-            .content-area { padding: 15px; }
-            #total-attendance-card .stats-grid { grid-template-columns: 1fr; }
-            #timetable-view .timetable-table { display: none; }
-            #timetable-view .timetable-tabs { display: block; }
-            .tab-nav { display: flex; overflow-x: auto; border-bottom: 2px solid var(--border-color); margin-bottom: 15px;}
-            .tab-nav-btn { padding: 10px 15px; border: none; background: none; font-weight: 600; cursor: pointer; flex-shrink: 0; white-space: nowrap; }
-            .tab-nav-btn.active { color: var(--primary-color); border-bottom: 2px solid var(--primary-color); }
-            .tab-content { display: none; }
-            .tab-content.active { display: block; }
-            .tab-content ul { list-style: none; }
-            .tab-content li { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: var(--background-color); border-radius: 5px; margin-bottom: 8px; }
-        }
+        @media (max-width: 768px) { .content-area { padding: 15px; } #total-attendance-card .stats-grid { grid-template-columns: 1fr; } #timetable-view .timetable-table { display: none; } #timetable-view .timetable-tabs { display: block; } .tab-nav { display: flex; overflow-x: auto; border-bottom: 2px solid var(--border-color); margin-bottom: 15px;} .tab-nav-btn { padding: 10px 15px; border: none; background: none; font-weight: 600; cursor: pointer; flex-shrink: 0; white-space: nowrap; } .tab-nav-btn.active { color: var(--primary-color); border-bottom: 2px solid var(--primary-color); } .tab-content { display: none; } .tab-content.active { display: block; } .tab-content ul { list-style: none; } .tab-content li { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: var(--background-color); border-radius: 5px; margin-bottom: 8px; } }
     </style>
 </head>
 <body>
@@ -103,7 +78,7 @@
         <div class="login-container"><div class="login-card"><h1>G-Student Login</h1><form id="login-form"><div class="login-form-group"><label for="regd-no-input">Registration Number</label><input type="text" id="regd-no-input" placeholder="Enter your number" required></div><button type="submit" id="login-btn">Login</button></form></div></div>
     </div>
 
-    <div id="dashboard-page">
+    <div id="dashboard-page" style="display: none;">
         <div class="app-wrapper">
             <aside id="sidebar" class="sidebar">
                 <div class="profile"><div id="sidebar-profile-name" class="profile-name"></div><div id="sidebar-profile-id" class="profile-id"></div></div>
@@ -140,10 +115,8 @@
     </div>
     
     <div id="settings-modal" class="modal"> <div class="modal-content"><div class="modal-header"><h2>Settings</h2><span class="close-btn" onclick="closeSettings()">&times;</span></div><p>Enter total classes for each subject.</p><div id="settings-list"></div><button onclick="saveSettings()" style="width: 100%; padding: 12px; background-color: var(--safe-color); color: white; border: none; border-radius: 5px; font-size: 1.1em; font-weight: bold; cursor: pointer; margin-top: 10px;">Save Settings</button></div></div>
-    
+
     <script>
-        // --- All JavaScript logic from the previous final version is placed here ---
-        // New functions for mobile menu are added.
         const userDatabase = [ { name: 'SRAVAN NAMANI', regdNo: '2025228568', branch: 'CSE' }, { name: 'DATA SCIENCE FRIEND', regdNo: '2025221234', branch: 'DS' } ];
         const timeSlots = ['08:00-08:50', '09:00-09:50', '10:00-10:50', '11:00-11:50', '11:50-1:00', '1:00-1:50', '2:00-2:50'];
         const timetablesByBranch = { 'CSE': { simple: { 0: [], 1: ['Mathematical Foundations of Computer Science', 'Advanced Data Structures', 'Algorithms and Analysis', 'Research Methodology and IPR', 'Data Science Lab', 'Data Science Lab'], 2: ['Advanced Data Structures Lab', 'Advanced Data Structures Lab', 'Algorithms and Analysis', 'English for Research Paper Writing', 'Algorithms and Analysis Lab', 'Algorithms and Analysis Lab'], 3: ['Machine Learning', 'Mathematical Foundations of Computer Science', 'Advanced Data Structures', 'Data Science', 'Machine Learning Lab', 'Machine Learning Lab'], 4: ['Machine Learning', 'English for Research Paper Writing', 'Algorithms and Analysis', 'Data Science'], 5: ['Machine Learning', 'Research Methodology and IPR', 'Data Science', 'Advanced Data Structures', 'Mathematical Foundations of Computer Science'], 6: [] }, full: { 'Monday': [ { time: '08:00-08:50', subject: 'Mathematical Foundations of Computer Science' }, { time: '09:00-09:50', subject: 'Advanced Data Structures' }, { time: '10:00-10:50', subject: 'Algorithms and Analysis' }, { time: '11:00-11:50', subject: 'Research Methodology and IPR' }, { time: '1:00-1:50', subject: 'Data Science Lab', span: 2 } ], 'Tuesday': [ { time: '08:00-08:50', subject: 'Advanced Data Structures Lab', span: 2 }, { time: '10:00-10:50', subject: 'Algorithms and Analysis' }, { time: '11:00-11:50', subject: 'English for Research Paper Writing' }, { time: '1:00-1:50', subject: 'Algorithms and Analysis Lab', span: 2 } ], 'Wednesday': [ { time: '08:00-08:50', subject: 'Machine Learning' }, { time: '09:00-09:50', subject: 'Mathematical Foundations of Computer Science' }, { time: '10:00-10:50', subject: 'Advanced Data Structures' }, { time: '11:00-11:50', subject: 'Data Science' }, { time: '1:00-1:50', subject: 'Machine Learning Lab', span: 2 } ], 'Thursday': [ { time: '08:00-08:50', subject: 'Machine Learning' }, { time: '10:00-10:50', subject: 'English for Research Paper Writing' }, { time: '11:00-11:50', subject: 'Algorithms and Analysis' }, { time: '1:00-1:50', subject: 'Data Science' } ], 'Friday': [ { time: '08:00-08:50', subject: 'Machine Learning' }, { time: '09:00-09:50', subject: 'Research Methodology and IPR' }, { time: '10:00-10:50', subject: 'Data Science' }, { time: '11:00-11:50', subject: 'Advanced Data Structures' }, { time: '1:00-1:50', subject: 'Mathematical Foundations of Computer Science' } ] }, colors: { 'Mathematical Foundations of Computer Science': '#8e44ad', 'Advanced Data Structures': '#2980b9', 'Algorithms and Analysis': '#27ae60', 'Research Methodology and IPR': '#f39c12', 'Data Science Lab': '#d35400', 'Advanced Data Structures Lab': '#16a085', 'English for Research Paper Writing': '#7f8c8d', 'Algorithms and Analysis Lab': '#2c3e50', 'Machine Learning': '#c0392b', 'Data Science': '#d35400', 'Machine Learning Lab': '#c0392b' } }, 'DS': { simple: { 0: [], 1: ['Advanced Data Structures', 'Algorithms and Analysis', 'Research Methodology & IPR', 'Data Science Lab', 'Data Science Lab'], 2: ['Advanced Data Structures Lab', 'Advanced Data Structures Lab', 'Algorithms and Analysis', 'English for Research Paper Writing', 'Algorithms and Analysis Lab', 'Algorithms and Analysis Lab'], 3: ['Machine Learning', 'Statistical Modeling', 'Advanced Data Structures', 'Data Science', 'Machine Learning Lab', 'Machine Learning Lab'], 4: ['Machine Learning', 'Statistical Modeling', 'English for Research Paper Writing', 'Algorithms and Analysis', 'Data Science'], 5: ['Machine Learning', 'Research Methodology & IPR', 'Data Science', 'Advanced Data Structures', 'Statistical Modeling'], 6: [] }, full: { 'Monday': [ { time: '09:00-09:50', subject: 'Advanced Data Structures' }, { time: '10:00-10:50', subject: 'Algorithms and Analysis' }, { time: '11:00-11:50', subject: 'Research Methodology & IPR' }, { time: '1:00-1:50', subject: 'Data Science Lab', span: 2 } ], 'Tuesday': [ { time: '08:00-08:50', subject: 'Advanced Data Structures Lab', span: 2 }, { time: '10:00-10:50', subject: 'Algorithms and Analysis' }, { time: '11:00-11:50', subject: 'English for Research Paper Writing' }, { time: '1:00-1:50', subject: 'Algorithms and Analysis Lab', span: 2 } ], 'Wednesday': [ { time: '08:00-08:50', subject: 'Machine Learning' }, { time: '09:00-09:50', subject: 'Statistical Modeling' }, { time: '10:00-10:50', subject: 'Advanced Data Structures' }, { time: '11:00-11:50', subject: 'Data Science' }, { time: '1:00-1:50', subject: 'Machine Learning Lab', span: 2 } ], 'Thursday': [ { time: '08:00-08:50', subject: 'Machine Learning' }, { time: '09:00-09:50', subject: 'Statistical Modeling' }, { time: '10:00-10:50', subject: 'English for Research Paper Writing' }, { time: '11:00-11:50', subject: 'Algorithms and Analysis' }, { time: '1:00-1:50', subject: 'Data Science' } ], 'Friday': [ { time: '08:00-08:50', subject: 'Machine Learning' }, { time: '09:00-09:50', subject: 'Research Methodology & IPR' }, { time: '10:00-10:50', subject: 'Data Science' }, { time: '11:00-11:50', subject: 'Advanced Data Structures' }, { time: '1:00-1:50', subject: 'Statistical Modeling' } ] }, colors: { 'Advanced Data Structures': '#2980b9', 'Algorithms and Analysis': '#27ae60', 'Research Methodology & IPR': '#f39c12', 'Data Science Lab': '#d35400', 'Advanced Data Structures Lab': '#16a085', 'English for Research Paper Writing': '#7f8c8d', 'Algorithms and Analysis Lab': '#2c3e50', 'Machine Learning': '#c0392b', 'Data Science': '#d35400', 'Machine Learning Lab': '#c0392b', 'Statistical Modeling': '#8e44ad' } } };
@@ -155,7 +128,6 @@
         function init() { if (!localStorage.getItem('userDatabase')) { localStorage.setItem('userDatabase', JSON.stringify(userDatabase)); } const currentUser = getCurrentUserRegdNo(); if (currentUser) { document.getElementById('login-page').style.display = 'none'; document.getElementById('dashboard-page').style.display = 'block'; loadDashboardForUser(currentUser); } else { document.getElementById('login-page').style.display = 'flex'; document.getElementById('dashboard-page').style.display = 'none'; } }
         function handleLogin(event) { event.preventDefault(); const regdNo = document.getElementById('regd-no-input').value.trim(); if (!regdNo) { alert("Please enter a Registration Number."); return; } const userExists = userDatabase.find(u => u.regdNo === regdNo); if (userExists) { sessionStorage.setItem('currentUserRegdNo', regdNo); init(); } else { alert("Registration Number not found. Please edit the HTML file to add this user."); } }
         function logout() { sessionStorage.removeItem('currentUserRegdNo'); init(); }
-
         function toggleMobileMenu() { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('overlay').classList.toggle('open'); }
         function showView(viewId, element) { document.querySelectorAll('.content-area.view').forEach(v => v.style.display = 'none'); document.getElementById(viewId).style.display = 'block'; document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active')); if (element) { element.classList.add('active'); } if (document.getElementById('sidebar').classList.contains('open')) { toggleMobileMenu(); } }
         function loadDashboardForUser(regdNo) { const currentUser = userDatabase.find(u => u.regdNo === regdNo); if (!currentUser) { logout(); return; } const branch = currentUser.branch; if (!timetablesByBranch[branch]) { alert(`Timetable for branch "${branch}" not found!`); logout(); return; } currentUserTimetable = timetablesByBranch[branch]; document.getElementById('sidebar-profile-name').innerText = currentUser.name; document.getElementById('sidebar-profile-id').innerText = `(${currentUser.regdNo} - ${branch})`; showView('attendance-view', document.querySelector('.sidebar-nav a')); loadData(); renderTodaysSchedule(); renderFullTimetable(); renderGradeEstimator(); }
@@ -180,12 +152,10 @@
         
         function openSettings() { document.getElementById('settings-modal').style.display = 'flex'; }
         function closeSettings() { document.getElementById('settings-modal').style.display = 'none'; }
-        function openTimetableModal() { document.getElementById('timetable-modal').style.display = 'flex'; }
-        function closeTimetableModal() { document.getElementById('timetable-modal').style.display = 'none'; }
         
         document.getElementById('login-form').addEventListener('submit', handleLogin);
         window.onload = init;
-        window.onclick = function(event) { if (event.target.classList.contains('modal')) { closeSettings(); closeTimetableModal(); } }
+        window.onclick = function(event) { if (event.target.classList.contains('modal')) { closeSettings(); } }
     </script>
 </body>
 </html>
