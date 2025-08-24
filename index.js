@@ -76,6 +76,20 @@ document.addEventListener("DOMContentLoaded", function() {
         sessionStorage.removeItem('currentUserRegdNo');
         window.location.reload();
     }
+    function fetchAndDisplayIP() {
+    const ipElement = document.getElementById('user-ip');
+    if (!ipElement) return;
+
+    ipElement.textContent = 'Fetching IP...';
+    fetch("https://api.ipify.org?format=json")
+        .then(response => response.json())
+        .then(data => {
+            ipElement.textContent = `Your IP: ${data.ip}`;
+        })
+        .catch(() => {
+            ipElement.textContent = "IP not available";
+        });
+}
 
     function loadDashboardForUser(regdNo) {
         const currentUser = userDatabase.find(u => u.regdNo === regdNo);
@@ -87,6 +101,7 @@ document.addEventListener("DOMContentLoaded", function() {
         
         document.getElementById('login-page').style.display = 'none';
         document.getElementById('dashboard-page').style.display = 'block';
+        fetchAndDisplayIP();
 
         document.getElementById('sidebar-profile-name').innerText = currentUser.name;
         document.getElementById('sidebar-profile-id').innerText = `(${currentUser.regdNo} - ${branch})`;
@@ -139,7 +154,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         <label for="start-date" style="display: block; text-align: center; margin-bottom: 10px; font-weight: 500;">Semester Start Date:</label>
                         <input type="date" id="start-date" style="padding: 8px; border-radius: 5px; border: 1px solid var(--border-color); width: 100%;">
                     </div>
-                    <button onclick="startTracking()" class="card-btn" style="background-color: var(--safe-color); max-width: 200px;">Calculate & Start</button>
+                    <button onclick="startTracking()" class="card-btn" style="background-color: var(--safe-color); max-width: 450px;">Calculate & Start</button>
                 </div>
                 <div id="bunk-simulator-card" class="card">
                     <h2 style="font-size: 1.2em; margin-bottom: 15px;">Bunk Day Simulator</h2>
@@ -277,11 +292,11 @@ document.addEventListener("DOMContentLoaded", function() {
             const cleanSubName = subjectName.replace(/[\s&/]/g, '');
             let inputsHTML = '';
             if (details.type === 'Theory') {
-                inputsHTML += `<div class="input-group"><label>Internal (40)</label><input oninput="calculateSubjectGrade('${subjectName}')" type="number" min="0" max="40" id="internal_${cleanSubName}"></div><div class="input-group"><label>External (60)</label><input oninput="calculateSubjectGrade('${subjectName}')" type="number" min="0" max="60" id="external_${cleanSubName}"></div>`;
+                inputsHTML += `<div class="input-group"><label>Internal (40)</label><input oninput="if(parseInt(this.value)>40) this.value=40; calculateSubjectGrade('${subjectName}')" type="number" min="0" max="40" id="internal_${cleanSubName}"></div><div class="input-group"><label>External (60)</label><input oninput="if(parseInt(this.value)>60) this.value=60; calculateSubjectGrade('${subjectName}')" type="number" min="0" max="60" id="external_${cleanSubName}"></div>`;
             } else if (details.type === 'Lab') {
-                inputsHTML += `<div class="input-group"><label>Total Internal (100)</label><input oninput="calculateSubjectGrade('${subjectName}')" type="number" min="0" max="100" id="lab_internal_${cleanSubName}"></div>`;
+                inputsHTML += `<div class="input-group"><label>Total Internal (100)</label><input oninput="if(parseInt(this.value)>100) this.value=100; calculateSubjectGrade('${subjectName}')" type="number" min="0" max="100" id="lab_internal_${cleanSubName}"></div>`;
             } else if (details.type === 'Integrated') {
-                inputsHTML += `<div class="input-group"><label>Theory Internal (40)</label><input oninput="calculateSubjectGrade('${subjectName}')" type="number" min="0" max="40" id="internal_${cleanSubName}"></div><div class="input-group"><label>Theory External (60)</label><input oninput="calculateSubjectGrade('${subjectName}')" type="number" min="0" max="60" id="external_${cleanSubName}"></div><div class="input-group"><label>Lab Internal (100)</label><input oninput="calculateSubjectGrade('${subjectName}')" type="number" min="0" max="100" id="lab_internal_${cleanSubName}"></div>`;
+                inputsHTML += `<div class="input-group"><label>Theory Internal (40)</label><input oninput="if(parseInt(this.value)>40) this.value=40; calculateSubjectGrade('${subjectName}')" type="number" min="0" max="40" id="internal_${cleanSubName}"></div><div class="input-group"><label>Theory External (60)</label><input oninput="if(parseInt(this.value)>60) this.value=60; calculateSubjectGrade('${subjectName}')" type="number" min="0" max="60" id="external_${cleanSubName}"></div><div class="input-group"><label>Lab Internal (100)</label><input oninput="if(parseInt(this.value)>100) this.value=100; calculateSubjectGrade('${subjectName}')" type="number" min="0" max="100" id="lab_internal_${cleanSubName}"></div>`;
             }
             const card = document.createElement('div');
             card.className = 'card estimator-card';
@@ -303,62 +318,62 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function calculateSubjectGrade(subjectName) {
-    const details = courseDetails[subjectName];
-    const cleanSubName = subjectName.replace(/[\s&/]/g, '');
-    let finalScore = 0;
-    let isFail = false; // Assume pass at the start
-    const validationDiv = document.getElementById(`validation_${cleanSubName}`);
-    if(validationDiv) validationDiv.textContent = '';
-    
-    if (details.type === 'Theory' || details.type === 'Integrated') {
-        const internal = parseInt(document.getElementById(`internal_${cleanSubName}`)?.value) || 0;
-        const external = parseInt(document.getElementById(`external_${cleanSubName}`)?.value) || 0;
+        const details = courseDetails[subjectName];
+        const cleanSubName = subjectName.replace(/[\s&/]/g, '');
+        let finalScore = 0;
+        let isFail = false;
+        const validationDiv = document.getElementById(`validation_${cleanSubName}`);
+        if(validationDiv) validationDiv.textContent = '';
         
-        let minExternalRequired = 24;
-        let internalShortfall = 16 - internal;
+        if (details.type === 'Theory' || details.type === 'Integrated') {
+            const internal = parseInt(document.getElementById(`internal_${cleanSubName}`)?.value) || 0;
+            const external = parseInt(document.getElementById(`external_${cleanSubName}`)?.value) || 0;
+            
+            let minExternalRequired = 24;
+            let internalShortfall = 16 - internal;
 
-        if (internalShortfall > 0) {
-            minExternalRequired = 24 + internalShortfall;
-            if(validationDiv) validationDiv.textContent = `Short by ${internalShortfall} in internals. Need at least ${minExternalRequired} in externals.`;
-        }
+            if (internalShortfall > 0) {
+                minExternalRequired = 24 + internalShortfall;
+                if(validationDiv) validationDiv.textContent = `Short by ${internalShortfall} in internals. Need at least ${minExternalRequired} in externals.`;
+            }
 
-        // **THE FIX IS HERE:** Check all fail conditions together at the end.
-        if (internal < 16 && external < minExternalRequired) {
-            isFail = true;
-        } else if (internal >= 16 && external < 24) {
-            isFail = true;
-        } else if ((internal + external) < 40) {
-            isFail = true;
-        }
-        
-        const theoryTotal = internal + external;
-        
-        if (details.type === 'Theory') {
-            finalScore = theoryTotal;
-        } else { // Integrated
+            if (internal < 16 && external < minExternalRequired) {
+                isFail = true;
+            } else if (internal >= 16 && external < 24) {
+                isFail = true;
+            } else if ((internal + external) < 40) {
+                isFail = true;
+            }
+            
+            const theoryTotal = internal + external;
+            
+            if (details.type === 'Theory') {
+                finalScore = theoryTotal;
+            } else { // Integrated
+                const labInternal = parseInt(document.getElementById(`lab_internal_${cleanSubName}`)?.value) || 0;
+                if (labInternal < 40) {
+                    isFail = true;
+                    if(validationDiv && !validationDiv.textContent) validationDiv.textContent = 'Lab internal requires a minimum of 40.';
+                }
+                finalScore = (theoryTotal * 0.7) + (labInternal * 0.3);
+            }
+        } else if (details.type === 'Lab') {
             const labInternal = parseInt(document.getElementById(`lab_internal_${cleanSubName}`)?.value) || 0;
             if (labInternal < 40) {
                 isFail = true;
-                if(validationDiv && !validationDiv.textContent) validationDiv.textContent = 'Lab internal requires a minimum of 40.';
+                if(validationDiv) validationDiv.textContent = 'Lab internal requires a minimum of 40.';
             }
-            finalScore = (theoryTotal * 0.7) + (labInternal * 0.3);
+            finalScore = labInternal;
         }
-    } else if (details.type === 'Lab') {
-        const labInternal = parseInt(document.getElementById(`lab_internal_${cleanSubName}`)?.value) || 0;
-        if (labInternal < 40) {
-            isFail = true;
-            if(validationDiv) validationDiv.textContent = 'Lab internal requires a minimum of 40.';
-        }
-        finalScore = labInternal;
+        
+        const { grade, gradePoint } = getGradeFromMarks(finalScore, isFail);
+        document.getElementById(`result_${cleanSubName}`).innerText = `${grade} (${finalScore.toFixed(2)})`;
+        return { gradePoint, credits: details.credits };
     }
-    
-    const { grade, gradePoint } = getGradeFromMarks(finalScore, isFail);
-    document.getElementById(`result_${cleanSubName}`).innerText = `${grade} (${finalScore.toFixed(2)})`;
-    return { gradePoint, credits: details.credits };
-}
 
     function calculateSGPA() {
-        let totalCredits = 0, weightedGradePoints = 0;
+        let totalCredits = 0;
+        let weightedGradePoints = 0;
         getUniqueSubjects().forEach(subjectName => {
             const details = courseDetails[subjectName];
             if (details && details.credits > 0) {
@@ -371,6 +386,7 @@ document.addEventListener("DOMContentLoaded", function() {
         document.getElementById('sgpa-result').innerText = `Estimated SGPA: ${sgpa.toFixed(2)}`;
     }
 
+    // --- Global Functions (attached to window for onclick) ---
     window.getUniqueSubjects = () => Array.from(new Set(Object.values(currentUserTimetable.simple || {}).flat())).sort();
     window.showView = (viewId, element) => {
         document.querySelectorAll('.content-area.view').forEach(v => v.style.display = 'none');
@@ -460,6 +476,39 @@ document.addEventListener("DOMContentLoaded", function() {
         this.classList.toggle('ri-eye-line');
         this.classList.toggle('ri-eye-off-line');
     });
+// --- Dark Mode Toggle Logic ---
+    const darkModeToggle = document.getElementById('dark-mode-toggle');
+    const body = document.body;
+    const moonIcon = 'ri-moon-line';
+    const sunIcon = 'ri-sun-line';
 
+    function applyTheme() {
+        const isDarkMode = localStorage.getItem('darkMode') === 'true';
+        body.classList.toggle('dark-mode', isDarkMode);
+        
+        const icon = darkModeToggle.querySelector('i');
+        if (isDarkMode) {
+            icon.classList.remove(moonIcon);
+            icon.classList.add(sunIcon);
+            darkModeToggle.style.color = '#ffc107'; // Sun color
+        } else {
+            icon.classList.remove(sunIcon);
+            icon.classList.add(moonIcon);
+            // In light mode, the button color should reflect the current text color
+            darkModeToggle.style.color = getComputedStyle(body).getPropertyValue('--text-dark-color');
+        }
+    }
+
+    darkModeToggle.addEventListener('click', () => {
+        // Toggle the class and get the new state
+        const isDarkMode = body.classList.toggle('dark-mode');
+        // Save the new state to localStorage
+        localStorage.setItem('darkMode', isDarkMode);
+        // Apply the theme changes (icon and color)
+        applyTheme();
+    });
+
+    // Apply the saved theme when the page first loads
+    applyTheme();
     init();
 });
