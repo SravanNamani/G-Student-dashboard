@@ -130,21 +130,47 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function renderAttendanceView() {
-        const view = document.getElementById('attendance-view');
-        view.innerHTML = `
-            <div class="dashboard-grid">
-                <div id="today-schedule-card" class="card"></div>
-                <div id="total-attendance-card" class="card">
-                    <div id="total-stats-container"></div>
-                </div>
+    const view = document.getElementById('attendance-view');
+    view.innerHTML = `
+        <div class="dashboard-grid">
+            <div id="today-schedule-card" class="card"></div>
+            <div id="total-attendance-card" class="card">
+                <div id="total-stats-container"></div>
             </div>
-            <p style="text-align: center; color: var(--text-light-color); font-style: italic; margin-top: 15px;">Note: Classes started from 04-08-2025</p>
-            <div id="subject-dashboard" style="margin-top: 30px;">
-                <h2>Individual Subjects</h2>
-                <div id="dashboard" class="dashboard-grid"></div>
-            </div>`;
-        renderTodaysSchedule();
-    }
+            
+            <div id="setup-card" class="card" style="align-items: center; justify-content: center; gap: 15px;">
+                <div>
+                    <label for="start-date" style="display: block; text-align: center; margin-bottom: 10px; font-weight: 500;">Semester Start Date:</label>
+                    <input type="date" id="start-date" style="padding: 8px; border-radius: 5px; border: 1px solid var(--border-color); width: 100%;">
+                </div>
+                
+                <button onclick="startTracking()" class="card-btn" style="background-color: var(--safe-color); max-width: 200px;">Calculate & Start</button>
+                        <p style="text-align: center; color: var(--text-light-color); font-style: italic; margin-top: 15px;">Note: Classes started from 04-08-2025</p>
+           
+                </div>
+            <div id="bunk-simulator-card" class="card">
+                <h2 style="font-size: 1.2em; margin-bottom: 15px;">Bunk Day Simulator</h2>
+                <div class="login-form-group">
+                    <label for="day-to-bunk-select">Select a day:</label>
+                    <select id="day-to-bunk-select" style="width: 100%; padding: 8px; border-radius: 5px; border: 1px solid var(--border-color);">
+                        <option value="1">Monday</option>
+                        <option value="2">Tuesday</option>
+                        <option value="3">Wednesday</option>
+                        <option value="4">Thursday</option>
+                        <option value="5">Friday</option>
+                        <option value="6">Saturday</option>
+                    </select>
+                </div>
+                <button onclick="simulateDayBunk()" class="card-btn" style="background-color: var(--primary-color);">Simulate</button>
+                <div id="simulation-result" style="text-align:center; margin-top:15px; font-weight: 500;"></div>
+            </div>
+        </div>
+        <div id="subject-dashboard" style="margin-top: 30px;">
+            <h2>Individual Subjects</h2>
+            <div id="dashboard" class="dashboard-grid"></div>
+        </div>`;
+    renderTodaysSchedule();
+}
     
     function renderDashboard() {
         const dashboard = document.getElementById('dashboard');
