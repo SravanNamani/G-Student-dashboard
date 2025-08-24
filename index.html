@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>G-Student | Dashboard</title>
+    <link rel="icon" type="image/png" href="https://cdn.gitam.edu/images/favicon/favicon.ico">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -195,14 +196,17 @@
                     </div>
                     <div class="login-form-group">
                         <label for="password-input">Password</label>
-                        <input 
-                            type="password" 
-                            id="password-input" 
-                            placeholder="Enter your password" 
-                            pattern="[\d@]+"
-                            title="Password can only contain numbers and the @ symbol."
-                            oninput="this.value = this.value.replace(/[^0-9@]/g, '');"
-                            required>
+                        <div style="position: relative;">
+                            <input 
+                                type="password" 
+                                id="password-input" 
+                                placeholder="Enter your password" 
+                                pattern="[\d@]+"
+                                title="Password can only contain numbers and the @ symbol."
+                                oninput="this.value = this.value.replace(/[^0-9@]/g, '');"
+                                required>
+                            <i class="ri-eye-line" id="password-toggle-icon" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: var(--text-light-color);"></i>
+                        </div>
                     </div>
                     <button type="submit" id="login-btn">Login</button>
                 </form>
