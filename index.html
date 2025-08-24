@@ -1,938 +1,552 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>G-Student | Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet"/>
     <style>
         :root {
-            --primary-color: #007367;
-            --danger-color: #e74c3c;
-            --safe-color: #2ecc71;
-            --background-color: #f4f7f6;
+            --primary-color: #008374; /* A modern, rich green */
+            --primary-light: #e6f3f1; /* A very light green for backgrounds/hovers */
+            --danger-color: #dc3545;
+            --safe-color: #28a745;   /* Kept a vibrant green for "safe" status */
+            --warning-color: #ffc107;
+            --background-color: #f8f9fa;
             --card-bg-color: #ffffff;
-            --text-dark-color: #2c3e50;
-            --text-light-color: #8a99a7;
-            --border-color: #e9ecef;
-            --muted-color: #6c757d;
+            --text-dark-color: #343a40;
+            --text-light-color: #6c757d;
+            --border-color: #dee2e6;
+            --font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
+
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--background-color); color: var(--text-dark-color); }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--background-color);
+            color: var(--text-dark-color);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
         .view { display: none; }
         
-        /* Login */
-        #login-page { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
-        .login-container { width: 100%; max-width: 400px; text-align: center; }
-        .login-card { background: var(--card-bg-color); padding: 30px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        .login-card h1 { margin-bottom: 25px; font-size: 1.8em; }
-        .login-form-group { text-align: left; margin-bottom: 20px; }
-        .login-form-group label { display: block; font-weight: 600; margin-bottom: 8px; }
-        .login-form-group input { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 1em; }
-        #login-btn { width: 100%; padding: 12px; background-color: var(--primary-color); color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 1.1em; cursor: pointer; }
-        
-        /* App Layout */
+        /* --- Login Page Styles (Complete Reset) --- */
+        #login-page {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        #login-page::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://login.gitam.edu/Images/gitam-Logo-new.png');
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: 950px;
+            opacity: 0.1;
+            z-index: 0;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .login-card {
+            background: var(--card-bg-color);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color);
+        }
+
+        .login-card h1 {
+            margin-bottom: 30px;
+            font-size: 2em;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .login-form-group {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .login-form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .login-form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1em;
+            font-family: var(--font-family);
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .login-form-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
+
+        #login-btn {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1.1em;
+            font-family: var(--font-family);
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        #login-btn:hover {
+            background-color: #00695c;
+            transform: translateY(-2px);
+        }
+
+        /* --- Main App Layout --- */
         .app-wrapper { display: flex; min-height: 100vh; }
-        .sidebar { width: 260px; background-color: var(--card-bg-color); padding: 20px; display: flex; flex-direction: column; align-items: center; border-right: 1px solid var(--border-color); flex-shrink: 0; }
-        .profile { text-align: center; margin-top: 20px; }
+        .sidebar {
+            width: 260px;
+            background-color: var(--card-bg-color);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border-color);
+            flex-shrink: 0;
+            transition: transform 0.3s ease-in-out;
+        }
+        .profile {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            margin-top: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
         .profile-name { font-size: 1.2em; font-weight: 600; }
-        .profile-id { color: var(--text-light-color); margin-bottom: 20px; }
+        .profile-id { color: var(--text-light-color); font-size: 0.9em; margin-bottom: 20px; }
         .sidebar-nav { width: 100%; }
-        .sidebar-nav a { display: block; padding: 12px 15px; border-radius: 8px; text-decoration: none; color: var(--text-dark-color); font-weight: 500; margin-bottom: 5px; transition: background-color 0.2s; cursor: pointer; }
-        .sidebar-nav a:hover { background-color: var(--background-color); }
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 15px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--text-dark-color);
+            font-weight: 500;
+            margin-bottom: 5px;
+            transition: background-color 0.2s, color 0.2s;
+            cursor: pointer;
+        }
+        .sidebar-nav a i { font-size: 1.2rem; }
+        .sidebar-nav a:hover { background-color: var(--primary-light); color: var(--primary-color); }
         .sidebar-nav a.active { background-color: var(--primary-color); color: white; font-weight: 600; }
         .main-content { flex-grow: 1; display: flex; flex-direction: column; width: calc(100% - 260px); }
-        .header { background-color: var(--primary-color); color: white; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; min-height: 60px; }
-        .header-title { font-weight: 600; font-size: 1.2em; }
-        .logout-btn { font-size: 0.8em; font-weight: 500; background: rgba(255,255,255,0.2); color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; }
-        .hamburger-btn { display: none; background: none; border: none; color: white; font-size: 24px; cursor: pointer; }
+        .header {
+            background-color: var(--card-bg-color);
+            color: var(--text-dark-color);
+            padding: 0 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            min-height: 70px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .header-title { font-weight: 700; font-size: 1.5em; color: var(--primary-color); }
+        .logout-btn { display: flex; align-items: center; gap: 8px; font-weight: 600; background: var(--primary-light); color: var(--primary-color); border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer; transition: background-color 0.3s; }
+        .logout-btn:hover { background-color: #d1e7ff; }
+        .hamburger-btn { display: none; background: none; border: none; color: var(--text-dark-color); font-size: 28px; cursor: pointer; }
         .content-area { padding: 30px; flex-grow: 1; overflow-y: auto; }
+        .content-area > h2 { font-size: 1.8em; margin-bottom: 10px; }
         
-        /* Cards / Grids */
-        .dashboard-grid { display: grid; gap: 25px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
-        .card { background-color: var(--card-bg-color); padding: 20px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid var(--border-color); margin-bottom: 25px; }
-        .card-header h2 { margin: 0; font-size: 1.1em; }
-        .card h3 { margin-bottom: 8px; }
-
-        /* Buttons */
-        .action-area { display: flex; gap: 10px; }
-        .card-btn { width: 100%; padding: 8px; font-size: 0.9em; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; color: white; }
+        /* --- Card Styles --- */
+        .dashboard-grid { display: grid; gap: 25px; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
+        .card {
+            background-color: var(--card-bg-color);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .card-header h2 { margin: 0; font-size: 1.2em; font-weight: 600; }
+        .card-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 10px;
+            font-size: 0.9em;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            color: white;
+            transition: opacity 0.3s;
+        }
+        .card-btn:hover { opacity: 0.85; }
         .bunk-btn { background-color: var(--danger-color); }
-        .undo-btn { background-color: var(--muted-color); }
+        .undo-btn { background-color: var(--text-light-color); }
 
-        /* Grade Estimator */
-        #grade-estimator-grid { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); }
-        .estimator-card h3 { font-size: 1.2em; margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;}
-        .estimator-card .input-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px 20px; margin-bottom: 15px; }
-        .estimator-card .input-group { position: relative; display: flex; flex-direction: column; }
-        .estimator-card .input-group label { font-size: 0.9em; color: var(--text-light-color); margin-bottom: 4px; }
-        .estimator-card .input-group input { width: 100%; padding: 8px; border: 1px solid var(--border-color); border-radius: 5px; }
-        .estimator-card .input-group input.invalid { border-color: var(--danger-color); }
-        .validation-message { font-size: 0.8em; color: var(--danger-color); font-weight: 500; margin-top: 4px; height: 1em; }
-        .estimator-card .result-area { margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border-color); text-align: center; }
-        .estimator-card .result-area span { font-weight: bold; font-size: 1.4em; }
-        .sgpa-calculator { text-align: center; margin-top: 30px; }
-        .sgpa-calculator button { max-width: 300px; padding: 10px 15px; border: none; border-radius: 6px; background: var(--primary-color); color: #fff; cursor: pointer; }
-        #sgpa-result { font-size: 1.5em; font-weight: bold; margin-top: 15px; }
-        
-        /* Attendance */
-        #today-schedule-card ul { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; }
-        #today-schedule-card li { background-color: #e9ecef; padding: 5px 10px; border-radius: 5px; font-size: 0.9em; }
+        /* --- Specific Component Styles --- */
+        #today-schedule-card ul { list-style: none; display: flex; flex-wrap: wrap; gap: 10px; }
+        #today-schedule-card li { background-color: var(--primary-light); color: var(--primary-color); padding: 6px 12px; border-radius: 20px; font-size: 0.9em; font-weight: 500;}
         #total-attendance-card .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; text-align: center; }
         .stat .label { font-size: 0.9em; color: var(--text-light-color); margin-bottom: 5px; }
-        .stat .value { font-size: 1.8em; font-weight: 600; }
-        #total-attendance-card .bunks-left { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border-color); text-align: center; font-size: 1.2em; font-weight: 600; }
-        #subject-dashboard h2 { margin-bottom: 20px; }
+        .stat .value { font-size: 2em; font-weight: 700; }
+        #total-attendance-card .bunks-left { margin-top: 20px; padding: 15px; border-radius: 8px; text-align: center; font-size: 1.1em; font-weight: 600; }
         .subject-card { border-left: 5px solid var(--primary-color); }
         .subject-card.is-safe { border-left-color: var(--safe-color); }
         .subject-card.is-danger { border-left-color: var(--danger-color); }
-        .card-main-stats { display: flex; justify-content: space-around; text-align: center; margin-bottom: 15px; }
-        .bunks-left.safe { color: var(--safe-color); }
-        .bunks-left.danger { color: var(--danger-color); }
-        .controls, .setup-card { display: flex; flex-wrap: wrap; gap: 15px; justify-content: space-between; align-items: center; }
-        .controls input, .setup-card input, #bunk-simulator-card select { padding: 8px; border-radius: 5px; border: 1px solid #ddd; }
-        #bunk-simulator-card button, #setup-card button { padding: 10px 15px; background-color: var(--primary-color); color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;}
-        .inline-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 12px; }
+        .card-main-stats { display: flex; justify-content: space-around; text-align: center; margin: 20px 0; }
+        .bunks-left.safe { background-color: #eaf6ec; color: var(--safe-color); }
+        .bunks-left.danger { background-color: #fbebee; color: var(--danger-color); }
 
-        /* Timetable */
-        .timetable-table { display: table; width: 100%; border-collapse: collapse; font-size: 0.8em; }
-        .timetable-table th, .timetable-table td { border: 1px solid var(--border-color); padding: 8px; text-align: center; }
-        .timetable-table th { background-color: var(--background-color); font-weight: 600; }
-        .timetable-table .class-cell { font-weight: 600; color: white; }
-        .timetable-table .lunch-cell { background: #f1f3f5; font-weight: 600; }
-        .timetable-tabs { display: none; }
+        #grade-estimator-grid { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); }
+        .estimator-card h3 { font-size: 1.2em; margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;}
+        .estimator-card .input-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px 20px; margin-bottom: 15px; }
+        
+        /* --- Enhanced Grade Estimator Input Styles --- */
+        .estimator-card .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+        .estimator-card .input-group label {
+            font-size: 0.85em;
+            font-weight: 500;
+            color: var(--text-light-color);
+            margin-bottom: 6px;
+        }
+        .estimator-card .input-group input {
+            background-color: #f8f9fa;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            text-align: center;
+            width: 100%;
+            font-family: var(--font-family);
+            transition: all 0.2s ease-in-out;
+        }
+        .estimator-card .input-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background-color: var(--card-bg-color);
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
+        /* --- End of New Styles --- */
 
-        /* Modal + overlay */
-        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); justify-content: center; align-items: center; }
-        .modal-content { background: white; padding: 25px; border-radius: 10px; width: 90%; max-width: 500px; max-height: 80vh; overflow-y: auto; }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 20px; }
-        .modal-header h2 { margin: 0; }
-        .modal-header .close-btn { font-size: 2em; cursor: pointer; font-weight: bold; }
-        .settings-item { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 8px 0; }
-        .settings-item label { flex: 1; }
-        .settings-item input { width: 100px; }
-
+        .sgpa-calculator button { background-color: var(--safe-color); color: white; border: none; padding: 12px 20px; border-radius: 8px; font-size: 1.1em; font-weight: 600; cursor: pointer; transition: background-color 0.3s; max-width: 300px; }
+        .sgpa-calculator button:hover { background-color: #218838; }
+        #sgpa-result { font-size: 1.5em; font-weight: bold; margin-top: 15px; color: var(--primary-color); }
+        
+        .timetable-table { display: table; width: 100%; border-collapse: collapse; font-size: 0.85em; } .timetable-table th, .timetable-table td { border: 1px solid var(--border-color); padding: 10px; text-align: center; } .timetable-table th { background-color: var(--background-color); font-weight: 600; } .timetable-table .class-cell { font-weight: 600; color: white; } .timetable-tabs { display: none; }
+        
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); justify-content: center; align-items: center; } .modal-content { background: white; padding: 25px; border-radius: 10px; width: 90%; max-width: 500px; max-height: 80vh; overflow-y: auto; } .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 20px; } .modal-header h2 { margin: 0; } .modal-header .close-btn { font-size: 2em; cursor: pointer; font-weight: bold; }
+        
         .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1999; }
         .overlay.open { display: block; }
 
-        @media (max-width: 1024px) {
-            .sidebar { position: fixed; z-index: 2000; height: 100%; transform: translateX(-100%); transition: transform 0.3s ease-in-out; }
-            .sidebar.open { transform: translateX(0); }
-            .main-content { width: 100%; }
-            .hamburger-btn { display: block; }
-            .header-title { text-align: center; flex-grow: 1; }
-        }
-        @media (max-width: 768px) {
-            .content-area { padding: 15px; }
-            #total-attendance-card .stats-grid { grid-template-columns: 1fr; }
-            #timetable-view .timetable-table { display: none; }
-            #timetable-view .timetable-tabs { display: block; }
-            .tab-nav { display: flex; overflow-x: auto; border-bottom: 2px solid var(--border-color); margin-bottom: 15px;}
-            .tab-nav-btn { padding: 10px 15px; border: none; background: none; font-weight: 600; cursor: pointer; flex-shrink: 0; white-space: nowrap; }
-            .tab-nav-btn.active { color: var(--primary-color); border-bottom: 2px solid var(--primary-color); }
-            .tab-content { display: none; }
-            .tab-content.active { display: block; }
-            .tab-content ul { list-style: none; }
-            .tab-content li { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: var(--background-color); border-radius: 5px; margin-bottom: 8px; }
-        }
+        @media (max-width: 1024px) { .sidebar { position: fixed; z-index: 2000; height: 100%; transform: translateX(-100%); box-shadow: 5px 0 15px rgba(0,0,0,0.1); } .sidebar.open { transform: translateX(0); } .main-content { width: 100%; } .hamburger-btn { display: block; } .header-title { text-align: center; flex-grow: 1; } }
+        @media (max-width: 768px) { .content-area { padding: 15px; } #total-attendance-card .stats-grid { grid-template-columns: 1fr; } #timetable-view .timetable-table { display: none; } #timetable-view .timetable-tabs { display: block; } .tab-nav { display: flex; overflow-x: auto; border-bottom: 2px solid var(--border-color); margin-bottom: 15px;} .tab-nav-btn { padding: 10px 15px; border: none; background: none; font-weight: 600; cursor: pointer; flex-shrink: 0; white-space: nowrap; } .tab-nav-btn.active { color: var(--primary-color); border-bottom: 2px solid var(--primary-color); } .tab-content { display: none; } .tab-content.active { display: block; } .tab-content ul { list-style: none; padding: 0; } .tab-content li { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: var(--card-bg-color); border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 8px; } }
     </style>
 </head>
 <body>
 
-    <!-- Login -->
     <div id="login-page">
-        <div class="login-container">
-            <div class="login-card">
-                <h1>G-Student Login</h1>
-                <form id="login-form">
-                    <div class="login-form-group">
-                        <label for="regd-no-input">Registration Number</label>
-                        <input type="text" id="regd-no-input" placeholder="Enter your number" required>
-                    </div>
-                    <button type="submit" id="login-btn">Login</button>
-                </form>
-            </div>
-        </div>
+        <div class="login-container"><div class="login-card"><h1>G-Student Login</h1><form id="login-form"><div class="login-form-group"><label for="regd-no-input">Registration Number</label><input type="text" id="regd-no-input" placeholder="Enter your number" required></div><button type="submit" id="login-btn">Login</button></form></div></div>
     </div>
 
-    <!-- Dashboard -->
     <div id="dashboard-page" style="display: none;">
         <div class="app-wrapper">
             <aside id="sidebar" class="sidebar">
                 <div class="profile">
+                    <img id="profile-pic" alt="Profile Picture" class="profile-pic" style="width: 90px; height: 90px; border-radius: 50%; object-fit: cover; margin-bottom: 15px; border: 3px solid var(--primary-color); box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
                     <div id="sidebar-profile-name" class="profile-name"></div>
                     <div id="sidebar-profile-id" class="profile-id"></div>
                 </div>
                 <nav class="sidebar-nav">
-                    <a class="active" onclick="showView('attendance-view', this)">Attendance</a>
-                    <a onclick="showView('grade-estimator-view', this)">Grade Estimator</a>
-                    <a onclick="showView('timetable-view', this)">Time table</a>
+                    <a class="active" onclick="showView('attendance-view', this)"><i class="ri-pie-chart-line"></i> Attendance</a>
+                    <a onclick="showView('grade-estimator-view', this)"><i class="ri-graduation-cap-line"></i> Grade Estimator</a>
+                    <a onclick="showView('timetable-view', this)"><i class="ri-calendar-todo-line"></i> Time Table</a>
                 </nav>
             </aside>
             <div class="main-content">
                 <header class="header">
-                    <button class="hamburger-btn" onclick="toggleMobileMenu()">&#9776;</button>
+                    <button class="hamburger-btn" onclick="toggleMobileMenu()"><i class="ri-menu-line"></i></button>
                     <span class="header-title">G-Student</span>
-                    <button class="logout-btn" onclick="logout()">Logout</button>
+                    <button class="logout-btn" onclick="logout()"><i class="ri-logout-box-r-line"></i> Logout</button>
                 </header>
-                <main id="attendance-view" class="content-area view"></main>
-                <main id="grade-estimator-view" class="content-area view"></main>
-                <main id="timetable-view" class="content-area view"></main>
+                <main id="attendance-view" class="content-area view">
+                    <div class="dashboard-grid">
+                        <div id="today-schedule-card" class="card"></div>
+                        <div id="total-attendance-card" class="card"><div class="card-header"><h2>Overall Attendance</h2></div><div id="total-stats-container"></div></div>
+                        <div id="setup-card" class="card setup-card" style="align-items: center; justify-content: center; gap: 15px;">
+                            <div><label for="start-date" style="display: block; text-align: center; margin-bottom: 10px; font-weight: 500;">Semester Start Date:</label><input type="date" id="start-date" style="padding: 8px; border-radius: 5px; border: 1px solid var(--border-color); width: 100%;"></div>
+                             <p style="text-align: center; color: var(--text-light-color); font-style: italic; margin-top: 15px;">Note: Classes started from 04-08-2025</p>
+                            <button onclick="startTracking()" class="card-btn" style="background-color: var(--safe-color); max-width: 200px;">Calculate & Start</button>
+                        </div>
+                        <div id="bunk-simulator-card" class="card">
+                            <h2 style="font-size: 1.2em; margin-bottom: 15px;">Bunk Day Simulator</h2>
+                            <div class="login-form-group">
+                                <label for="day-to-bunk-select">Select a day to simulate bunking:</label>
+                                <select id="day-to-bunk-select" style="width: 100%; padding: 8px; border-radius: 5px; border: 1px solid var(--border-color);">
+                                    <option value="1">Monday</option><option value="2">Tuesday</option><option value="3">Wednesday</option><option value="4">Thursday</option><option value="5">Friday</option><option value="6">Saturday</option>
+                                </select>
+                            </div>
+                            <button onclick="simulateDayBunk()" class="card-btn" style="background-color: var(--primary-color);">Simulate</button>
+                            <div id="simulation-result" style="text-align:center; margin-top:15px; font-weight: 500;"></div>
+                        </div>
+                        <div id="controls-card" class="card controls" style="flex-direction: column; align-items: stretch; gap: 15px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <label for="min-percentage" style="font-weight: 500;">Minimum %:</label>
+                                <input type="number" id="min-percentage" value="75" onchange="renderDashboard()" style="padding: 8px; border-radius: 5px; border: 1px solid var(--border-color); width: 70px;">
+                            </div>
+                            <button class="card-btn" onclick="openSettings()" style="background-color: var(--text-light-color);"><i class="ri-settings-3-line"></i> Settings</button>
+                        </div>
+                    </div>
+                    <div id="subject-dashboard" style="margin-top: 30px;">
+                        <h2 style="font-size: 1.8em;">Individual Subjects</h2>
+                        <div id="dashboard" class="dashboard-grid"></div>
+                    </div>
+                </main>
+                <main id="grade-estimator-view" class="content-area view">
+                    <h2>Grade Estimator</h2>
+                    <p style="text-align:center; max-width: 600px; margin: -10px auto 20px auto; color: var(--text-light-color);">Enter your marks to estimate your grade and SGPA. The tool includes minimum mark and shortfall balancing rules.</p>
+                    <div id="grade-estimator-grid"></div>
+                    <div class="sgpa-calculator card"><button onclick="calculateSGPA()"><i class="ri-calculator-line"></i> Calculate Estimated SGPA</button><div id="sgpa-result"></div></div>
+                </main>
+                <main id="timetable-view" class="content-area view">
+                    <h2>Full Weekly Timetable</h2>
+                    <div class="card" id="timetable-container" style="padding: 15px;"></div>
+                </main>
             </div>
             <div id="overlay" class="overlay" onclick="toggleMobileMenu()"></div>
         </div>
     </div>
     
-    <!-- Settings Modal -->
-    <div id="settings-modal" class="modal"></div>
+    <div id="settings-modal" class="modal"> <div class="modal-content"><div class="modal-header"><h2>Settings</h2><span class="close-btn" onclick="closeSettings()">&times;</span></div><p>Enter total classes for each subject.</p><div id="settings-list" style="display: grid; gap: 15px; margin-top: 20px;"></div><button onclick="saveSettings()" style="width: 100%; padding: 12px; background-color: var(--safe-color); color: white; border: none; border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; margin-top: 20px;">Save Settings</button></div></div>
 
     <script>
-        // --- DATA ---
+        // ## CHANGE 1: Updated userDatabase ##
         const userDatabase = [
-    { name: 'SRAVAN NAMANI', regdNo: '2025228568', branch: 'CSE' },
-    { name: 'DATA SCIENCE FRIEND', regdNo: '2025221234', branch: 'DS' },
-    { name: 'Eswar', regdNo: '2025143281', branch: 'DS' },
-    { name: 'Vaibhav', regdNo: '2025000512', branch: 'DS' },
-    { name: 'Sreelakshmi', regdNo: '2025257316', branch: 'CSE' },
-    { name: 'Sowmya', regdNo: '2025203382', branch: 'CSE' },
-    { name: 'Shanthi', regdNo: '2025268900', branch: 'CSE' },
-    { name: 'Karthik', regdNo: '2025008823', branch: 'DS' },
-    { name: 'Harshini', regdNo: '2025053721', branch: 'CSE' },
-    { name: 'Sahithi', regdNo: '2025060863', branch: 'CSE' }
-];
+            { name: 'SRAVAN NAMANI', regdNo: '2025228568', branch: 'CSE' },
+            { name: 'Dhanush', regdNo: '2025143209', branch: 'VLSI' },
+            { name: 'Bhargav', regdNo: '2025090927', branch: 'VLSI' },
+            { name: 'DATA SCIENCE FRIEND', regdNo: '2025221234', branch: 'DS' },
+            { name: 'Eswar', regdNo: '2025143281', branch: 'DS' },
+            { name: 'Vaibhav', regdNo: '2025000512', branch: 'DS' },
+            { name: 'Sreelakshmi', regdNo: '2025257316', branch: 'CSE' },
+            { name: 'Sowmya', regdNo: '2025203382', branch: 'CSE' },
+            { name: 'Shanthi', regdNo: '2025268900', branch: 'CSE' },
+            { name: 'Karthik', regdNo: '2025008823', branch: 'DS' },
+            { name: 'Harshini', regdNo: '2025053721', branch: 'CSE' },
+            { name: 'Sahithi', regdNo: '2025060863', branch: 'CSE' }
+        ];
 
         const timeSlots = ['08:00-08:50', '09:00-09:50', '10:00-10:50', '11:00-11:50', '11:50-1:00', '1:00-1:50', '2:00-2:50'];
-
+        
+        // ## CHANGE 2: Updated timetablesByBranch ##
         const timetablesByBranch = {
-            'CSE': {
-                simple: {
-                    0: [],
-                    1: ['Mathematical Foundations of Computer Science', 'Advanced Data Structures', 'Algorithms and Analysis', 'Research Methodology and IPR', 'Data Science Lab', 'Data Science Lab'],
-                    2: ['Advanced Data Structures Lab', 'Advanced Data Structures Lab', 'Algorithms and Analysis', 'English for Research Paper Writing', 'Algorithms and Analysis Lab', 'Algorithms and Analysis Lab'],
-                    3: ['Machine Learning', 'Mathematical Foundations of Computer Science', 'Advanced Data Structures', 'Data Science', 'Machine Learning Lab', 'Machine Learning Lab'],
-                    4: ['Machine Learning', 'English for Research Paper Writing', 'Algorithms and Analysis', 'Data Science'],
-                    5: ['Machine Learning', 'Research Methodology and IPR', 'Data Science', 'Advanced Data Structures', 'Mathematical Foundations of Computer Science'],
-                    6: []
-                },
-                full: {
-                    'Monday': [
-                        { time: '08:00-08:50', subject: 'Mathematical Foundations of Computer Science' },
-                        { time: '09:00-09:50', subject: 'Advanced Data Structures' },
-                        { time: '10:00-10:50', subject: 'Algorithms and Analysis' },
-                        { time: '11:00-11:50', subject: 'Research Methodology and IPR' },
-                        { time: '1:00-1:50', subject: 'Data Science Lab', span: 2 }
-                    ],
-                    'Tuesday': [
-                        { time: '08:00-08:50', subject: 'Advanced Data Structures Lab', span: 2 },
-                        { time: '10:00-10:50', subject: 'Algorithms and Analysis' },
-                        { time: '11:00-11:50', subject: 'English for Research Paper Writing' },
-                        { time: '1:00-1:50', subject: 'Algorithms and Analysis Lab', span: 2 }
-                    ],
-                    'Wednesday': [
-                        { time: '08:00-08:50', subject: 'Machine Learning' },
-                        { time: '09:00-09:50', subject: 'Mathematical Foundations of Computer Science' },
-                        { time: '10:00-10:50', subject: 'Advanced Data Structures' },
-                        { time: '11:00-11:50', subject: 'Data Science' },
-                        { time: '1:00-1:50', subject: 'Machine Learning Lab', span: 2 }
-                    ],
-                    'Thursday': [
-                        { time: '08:00-08:50', subject: 'Machine Learning' },
-                        { time: '10:00-10:50', subject: 'English for Research Paper Writing' },
-                        { time: '11:00-11:50', subject: 'Algorithms and Analysis' },
-                        { time: '1:00-1:50', subject: 'Data Science' }
-                    ],
-                    'Friday': [
-                        { time: '08:00-08:50', subject: 'Machine Learning' },
-                        { time: '09:00-09:50', subject: 'Research Methodology and IPR' },
-                        { time: '10:00-10:50', subject: 'Data Science' },
-                        { time: '11:00-11:50', subject: 'Advanced Data Structures' },
-                        { time: '1:00-1:50', subject: 'Mathematical Foundations of Computer Science' }
-                    ]
-                },
-                colors: {
-                    'Mathematical Foundations of Computer Science': '#8e44ad',
-                    'Advanced Data Structures': '#2980b9',
-                    'Algorithms and Analysis': '#27ae60',
-                    'Research Methodology and IPR': '#f39c12',
-                    'Data Science Lab': '#d35400',
-                    'Advanced Data Structures Lab': '#16a085',
-                    'English for Research Paper Writing': '#7f8c8d',
-                    'Algorithms and Analysis Lab': '#2c3e50',
-                    'Machine Learning': '#c0392b',
-                    'Data Science': '#d35400',
-                    'Machine Learning Lab': '#c0392b'
-                }
-            },
-
-            
-'DS': {
-    simple: {
-        0: [],  // Sunday (holiday)
-        1: [     // Monday
-            'Statistical Modelling',
-            'Advanced Data Science',
-            'Machine Learning',
-            'Research Methodology and IPR',
-            'Data Science Lab',
-            'Data Science Lab'
-        ],
-        2: [     // Tuesday
-            'Advanced Data Science Lab',
-            'Advanced Data Science Lab',
-            'Machine Learning',
-            'English for Research Paper Writing',
-            'Machine Learning Lab',
-            'Machine Learning Lab'
-        ],
-        3: [     // Wednesday
-            'Deep Learning',
-            'Statistical Modelling',
-            'Big Data Analytics',
-            'Data Mining',
-            'Deep Learning Lab',
-            'Deep Learning Lab'
-        ],
-        4: [     // Thursday
-            'Artificial Intelligence',
-            'English for Research Paper Writing',
-            'Big Data Analytics',
-            'Data Visualization'
-        ],
-        5: [     // Friday
-            'Artificial Intelligence',
-            'Research Methodology and IPR',
-            'Data Science',
-            'Advanced Data Science',
-            'Statistical Modelling'
-        ],
-        6: []   // Saturday (holiday or project day)
+    'CSE': {
+        timeSlots: ['08:00-08:50', '09:00-09:50', '10:00-10:50', '11:00-11:50', '11:50-1:00', '1:00-1:50', '2:00-2:50'],
+        simple: { 0: [], 1: ['Mathematical Foundations of Computer Science', 'Advanced Data Structures', 'Algorithms and Analysis', 'Research Methodology and IPR', 'Data Science Lab', 'Data Science Lab'], 2: ['Advanced Data Structures Lab', 'Advanced Data Structures Lab', 'Algorithms and Analysis', 'English for Research Paper Writing', 'Algorithms and Analysis Lab', 'Algorithms and Analysis Lab'], 3: ['Machine Learning', 'Mathematical Foundations of Computer Science', 'Advanced Data Structures', 'Data Science', 'Machine Learning Lab', 'Machine Learning Lab'], 4: ['Machine Learning', 'English for Research Paper Writing', 'Algorithms and Analysis', 'Data Science'], 5: ['Machine Learning', 'Research Methodology and IPR', 'Data Science', 'Advanced Data Structures', 'Mathematical Foundations of Computer Science'], 6: [] },
+        full: { 'Monday': [ { time: '08:00-08:50', subject: 'Mathematical Foundations of Computer Science' }, { time: '09:00-09:50', subject: 'Advanced Data Structures' }, { time: '10:00-10:50', subject: 'Algorithms and Analysis' }, { time: '11:00-11:50', subject: 'Research Methodology and IPR' }, { time: '1:00-1:50', subject: 'Data Science Lab', span: 2 } ], 'Tuesday': [ { time: '08:00-08:50', subject: 'Advanced Data Structures Lab', span: 2 }, { time: '10:00-10:50', subject: 'Algorithms and Analysis' }, { time: '11:00-11:50', subject: 'English for Research Paper Writing' }, { time: '1:00-1:50', subject: 'Algorithms and Analysis Lab', span: 2 } ], 'Wednesday': [ { time: '08:00-08:50', subject: 'Machine Learning' }, { time: '09:00-09:50', subject: 'Mathematical Foundations of Computer Science' }, { time: '10:00-10:50', subject: 'Advanced Data Structures' }, { time: '11:00-11:50', subject: 'Data Science' }, { time: '1:00-1:50', subject: 'Machine Learning Lab', span: 2 } ], 'Thursday': [ { time: '08:00-08:50', subject: 'Machine Learning' }, { time: '10:00-10:50', subject: 'English for Research Paper Writing' }, { time: '11:00-11:50', subject: 'Algorithms and Analysis' }, { time: '1:00-1:50', subject: 'Data Science' } ], 'Friday': [ { time: '08:00-08:50', subject: 'Machine Learning' }, { time: '09:00-09:50', subject: 'Research Methodology and IPR' }, { time: '10:00-10:50', subject: 'Data Science' }, { time: '11:00-11:50', subject: 'Advanced Data Structures' }, { time: '1:00-1:50', subject: 'Mathematical Foundations of Computer Science' } ] },
+        colors: { 'Mathematical Foundations of Computer Science': '#8e44ad', 'Advanced Data Structures': '#2980b9', 'Algorithms and Analysis': '#27ae60', 'Research Methodology and IPR': '#f39c12', 'Data Science Lab': '#d35400', 'Advanced Data Structures Lab': '#16a085', 'English for Research Paper Writing': '#7f8c8d', 'Algorithms and Analysis Lab': '#2c3e50', 'Machine Learning': '#c0392b', 'Data Science': '#d35400', 'Machine Learning Lab': '#c0392b' }
+    },
+    'DS': {
+        timeSlots: ['08:00-08:50', '09:00-09:50', '10:00-10:50', '11:00-11:50', '11:50-1:00', '1:00-1:50', '2:00-2:50'],
+        simple: { 0: [], 1: ['Advanced Data Structures', 'Algorithms and Analysis', 'Research Methodology & IPR', 'Data Science Lab', 'Data Science Lab'], 2: ['Advanced Data Structures Lab', 'Advanced Data Structures Lab', 'Algorithms and Analysis', 'English for Research Paper Writing', 'Algorithms and Analysis Lab', 'Algorithms and Analysis Lab'], 3: ['Machine Learning', 'Statistical Modeling', 'Advanced Data Structures', 'Data Science', 'Machine Learning Lab', 'Machine Learning Lab'], 4: ['Machine Learning', 'Statistical Modeling', 'English for Research Paper Writing', 'Algorithms and Analysis', 'Data Science'], 5: ['Machine Learning', 'Research Methodology & IPR', 'Data Science', 'Advanced Data Structures', 'Statistical Modeling'], 6: [] },
+        full: { 'Monday': [ { time: '09:00-09:50', subject: 'Advanced Data Structures' }, { time: '10:00-10:50', subject: 'Algorithms and Analysis' }, { time: '11:00-11:50', subject: 'Research Methodology & IPR' }, { time: '1:00-1:50', subject: 'Data Science Lab', span: 2 } ], 'Tuesday': [ { time: '08:00-08:50', subject: 'Advanced Data Structures Lab', span: 2 }, { time: '10:00-10:50', subject: 'Algorithms and Analysis' }, { time: '11:00-11:50', subject: 'English for Research Paper Writing' }, { time: '1:00-1:50', subject: 'Algorithms and Analysis Lab', span: 2 } ], 'Wednesday': [ { time: '08:00-08:50', subject: 'Machine Learning' }, { time: '09:00-09:50', subject: 'Statistical Modeling' }, { time: '10:00-10:50', subject: 'Advanced Data Structures' }, { time: '11:00-11:50', subject: 'Data Science' }, { time: '1:00-1:50', subject: 'Machine Learning Lab', span: 2 } ], 'Thursday': [ { time: '08:00-08:50', subject: 'Machine Learning' }, { time: '09:00-09:50', subject: 'Statistical Modeling' }, { time: '10:00-10:50', subject: 'English for Research Paper Writing' }, { time: '11:00-11:50', subject: 'Algorithms and Analysis' }, { time: '1:00-1:50', subject: 'Data Science' } ], 'Friday': [ { time: '08:00-08:50', subject: 'Machine Learning' }, { time: '09:00-09:50', subject: 'Research Methodology & IPR' }, { time: '10:00-10:50', subject: 'Data Science' }, { time: '11:00-11:50', subject: 'Advanced Data Structures' }, { time: '1:00-1:50', subject: 'Statistical Modeling' } ] },
+        colors: { 'Advanced Data Structures': '#2980b9', 'Algorithms and Analysis': '#27ae60', 'Research Methodology & IPR': '#f39c12', 'Data Science Lab': '#d35400', 'Advanced Data Structures Lab': '#16a085', 'English for Research Paper Writing': '#7f8c8d', 'Algorithms and Analysis Lab': '#2c3e50', 'Machine Learning': '#c0392b', 'Data Science': '#d35400', 'Machine Learning Lab': '#c0392b', 'Statistical Modeling': '#8e44ad' }
+    },
+    'VLSI': {
+        timeSlots: ['08:00-08:50', '09:00-09:50', '10:00-10:50', '11:00-11:50', '11:50-13:00', '13:00-13:50', '14:00-14:50', '15:00-15:50'],
+        simple: { 0: [], 1: ['Analog IC Design', 'Digital System Design', 'Modeling and Design With HDLs', 'Research Methodology & IPR', 'Digital IC Design', 'VLSI Circuit Design Laboratory', 'VLSI Circuit Design Laboratory'], 2: ['Digital Systems Testing and Testability', 'English For Research Paper Writing', 'FPGA Design Laboratory', 'FPGA Design Laboratory'], 3: ['Modeling and Design With HDLs', 'Digital IC Design', 'Analog IC Design', 'Digital Systems Testing and Testability', 'Digital System Design'], 4: ['FPGA Design Laboratory', 'FPGA Design Laboratory', 'English For Research Paper Writing', 'Analog IC Design', 'VLSI Circuit Design Laboratory', 'VLSI Circuit Design Laboratory'], 5: ['Digital IC Design', 'Research Methodology & IPR', 'Digital System Design', 'Digital Systems Testing and Testability', 'Modeling and Design With HDLs'], 6: [] },
+        full: {
+            'Monday': [ { time: '08:00-08:50', subject: 'Analog IC Design' }, { time: '09:00-09:50', subject: 'Digital System Design' }, { time: '10:00-10:50', subject: 'Modeling and Design With HDLs' }, { time: '11:00-11:50', subject: 'Research Methodology & IPR' }, { time: '13:00-13:50', subject: 'Digital IC Design' }, { time: '14:00-14:50', subject: 'VLSI Circuit Design Laboratory', span: 2 } ],
+            'Tuesday': [ { time: '10:00-10:50', subject: 'Digital Systems Testing and Testability' }, { time: '11:00-11:50', subject: 'English For Research Paper Writing' }, { time: '14:00-14:50', subject: 'FPGA Design Laboratory', span: 2 } ],
+            'Wednesday': [ { time: '08:00-08:50', subject: 'Modeling and Design With HDLs' }, { time: '09:00-09:50', subject: 'Digital IC Design' }, { time: '10:00-10:50', subject: 'Analog IC Design' }, { time: '11:00-11:50', subject: 'Digital Systems Testing and Testability' }, { time: '13:00-13:50', subject: 'Digital System Design' } ],
+            'Thursday': [ { time: '08:00-08:50', subject: 'FPGA Design Laboratory', span: 2 }, { time: '10:00-10:50', subject: 'English For Research Paper Writing' }, { time: '11:00-11:50', subject: 'Analog IC Design' }, { time: '13:00-13:50', subject: 'VLSI Circuit Design Laboratory', span: 2 } ],
+            'Friday': [ { time: '08:00-08:50', subject: 'Digital IC Design' }, { time: '09:00-09:50', subject: 'Research Methodology & IPR' }, { time: '11:00-11:50', subject: 'Digital System Design' }, { time: '13:00-13:50', subject: 'Digital Systems Testing and Testability' }, { time: '14:00-14:50', subject: 'Modeling and Design With HDLs' } ]
+        },
+        colors: { 'Analog IC Design': '#8e44ad', 'Digital System Design': '#2980b9', 'Modeling and Design With HDLs': '#27ae60', 'Research Methodology & IPR': '#f39c12', 'Digital IC Design': '#d35400', 'VLSI Circuit Design Laboratory': '#c0392b', 'Digital Systems Testing and Testability': '#16a085', 'English For Research Paper Writing': '#7f8c8d', 'FPGA Design Laboratory': '#2c3e50' }
     }
-},
-
+};
+        
+        // ## CHANGE 3: Updated courseDetailsByBranch ##
         const courseDetailsByBranch = {
-            'CSE': {
-                'Advanced Data Structures': { credits: 4, type: 'Integrated' },
-                'Mathematical Foundations of Computer Science': { credits: 3, type: 'Theory' },
-                'Algorithms and Analysis': { credits: 4, type: 'Integrated' },
-                'Machine Learning': { credits: 4, type: 'Integrated' },
-                'Data Science': { credits: 4, type: 'Integrated' },
-                'Research Methodology and IPR': { credits: 2, type: 'Theory' },
-                'English for Research Paper Writing': { credits: 0, type: 'Theory' },
-                'Data Science Lab': { credits: 0, type:'Lab' },
-                'Advanced Data Structures Lab': { credits: 0, type:'Lab' },
-                'Algorithms and Analysis Lab': { credits: 0, type:'Lab' },
-                'Machine Learning Lab': { credits: 0, type:'Lab' }
-            },
-            'DS': {} // add DS course map when ready
+            'CSE': { 'Advanced Data Structures': { credits: 4, type: 'Integrated' }, 'Mathematical Foundations of Computer Science': { credits: 3, type: 'Theory' }, 'Algorithms and Analysis': { credits: 4, type: 'Integrated' }, 'Machine Learning': { credits: 4, type: 'Integrated' }, 'Data Science': { credits: 4, 'type': 'Integrated' }, 'Research Methodology and IPR': { credits: 2, type: 'Theory' }, 'English for Research Paper Writing': { credits: 0, type: 'Theory' }, 'Data Science Lab':{credits:0, type:'Lab'},'Advanced Data Structures Lab':{credits:0, type:'Lab'},'Algorithms and Analysis Lab':{credits:0, type:'Lab'},'Machine Learning Lab':{credits:0, type:'Lab'} },
+            'DS': { 'Advanced Data Structures': { credits: 4, type: 'Integrated' }, 'Algorithms and Analysis': { credits: 4, type: 'Integrated' }, 'Research Methodology & IPR': { credits: 2, type: 'Theory' }, 'Data Science': { credits: 4, 'type': 'Integrated' }, 'Advanced Data Structures Lab': { credits: 0, type: 'Lab' }, 'English for Research Paper Writing': { credits: 0, type: 'Theory' }, 'Algorithms and Analysis Lab': { credits: 0, type: 'Lab' }, 'Machine Learning': { credits: 4, type: 'Integrated' }, 'Statistical Modeling': { credits: 3, type: 'Theory' }, 'Data Science Lab': { credits: 0, type: 'Lab' }, 'Machine Learning Lab': { credits: 0, type: 'Lab' } },
+            'VLSI': {
+                'Analog IC Design': { credits: 3, type: 'Theory' },
+                'Digital System Design': { credits: 3, type: 'Theory' },
+                'Modeling and Design With HDLs': { credits: 3, type: 'Theory' },
+                'Research Methodology & IPR': { credits: 2, type: 'Theory' },
+                'Digital IC Design': { credits: 3, type: 'Theory' },
+                'VLSI Circuit Design Laboratory': { credits: 2, type: 'Lab' },
+                'Digital Systems Testing and Testability': { credits: 3, type: 'Theory' },
+                'English For Research Paper Writing': { credits: 0, type: 'Theory' },
+                'FPGA Design Laboratory': { credits: 2, type: 'Lab' }
+            }
         };
         
-        let subjectData = {};
-        let currentUserTimetable = {};
-
-        // --- Helpers / Storage ---
+        let subjectData = {}; let currentUserTimetable = {};
         function getCurrentUserRegdNo() { return sessionStorage.getItem('currentUserRegdNo'); }
         function getUserDataKey(regdNo, type) { return `${type}Data_${regdNo}`; }
-        function getMinPctKey(regdNo){ return `minPct_${regdNo}`; }
-
-        function getMinPercentage(){
-            const input = document.getElementById('min-percentage');
-            if (input && input.value) return Math.max(0, Math.min(100, parseFloat(input.value)));
-            const regdNo = getCurrentUserRegdNo();
-            const saved = regdNo ? localStorage.getItem(getMinPctKey(regdNo)) : null;
-            return saved ? parseFloat(saved) : 75;
-        }
-
-        // --- App lifecycle ---
-        function init() { 
-            const currentUser = getCurrentUserRegdNo();
-            if (currentUser) { 
-                document.getElementById('login-page').style.display = 'none';
-                document.getElementById('dashboard-page').style.display = 'block';
-                loadDashboardForUser(currentUser); 
-            } else { 
-                document.getElementById('login-page').style.display = 'flex';
-                document.getElementById('dashboard-page').style.display = 'none';
-            } 
-        }
-
-        function handleLogin(event) { 
-            event.preventDefault(); 
-            const regdNo = document.getElementById('regd-no-input').value.trim(); 
-            if (!regdNo) { alert("Please enter a Registration Number."); return; } 
-            const userExists = userDatabase.find(u => u.regdNo === regdNo); 
-            if (userExists) { 
-                sessionStorage.setItem('currentUserRegdNo', regdNo); 
-                init(); 
-            } else { 
-                alert("User not found. Please edit the HTML file to add this user."); 
-            } 
-        }
-
+        function init() { const currentUser = getCurrentUserRegdNo(); if (currentUser) { document.getElementById('login-page').style.display = 'none'; document.getElementById('dashboard-page').style.display = 'block'; loadDashboardForUser(currentUser); } else { document.getElementById('login-page').style.display = 'flex'; document.getElementById('dashboard-page').style.display = 'none'; } }
+        function handleLogin(event) { event.preventDefault(); const regdNo = document.getElementById('regd-no-input').value.trim(); if (!regdNo) { alert("Please enter a Registration Number."); return; } const userExists = userDatabase.find(u => u.regdNo === regdNo); if (userExists) { sessionStorage.setItem('currentUserRegdNo', regdNo); init(); } else { alert("Registration Number not found. Please edit the HTML file to add this user."); } }
         function logout() { sessionStorage.removeItem('currentUserRegdNo'); init(); }
-
-        function toggleMobileMenu() { 
-            document.getElementById('sidebar').classList.toggle('open'); 
-            document.getElementById('overlay').classList.toggle('open'); 
-        }
-
-        function showView(viewId, element) { 
-            document.querySelectorAll('.content-area.view').forEach(v => v.style.display = 'none'); 
-            document.getElementById(viewId).style.display = 'block'; 
-            document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active')); 
-            if (element) { element.classList.add('active'); } 
-            if (document.getElementById('sidebar').classList.contains('open')) { toggleMobileMenu(); } 
-        }
+        function toggleMobileMenu() { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('overlay').classList.toggle('open'); }
+        function showView(viewId, element) { document.querySelectorAll('.content-area.view').forEach(v => v.style.display = 'none'); document.getElementById(viewId).style.display = 'block'; document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active')); if (element) { element.classList.add('active'); } if (document.getElementById('sidebar').classList.contains('open')) { toggleMobileMenu(); } }
         
-        function loadDashboardForUser(regdNo) { 
-            const currentUser = userDatabase.find(u => u.regdNo === regdNo); 
-            if (!currentUser) { logout(); return; } 
-            const branch = currentUser.branch; 
-            if (!timetablesByBranch[branch]) { 
-                alert(`Timetable for branch "${branch}" not found!`); 
-                logout(); 
-                return; 
-            } 
-            currentUserTimetable = timetablesByBranch[branch]; 
-            document.getElementById('sidebar-profile-name').innerText = currentUser.name; 
-            document.getElementById('sidebar-profile-id').innerText = `(${currentUser.regdNo} - ${branch})`; 
+        function loadDashboardForUser(regdNo) {
+            const currentUser = userDatabase.find(u => u.regdNo === regdNo);
+            if (!currentUser) { logout(); return; }
+            const branch = currentUser.branch;
+            if (!timetablesByBranch[branch]) { alert(`Timetable for branch "${branch}" not found!`); logout(); return; }
+            currentUserTimetable = timetablesByBranch[branch];
+            document.getElementById('sidebar-profile-name').innerText = currentUser.name;
+            document.getElementById('sidebar-profile-id').innerText = `(${currentUser.regdNo} - ${branch})`;
+
+            const profilePic = document.getElementById('profile-pic');
+            profilePic.style.display = 'block';
+            profilePic.src = `https://doeresults.gitam.edu/photo/img.aspx?id=${regdNo}`;
+            profilePic.onerror = function() {
+                this.style.display = 'none';
+            };
+
+            showView('attendance-view', document.querySelector('.sidebar-nav a'));
             loadData();
-            renderAllViews();
-            showView('attendance-view', document.querySelector('.sidebar-nav a')); 
-        }
-        
-        function loadData() { 
-            const regdNo = getCurrentUserRegdNo(); 
-            if (!regdNo) return; 
-            const savedAttData = localStorage.getItem(getUserDataKey(regdNo, 'attendance')); 
-            if (savedAttData) { 
-                subjectData = JSON.parse(savedAttData); 
-            } else { 
-                getUniqueSubjects().forEach(name => { 
-                    subjectData[name] = { attended: 0, bunked: 0, totalInSem: 0 }; 
-                }); 
-            }
-        }
-        
-        function saveData(type) { 
-            const regdNo = getCurrentUserRegdNo(); if (!regdNo) return; 
-            if (type === 'attendance') { 
-                localStorage.setItem(getUserDataKey(regdNo, 'attendance'), JSON.stringify(subjectData)); 
-                const startDate = document.getElementById('start-date')?.value; 
-                if (startDate) localStorage.setItem(getUserDataKey(regdNo, 'startDate'), startDate); 
-                const minPct = getMinPercentage();
-                localStorage.setItem(getMinPctKey(regdNo), String(minPct));
-            } else if (type === 'grades') { 
-                const gradeData = {}; 
-                getUniqueSubjects().forEach(subjectName => { 
-                    const details = courseDetailsByBranch[userDatabase.find(u=>u.regdNo === getCurrentUserRegdNo()).branch][subjectName]; 
-                    if(!details || details.credits === 0) return; 
-                    const cleanSubName = subjectName.replace(/[\s&/]/g, ''); 
-                    gradeData[subjectName] = { 
-                        internal: document.getElementById(`internal_${cleanSubName}`)?.value, 
-                        external: document.getElementById(`external_${cleanSubName}`)?.value, 
-                        lab_internal: document.getElementById(`lab_internal_${cleanSubName}`)?.value 
-                    }; 
-                }); 
-                localStorage.setItem(getUserDataKey(regdNo, 'grades'), JSON.stringify(gradeData)); 
-            } 
-        }
-
-        // --- RENDER ROOTS ---
-        function renderAllViews() {
-            // Attendance View containers
-            document.getElementById('attendance-view').innerHTML = `
-                <div class="dashboard-grid">
-                    <div id="today-schedule-card" class="card"></div>
-                    <div id="total-attendance-card" class="card"></div>
-                    <div id="setup-card" class="card"></div>
-                    <div id="bunk-simulator-card" class="card"></div>
-                </div>
-                <div id="subject-dashboard" style="margin-top: 30px;">
-                    <h2>Individual Subjects</h2>
-                    <div id="dashboard" class="dashboard-grid"></div>
-                </div>
-            `;
             renderTodaysSchedule();
-            renderTotalAttendance();
-            renderSetupCard();
-            renderBunkSimulator();
-            renderDashboard();
-
-            // Grade Estimator View
-            document.getElementById('grade-estimator-view').innerHTML = `
-                <h2>Grade Estimator</h2>
-                <p style="text-align:center; max-width: 600px; margin: -10px auto 20px auto; color: var(--text-light-color);">
-                    Enter your marks to estimate your grade and SGPA.
-                </p>
-                <div id="grade-estimator-grid"></div>
-                <div class="sgpa-calculator card">
-                    <button onclick="calculateSGPA()">Calculate Estimated SGPA</button>
-                    <div id="sgpa-result"></div>
-                </div>`;
-            renderGradeEstimator();
-            
-            // Timetable View
-            document.getElementById('timetable-view').innerHTML = `<h2>Full Weekly Timetable</h2><div class="card" id="timetable-container"></div>`;
             renderFullTimetable();
-            
-            // Settings Modal
-            document.getElementById('settings-modal').innerHTML = `
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h2>Settings</h2>
-                        <span class="close-btn" onclick="closeSettings()">&times;</span>
-                    </div>
-                    <p>Enter total classes for each subject.</p>
-                    <div id="settings-list"></div>
-                    <button onclick="saveSettings()" style="width: 100%; padding: 12px; background-color: var(--safe-color); color: white; border: none; border-radius: 5px; font-size: 1.1em; font-weight: bold; cursor: pointer; margin-top: 10px;">Save Settings</button>
-                </div>`;
-            populateSettingsModal();
+            renderGradeEstimator();
         }
 
-        // --- Setup / Simulator / Today ---
-        function renderSetupCard() {
-            const container = document.getElementById('setup-card');
-            const regdNo = getCurrentUserRegdNo();
-            const savedStartDate = localStorage.getItem(getUserDataKey(regdNo, 'startDate')) || '';
-            const savedMinPct = localStorage.getItem(getMinPctKey(regdNo)) || 75;
+        function loadData() { const regdNo = getCurrentUserRegdNo(); if (!regdNo) return; const savedAttData = localStorage.getItem(getUserDataKey(regdNo, 'attendance')); const savedStartDate = localStorage.getItem(getUserDataKey(regdNo, 'startDate')); if (savedStartDate) document.getElementById('start-date').value = savedStartDate; if (savedAttData) { subjectData = JSON.parse(savedAttData); } else { getUniqueSubjects().forEach(name => { subjectData[name] = { attended: 0, bunked: 0, totalInSem: 0 }; }); } renderDashboard(); populateSettingsModal(); }
+        function saveData(type) { const regdNo = getCurrentUserRegdNo(); if (!regdNo) return; if (type === 'attendance') { localStorage.setItem(getUserDataKey(regdNo, 'attendance'), JSON.stringify(subjectData)); const startDate = document.getElementById('start-date').value; if (startDate) localStorage.setItem(getUserDataKey(regdNo, 'startDate'), startDate); } else if (type === 'grades') { const gradeData = {}; getUniqueSubjects().forEach(subjectName => { const details = courseDetailsByBranch[userDatabase.find(u=>u.regdNo === getCurrentUserRegdNo()).branch][subjectName]; if(!details || details.credits === 0) return; const cleanSubName = subjectName.replace(/[\s&/]/g, ''); gradeData[subjectName] = { internal: document.getElementById(`internal_${cleanSubName}`)?.value, external: document.getElementById(`external_${cleanSubName}`)?.value, lab_internal: document.getElementById(`lab_internal_${cleanSubName}`)?.value }; }); localStorage.setItem(getUserDataKey(regdNo, 'grades'), JSON.stringify(gradeData)); } }
+        function renderFullTimetable() {
+    const container = document.getElementById('timetable-container');
+    container.innerHTML = '';
 
-            container.innerHTML = `
-                <div class="card-header"><h2>Setup</h2></div>
-                <div class="setup-card">
-                    <div>
-                        <label for="start-date">Semester Start Date:</label><br/>
-                        <input type="date" id="start-date" value="${savedStartDate}">
-                    </div>
-                    <div>
-                        <label for="min-percentage">Minimum % Required:</label><br/>
-                        <input type="number" id="min-percentage" min="0" max="100" value="${savedMinPct}">
-                    </div>
-                </div>
-                <div class="inline-actions">
-                    <button onclick="startTracking()">Calculate & Start</button>
-                    <button onclick="openSettings()">Settings ⚙️</button>
-                </div>
-            `;
+    // Use the timeSlots specific to the current user's branch
+    const branchTimeSlots = currentUserTimetable.timeSlots;
+    if (!branchTimeSlots) {
+        console.error("Error: timeSlots not defined for the current branch.");
+        return;
+    }
 
-            // Save on change
-            document.getElementById('min-percentage').addEventListener('input', () => { saveData('attendance'); renderDashboard(); });
-            document.getElementById('start-date').addEventListener('change', () => saveData('attendance'));
-        }
+    let tableHTML = '<table class="timetable-table"><thead><tr><th>Weekday</th>' + branchTimeSlots.map(slot => `<th>${slot}</th>`).join('') + '</tr></thead><tbody>';
+    
+    ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'].forEach(day => {
+        tableHTML += `<tr><td class="day-header">${day}</td>`;
+        const daySchedule = currentUserTimetable.full[day] || [];
+        
+        for (let i = 0; i < branchTimeSlots.length; ) {
+            const slot = branchTimeSlots[i];
 
-        function renderBunkSimulator() {
-            const container = document.getElementById('bunk-simulator-card');
-            container.innerHTML = `
-                <h2>Bunk Day Simulator</h2>
-                <div class="login-form-group">
-                    <label for="day-to-bunk-select">Select a day:</label>
-                    <select id="day-to-bunk-select" style="width: 100%; padding: 8px; border-radius: 5px; border: 1px solid var(--border-color);">
-                        <option value="1">Monday</option>
-                        <option value="2">Tuesday</option>
-                        <option value="3">Wednesday</option>
-                        <option value="4">Thursday</option>
-                        <option value="5">Friday</option>
-                        <option value="6">Saturday</option>
-                    </select>
-                </div>
-                <button onclick="simulateDayBunk()">Simulate</button>
-                <div id="simulation-result" style="text-align:center; margin-top:15px; font-weight: 500;"></div>
-            `;
-        }
+            // A more flexible check for lunch break
+            if (slot.includes('11:50-')) { 
+                tableHTML += '<td class="lunch-cell">LUNCH</td>';
+                i++;
+                continue;
+            }
 
-        function renderTodaysSchedule() { 
-            const card = document.getElementById('today-schedule-card'); 
-            const today = new Date(); 
-            const dateString = today.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }); 
-            const classesToday = currentUserTimetable.simple[today.getDay()] || []; 
-            let cardContent = `<div class="card-header"><h2>Today's Time Table</h2></div><p style="text-align:center; font-weight:500; margin-bottom:15px;">${dateString}</p>`; 
-            if (classesToday.length > 0) { 
-                cardContent += `<ul>${classesToday.map(s => `<li>${s}</li>`).join('')}</ul>`; 
-            } else { 
-                cardContent += '<p style="text-align: center; font-weight: 500;">No classes scheduled for today!</p>'; 
-            } 
-            card.innerHTML = cardContent; 
-        }
-
-        // --- Timetable ---
-        function renderFullTimetable() { 
-            const container = document.getElementById('timetable-container'); 
-            container.innerHTML = ''; 
-            let tableHTML = '<table class="timetable-table"><thead><tr><th>Weekday</th>' + timeSlots.map(slot => `<th>${slot}</th>`).join('') + '</tr></thead><tbody>'; 
-            ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'].forEach(day => { 
-                tableHTML += `<tr><td class="day-header">${day}</td>`; 
-                const daySchedule = currentUserTimetable.full[day] || []; 
-                for (let i = 0; i < timeSlots.length; ) { 
-                    const slot = timeSlots[i]; 
-                    if (slot === '11:50-1:00') { 
-                        tableHTML += '<td class="lunch-cell">LUNCH</td>'; 
-                        i++; 
-                        continue; 
-                    } 
-                    const classInfo = daySchedule.find(c => c.time === slot); 
-                    if (classInfo) { 
-                        const span = classInfo.span || 1; 
-                        const color = currentUserTimetable.colors[classInfo.subject] || '#bdc3c7'; 
-                        tableHTML += `<td class="class-cell" colspan="${span}" style="background-color: ${color};">${classInfo.subject}</td>`; 
-                        i += span; 
-                    } else { 
-                        tableHTML += '<td>-</td>'; 
-                        i++; 
-                    } 
-                } 
-                tableHTML += '</tr>'; 
-            }); 
-            tableHTML += '</tbody></table>'; 
-
-            let tabsHTML = '<div class="timetable-tabs"><div class="tab-nav">';
-            ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'].forEach((day, index) => { 
-                tabsHTML += `<button class="tab-nav-btn ${index === 0 ? 'active' : ''}" onclick="openTimetableTab(event, '${day}')">${day.substring(0,3)}</button>`; 
-            }); 
-            tabsHTML += '</div>'; 
-            ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'].forEach((day, index) => { 
-                tabsHTML += `<div id="${day}" class="tab-content ${index === 0 ? 'active' : ''}"><ul>`; 
-                (currentUserTimetable.full[day] || []).forEach(c => { 
-                    tabsHTML += `<li><span>${c.time}</span><strong>${c.subject}</strong></li>` 
-                }); 
-                tabsHTML += `</ul></div>`; 
-            }); 
-            tabsHTML += '</div>'; 
-
-            container.innerHTML = tableHTML + tabsHTML; 
-        }
-        function openTimetableTab(evt, dayName) { 
-            document.querySelectorAll('#timetable-container .tab-content').forEach(tc => tc.classList.remove('active')); 
-            document.querySelectorAll('#timetable-container .tab-nav-btn').forEach(tb => tb.classList.remove('active')); 
-            document.getElementById(dayName).classList.add('active'); 
-            evt.currentTarget.classList.add('active'); 
-        }
-
-        // --- Attendance core ---
-        function getUniqueSubjects() { 
-            return Array.from(new Set(Object.values(currentUserTimetable.simple).flat())).sort(); 
-        }
-
-        function startTracking() { 
-            const startDateString = document.getElementById('start-date').value; 
-            if (!startDateString) { alert("Please select a Semester Start Date first."); return; } 
-            const startDate = new Date(startDateString); 
-            const today = new Date(); 
-            today.setHours(0, 0, 0, 0); 
-            if (startDate > today) { alert("Start date cannot be in the future."); return; } 
-
-            const heldCounts = {}; 
-            getUniqueSubjects().forEach(name => heldCounts[name] = 0); 
-
-            let currentDate = new Date(startDate); 
-            while (currentDate <= today) { 
-                (currentUserTimetable.simple[currentDate.getDay()] || []).forEach(subjectName => { 
-                    if (heldCounts[subjectName] !== undefined) heldCounts[subjectName]++; 
-                }); 
-                currentDate.setDate(currentDate.getDate() + 1); 
-            } 
-
-            for (const subjectName of getUniqueSubjects()) { 
-                subjectData[subjectName] = subjectData[subjectName] || { totalInSem: 0 }; 
-                subjectData[subjectName].attended = heldCounts[subjectName] || 0; 
-                subjectData[subjectName].bunked = 0; 
-            } 
-            saveData('attendance'); 
-            renderDashboard(); 
-            renderTotalAttendance();
-            alert("Dashboard calculated and updated with 100% attendance until today!"); 
-        }
-
-        function renderTotalAttendance() { 
-            const container = document.getElementById('total-attendance-card'); 
-            container.innerHTML = `<div class="card-header"><h2>Attendance</h2></div><div id="total-stats-container"></div>`; 
-            const statsContainer = document.getElementById('total-stats-container'); 
-            const minPercentage = getMinPercentage();
-            let totalAttended = 0, totalBunked = 0, totalInSem = 0; 
-            for (const subjectName in subjectData) { 
-                totalAttended += subjectData[subjectName].attended; 
-                totalBunked += subjectData[subjectName].bunked; 
-                totalInSem += subjectData[subjectName].totalInSem; 
-            } 
-            const totalHeld = totalAttended + totalBunked; 
-            const totalPercentage = totalHeld > 0 ? (totalAttended / totalHeld) * 100 : 100; 
-            const minClassesRequired = Math.ceil(totalInSem * (minPercentage / 100)); 
-            const maxBunksAllowed = totalInSem - minClassesRequired; 
-            const totalBunksLeft = maxBunksAllowed - totalBunked; 
-
-            statsContainer.innerHTML = `
-                <div class="stats-grid">
-                    <div class="stat"><div class="label">Total</div><div class="value">${totalPercentage.toFixed(1)}%</div></div>
-                    <div class="stat"><div class="label">Attended</div><div class="value">${totalAttended}</div></div>
-                    <div class="stat"><div class="label">Bunked</div><div class="value">${totalBunked}</div></div>
-                </div>
-                <div class="bunks-left ${totalBunksLeft >= 0 ? 'safe' : 'danger'}">
-                    ${totalInSem > 0 ? `<strong>${totalBunksLeft}</strong> Total Bunks Left` : 'Configure Subjects in Settings ⚙️'}
-                </div>`;
-        }
-
-        function renderDashboard() { 
-            const dashboard = document.getElementById('dashboard'); 
-            dashboard.innerHTML = ''; 
-            getUniqueSubjects().forEach(subjectName => { 
-                if(!subjectData[subjectName]) subjectData[subjectName] = { attended: 0, bunked: 0, totalInSem: 0 }; 
-                const data = subjectData[subjectName]; 
-                const minPercentage = getMinPercentage();
-                const held = data.attended + data.bunked; 
-                const percentage = held > 0 ? (data.attended / held) * 100 : 100; 
-                const minClassesRequired = Math.ceil(data.totalInSem * (minPercentage / 100)); 
-                const maxBunksAllowed = data.totalInSem - minClassesRequired; 
-                const bunksLeft = maxBunksAllowed - data.bunked; 
-
-                const card = document.createElement('div'); 
-                card.className = `card subject-card ${bunksLeft >= 0 ? 'is-safe' : 'is-danger'}`; 
-                card.innerHTML = `
-                    <h3>${subjectName}</h3>
-                    <div class="card-main-stats">
-                        <div class="stat"><div class="label">Percentage</div><div class="value">${percentage.toFixed(1)}%</div></div>
-                        <div class="stat"><div class="label">Bunks Left</div><div class="value">${data.totalInSem > 0 ? bunksLeft : '?'}</div></div>
-                    </div>
-                    <div class="card-details">Attended: ${data.attended} | Bunked: ${data.bunked} | Held: ${held}</div>
-                    <div class="action-area">
-                        <button class="card-btn bunk-btn" onclick="markBunked('${subjectName}')">Bunk One</button>
-                        <button class="card-btn undo-btn" onclick="undoBunk('${subjectName}')">Undo Bunk</button>
-                    </div>`; 
-                dashboard.appendChild(card); 
-            }); 
-            renderTotalAttendance(); 
-        }
-
-        function markBunked(subjectName) { 
-            if (subjectData[subjectName].attended > 0) { 
-                subjectData[subjectName].attended--; 
-                subjectData[subjectName].bunked++; 
-                saveData('attendance'); 
-                renderDashboard(); 
+            const classInfo = daySchedule.find(c => c.time === slot);
+            if (classInfo) {
+                const span = classInfo.span || 1;
+                const color = currentUserTimetable.colors[classInfo.subject] || '#bdc3c7';
+                tableHTML += `<td class="class-cell" colspan="${span}" style="background-color: ${color};">${classInfo.subject}</td>`;
+                i += span;
+            } else {
+                tableHTML += '<td>-</td>';
+                i++;
             }
         }
-        function undoBunk(subjectName) { 
-            if (subjectData[subjectName].bunked > 0) { 
-                subjectData[subjectName].attended++; 
-                subjectData[subjectName].bunked--; 
-                saveData('attendance'); 
-                renderDashboard(); 
-            } 
-        }
+        tableHTML += '</tr>';
+    });
+    tableHTML += '</tbody></table>';
 
-        // --- Settings Modal ---
-        function populateSettingsModal() { 
-            const listDiv = document.getElementById('settings-list'); 
-            listDiv.innerHTML = ''; 
-            getUniqueSubjects().forEach(subjectName => { 
-                const totalInSem = subjectData[subjectName]?.totalInSem || 0; 
-                const item = document.createElement('div'); 
-                item.className = 'settings-item'; 
-                item.innerHTML = `
-                    <label>${subjectName}</label>
-                    <input type="number" min="0" id="total-${subjectName.replace(/[\s&/]/g, '')}" value="${totalInSem}">
-                `; 
-                listDiv.appendChild(item); 
-            }); 
-        }
+    // The mobile tabs view needs to be regenerated as well
+    let tabsHTML = '<div class="timetable-tabs"><div class="tab-nav">';
+    ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'].forEach((day, index) => {
+        tabsHTML += `<button class="tab-nav-btn ${index === 0 ? 'active' : ''}" onclick="openTimetableTab(event, '${day}')">${day}</button>`;
+    });
+    tabsHTML += '</div>';
+    ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'].forEach((day, index) => {
+        tabsHTML += `<div id="${day}" class="tab-content ${index === 0 ? 'active' : ''}"><ul>`;
+        (currentUserTimetable.full[day] || []).forEach(c => {
+            let timeText = c.time;
+            if (c.span && c.span > 1) {
+                // To make mobile view clearer for labs, find the end time
+                const startTimeIndex = branchTimeSlots.indexOf(c.time);
+                if (startTimeIndex !== -1) {
+                    const endTime = branchTimeSlots[startTimeIndex + c.span - 1].split('-')[1];
+                    timeText = `${c.time.split('-')[0]}-${endTime}`;
+                }
+            }
+            tabsHTML += `<li><span>${timeText}</span><strong>${c.subject}</strong></li>`;
+        });
+        tabsHTML += `</ul></div>`;
+    });
+    tabsHTML += '</div>';
 
-        function saveSettings() { 
-            getUniqueSubjects().forEach(subjectName => { 
-                const inputId = `total-${subjectName.replace(/[\s&/]/g, '')}`; 
-                const totalValue = parseInt(document.getElementById(inputId).value); 
-                if (!isNaN(totalValue) && subjectData[subjectName]) subjectData[subjectName].totalInSem = totalValue; 
-            }); 
-            saveData('attendance'); 
-            renderDashboard(); 
-            closeSettings(); 
-        }
-
-        function openSettings() { 
-            populateSettingsModal();
-            document.getElementById('settings-modal').style.display = 'flex'; 
-        }
+    container.innerHTML = tableHTML + tabsHTML;
+}
+        function openTimetableTab(evt, dayName) { document.querySelectorAll('#timetable-container .tab-content').forEach(tc => tc.classList.remove('active')); document.querySelectorAll('#timetable-container .tab-nav-btn').forEach(tb => tb.classList.remove('active')); document.getElementById(dayName).classList.add('active'); evt.currentTarget.classList.add('active'); }
+        function renderTodaysSchedule() { const card = document.getElementById('today-schedule-card'); const today = new Date(); const dateString = today.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', 'month': 'long', day: 'numeric' }); const classesToday = currentUserTimetable.simple[today.getDay()] || []; let cardContent = `<div class="card-header"><h2>Today's Schedule</h2></div><p style="text-align:center; font-weight:500; margin-bottom:15px; color: var(--text-light-color);">${dateString}</p>`; if (classesToday.length > 0) { cardContent += `<ul>${classesToday.map(s => `<li>${s}</li>`).join('')}</ul>`; } else { cardContent += '<p style="text-align: center; font-weight: 500;">No classes scheduled for today! 🎉</p>'; } card.innerHTML = cardContent; }
+        function simulateDayBunk() { const dayIndex = document.getElementById('day-to-bunk-select').value; const dayName = document.getElementById('day-to-bunk-select').options[document.getElementById('day-to-bunk-select').selectedIndex].text; const resultDiv = document.getElementById('simulation-result'); const classesOnDay = currentUserTimetable.simple[dayIndex] || []; if (classesOnDay.length === 0) { resultDiv.innerHTML = `No classes to bunk on a ${dayName}!`; resultDiv.style.color = 'var(--text-dark-color)'; return; } let totalAttended = 0, totalBunked = 0, totalInSem = 0; for (const subjectName in subjectData) { totalAttended += subjectData[subjectName].attended; totalBunked += subjectData[subjectName].bunked; totalInSem += subjectData[subjectName].totalInSem; } const totalHeld = totalAttended + totalBunked; const minPercentage = parseFloat(document.getElementById('min-percentage').value) || 75; const newTotalBunked = totalBunked + classesOnDay.length; const newTotalHeld = totalHeld + classesOnDay.length; const newPercentage = newTotalHeld > 0 ? (totalAttended / newTotalHeld) * 100 : 100; const minClassesRequired = Math.ceil(totalInSem * (minPercentage / 100)); const maxBunksAllowed = totalInSem - minClassesRequired; const newBunksLeft = maxBunksAllowed - newTotalBunked; let message = `After bunking ${dayName} (${classesOnDay.length} classes):<br>`; message += `Your percentage would be <strong>${newPercentage.toFixed(1)}%</strong>.<br>`; message += `You would have <strong>${newBunksLeft}</strong> bunks left.`; resultDiv.innerHTML = message; resultDiv.style.color = newBunksLeft >= 0 ? 'var(--safe-color)' : 'var(--danger-color)'; }
+        function getUniqueSubjects() { return Array.from(new Set(Object.values(currentUserTimetable.simple).flat())).sort(); }
+        function startTracking() { const startDateString = document.getElementById('start-date').value; if (!startDateString) { alert("Please select a Semester Start Date first."); return; } const startDate = new Date(startDateString); const today = new Date(); today.setHours(0, 0, 0, 0); if (startDate > today) { alert("Start date cannot be in the future."); return; } const heldCounts = {}; getUniqueSubjects().forEach(name => heldCounts[name] = 0); let currentDate = new Date(startDate); while (currentDate <= today) { (currentUserTimetable.simple[currentDate.getDay()] || []).forEach(subjectName => { if (heldCounts[subjectName] !== undefined) heldCounts[subjectName]++; }); currentDate.setDate(currentDate.getDate() + 1); } for (const subjectName of getUniqueSubjects()) { subjectData[subjectName] = subjectData[subjectName] || { totalInSem: 0 }; subjectData[subjectName].attended = heldCounts[subjectName] || 0; subjectData[subjectName].bunked = 0; } saveData('attendance'); renderDashboard(); alert("Dashboard calculated and updated with 100% attendance until today!"); }
+        function renderTotalAttendance() { const container = document.getElementById('total-stats-container'); const minPercentage = parseFloat(document.getElementById('min-percentage').value) || 75; let totalAttended = 0, totalBunked = 0, totalInSem = 0; for (const subjectName in subjectData) { totalAttended += subjectData[subjectName].attended; totalBunked += subjectData[subjectName].bunked; totalInSem += subjectData[subjectName].totalInSem; } const totalHeld = totalAttended + totalBunked; const totalPercentage = totalHeld > 0 ? (totalAttended / totalHeld) * 100 : 100; const minClassesRequired = Math.ceil(totalInSem * (minPercentage / 100)); const maxBunksAllowed = totalInSem - minClassesRequired; const totalBunksLeft = maxBunksAllowed - totalBunked; container.innerHTML = `<div class="stats-grid"><div class="stat"><div class="label">Total %</div><div class="value">${totalPercentage.toFixed(1)}%</div></div><div class="stat"><div class="label">Attended</div><div class="value">${totalAttended}</div></div><div class="stat"><div class="label">Bunked</div><div class="value">${totalBunked}</div></div></div><div class="bunks-left ${totalBunksLeft >= 0 ? 'safe' : 'danger'}">${totalInSem > 0 ? `<strong>${totalBunksLeft}</strong> Total Bunks Left` : 'Configure Subjects in Settings'}</div>`; }
+        function renderDashboard() { const dashboard = document.getElementById('dashboard'); dashboard.innerHTML = ''; getUniqueSubjects().forEach(subjectName => { if(!subjectData[subjectName]) subjectData[subjectName] = { attended: 0, bunked: 0, totalInSem: 0 }; const data = subjectData[subjectName]; const minPercentage = parseFloat(document.getElementById('min-percentage').value) || 75; const held = data.attended + data.bunked; const percentage = held > 0 ? (data.attended / held) * 100 : 100; const minClassesRequired = Math.ceil(data.totalInSem * (minPercentage / 100)); const maxBunksAllowed = data.totalInSem - minClassesRequired; const bunksLeft = maxBunksAllowed - data.bunked; const card = document.createElement('div'); card.className = `card subject-card ${bunksLeft >= 0 ? 'is-safe' : 'is-danger'}`; card.innerHTML = `<h3 style="font-weight: 600; font-size: 1.1em;">${subjectName}</h3><div class="card-main-stats"><div class="stat"><div class="label">Percentage</div><div class="value">${percentage.toFixed(1)}%</div></div><div class="stat"><div class="label">Bunks Left</div><div class="value" style="color: ${bunksLeft >= 0 ? 'var(--safe-color)' : 'var(--danger-color)'}">${data.totalInSem > 0 ? bunksLeft : '?'}</div></div></div><div style="font-size: 0.9em; text-align: center; color: var(--text-light-color);">Attended: ${data.attended} | Bunked: ${data.bunked} | Held: ${held}</div><div class="action-area" style="margin-top: 15px; display: flex; gap: 10px;"><button class="card-btn bunk-btn" onclick="markBunked('${subjectName}')"><i class="ri-subtract-line"></i> Bunk One</button><button class="card-btn undo-btn" onclick="undoBunk('${subjectName}')"><i class="ri-arrow-go-back-line"></i> Undo</button></div>`; dashboard.appendChild(card); }); renderTotalAttendance(); }
+        function markBunked(subjectName) { if (subjectData[subjectName].attended > 0) { subjectData[subjectName].attended--; subjectData[subjectName].bunked++; saveData('attendance'); renderDashboard(); } }
+        function undoBunk(subjectName) { if (subjectData[subjectName].bunked > 0) { subjectData[subjectName].attended++; subjectData[subjectName].bunked--; saveData('attendance'); renderDashboard(); } }
+        function populateSettingsModal() { const listDiv = document.getElementById('settings-list'); listDiv.innerHTML = ''; getUniqueSubjects().forEach(subjectName => { const totalInSem = subjectData[subjectName]?.totalInSem || 0; const item = document.createElement('div'); item.className = 'settings-item'; item.innerHTML = `<label style="font-weight: 500;">${subjectName}</label><input type="number" id="total-${subjectName.replace(/[\s&/]/g, '')}" value="${totalInSem}" style="width: 100%; padding: 8px; border: 1px solid var(--border-color); border-radius: 5px; margin-top: 5px;">`; listDiv.appendChild(item); }); }
+        function saveSettings() { getUniqueSubjects().forEach(subjectName => { const inputId = `total-${subjectName.replace(/[\s&/]/g, '')}`; const totalValue = parseInt(document.getElementById(inputId).value); if (!isNaN(totalValue) && subjectData[subjectName]) subjectData[subjectName].totalInSem = totalValue; }); saveData('attendance'); renderDashboard(); closeSettings(); }
+        function renderGradeEstimator() { const grid = document.getElementById('grade-estimator-grid'); const savedGrades = JSON.parse(localStorage.getItem(getUserDataKey(getCurrentUserRegdNo(), 'grades'))) || {}; grid.innerHTML = ''; getUniqueSubjects().forEach(subjectName => { const details = courseDetailsByBranch[userDatabase.find(u=>u.regdNo === getCurrentUserRegdNo()).branch][subjectName]; if(!details || details.credits === 0) return; const cleanSubName = subjectName.replace(/[\s&/]/g, ''); const saved = savedGrades[subjectName] || {}; let inputsHTML = ''; if(details.type === 'Theory') { inputsHTML += `<div class="input-group"><label>Internal (40)</label><input type="number" min="0" max="40" id="internal_${cleanSubName}" oninput="calculateSubjectGrade('${subjectName}')" value="${saved.internal || ''}"><div class="validation-message" id="v_internal_${cleanSubName}"></div></div><div class="input-group"><label>External (60)</label><input type="number" min="0" max="60" id="external_${cleanSubName}" oninput="calculateSubjectGrade('${subjectName}')" value="${saved.external || ''}"><div class="validation-message" id="v_external_${cleanSubName}"></div></div>`; } else if (details.type === 'Lab') { inputsHTML += `<div class="input-group"><label>Total Internal (100)</label><input type="number" min="0" max="100" id="lab_internal_${cleanSubName}" oninput="calculateSubjectGrade('${subjectName}')" value="${saved.lab_internal || ''}"><div class="validation-message" id="v_lab_internal_${cleanSubName}"></div></div>`; } else if (details.type === 'Integrated') { inputsHTML += `<div class="input-group"><label>Theory Internal (40)</label><input type="number" min="0" max="40" id="internal_${cleanSubName}" oninput="calculateSubjectGrade('${subjectName}')" value="${saved.internal || ''}"><div class="validation-message" id="v_internal_${cleanSubName}"></div></div><div class="input-group"><label>Theory External (60)</label><input type="number" min="0" max="60" id="external_${cleanSubName}" oninput="calculateSubjectGrade('${subjectName}')" value="${saved.external || ''}"><div class="validation-message" id="v_external_${cleanSubName}"></div></div><div class="input-group"><label>Lab Internal (100)</label><input type="number" min="0" max="100" id="lab_internal_${cleanSubName}" oninput="calculateSubjectGrade('${subjectName}')" value="${saved.lab_internal || ''}"><div class="validation-message" id="v_lab_internal_${cleanSubName}"></div></div>`; } const card = document.createElement('div'); card.className = 'card estimator-card'; card.innerHTML = `<h3>${subjectName} (${details.credits} Cr)</h3><div class="input-grid">${inputsHTML}</div><div class="result-area">Final Grade: <span id="result_${cleanSubName}">-</span></div>`; grid.appendChild(card); }); }
+        function calculateSubjectGrade(subjectName, forSGPA = false) { const details = courseDetailsByBranch[userDatabase.find(u=>u.regdNo === getCurrentUserRegdNo()).branch][subjectName]; const cleanSubName = subjectName.replace(/[\s&/]/g, ''); let finalScore = 0; let isFail = false; if (details.type === 'Theory' || details.type === 'Integrated') { const intEl = document.getElementById(`internal_${cleanSubName}`); const extEl = document.getElementById(`external_${cleanSubName}`); const v_int = document.getElementById(`v_internal_${cleanSubName}`); const v_ext = document.getElementById(`v_external_${cleanSubName}`); const internal = parseInt(intEl.value) || 0; const external = parseInt(extEl.value) || 0; let requiredExternal = 24; v_int.innerText = ''; v_ext.innerText = ''; intEl.classList.remove('invalid'); extEl.classList.remove('invalid'); if (internal < 16) { requiredExternal = 24 + (16 - internal); v_int.innerText = 'Min 16 needed'; intEl.classList.add('invalid'); if (external < requiredExternal) { v_ext.innerText = `Min ${requiredExternal} needed`; extEl.classList.add('invalid'); isFail = true; } } else if (external < 24) { v_ext.innerText = 'Min 24 needed'; extEl.classList.add('invalid'); isFail = true; } const theoryTotal = internal + external; if (details.type === 'Theory') { finalScore = theoryTotal; } else if (details.type === 'Integrated') { const labEl = document.getElementById(`lab_internal_${cleanSubName}`); const v_lab = document.getElementById(`v_lab_internal_${cleanSubName}`); const labInternal = parseInt(labEl.value) || 0; v_lab.innerText = ''; labEl.classList.remove('invalid'); if (labInternal < 40) { v_lab.innerText = 'Min 40 needed'; labEl.classList.add('invalid'); isFail = true; } finalScore = (theoryTotal * 0.7) + (labInternal * 0.3); } } else if (details.type === 'Lab') { const labEl = document.getElementById(`lab_internal_${cleanSubName}`); const v_lab = document.getElementById(`v_lab_internal_${cleanSubName}`); const labInternal = parseInt(labEl.value) || 0; v_lab.innerText = ''; labEl.classList.remove('invalid'); if (labInternal < 40) { v_lab.innerText = 'Min 40 needed'; labEl.classList.add('invalid'); isFail = true; } finalScore = labInternal; } const { grade, gradePoint } = getGradeFromMarks(finalScore, isFail); if (!forSGPA) { document.getElementById(`result_${cleanSubName}`).innerText = `${finalScore.toFixed(2)} (${grade})`; saveData('grades'); } return { gradePoint }; }
+        function getGradeFromMarks(marks, failStatus) { if (failStatus) return { grade: 'F', gradePoint: 0 }; if (marks >= 90) return { grade: 'O', gradePoint: 10 }; if (marks >= 80) return { grade: 'A+', gradePoint: 9 }; if (marks >= 70) return { grade: 'A', gradePoint: 8 }; if (marks >= 60) return { grade: 'B+', gradePoint: 7 }; if (marks >= 50) return { grade: 'B', gradePoint: 6 }; if (marks >= 45) return { grade: 'C', gradePoint: 5 }; if (marks >= 40) return { grade: 'P', gradePoint: 4 }; return { grade: 'F', gradePoint: 0 }; }
+        function calculateSGPA() { let totalCredits = 0, weightedGradePoints = 0; const branch = userDatabase.find(u=>u.regdNo === getCurrentUserRegdNo()).branch; getUniqueSubjects().forEach(subjectName => { const details = courseDetailsByBranch[branch][subjectName]; if (details && details.credits > 0) { const { gradePoint } = calculateSubjectGrade(subjectName, true); totalCredits += details.credits; weightedGradePoints += gradePoint * details.credits; } }); const sgpa = totalCredits > 0 ? (weightedGradePoints / totalCredits) : 0; document.getElementById('sgpa-result').innerText = `Estimated SGPA: ${sgpa.toFixed(2)}`; }
+        function openSettings() { document.getElementById('settings-modal').style.display = 'flex'; }
         function closeSettings() { document.getElementById('settings-modal').style.display = 'none'; }
-
-        // --- Grade Estimator ---
-        function renderGradeEstimator() { 
-            const grid = document.getElementById('grade-estimator-grid'); 
-            const savedGrades = JSON.parse(localStorage.getItem(getUserDataKey(getCurrentUserRegdNo(), 'grades'))) || {}; 
-            grid.innerHTML = ''; 
-            const branch = userDatabase.find(u=>u.regdNo === getCurrentUserRegdNo()).branch;
-            getUniqueSubjects().forEach(subjectName => { 
-                const details = courseDetailsByBranch[branch][subjectName]; 
-                if(!details || details.credits === 0) return; 
-                const cleanSubName = subjectName.replace(/[\s&/]/g, ''); 
-                const saved = savedGrades[subjectName] || {}; 
-                let inputsHTML = ''; 
-                if(details.type === 'Theory') { 
-                    inputsHTML += `
-                        <div class="input-group">
-                            <label>Internal (40)</label>
-                            <input type="number" min="0" max="40" id="internal_${cleanSubName}" oninput="calculateSubjectGrade('${subjectName}')" value="${saved.internal || ''}">
-                            <div class="validation-message" id="v_internal_${cleanSubName}"></div>
-                        </div>
-                        <div class="input-group">
-                            <label>External (60)</label>
-                            <input type="number" min="0" max="60" id="external_${cleanSubName}" oninput="calculateSubjectGrade('${subjectName}')" value="${saved.external || ''}">
-                            <div class="validation-message" id="v_external_${cleanSubName}"></div>
-                        </div>`; 
-                } else if (details.type === 'Lab') { 
-                    inputsHTML += `
-                        <div class="input-group">
-                            <label>Total Internal (100)</label>
-                            <input type="number" min="0" max="100" id="lab_internal_${cleanSubName}" oninput="calculateSubjectGrade('${subjectName}')" value="${saved.lab_internal || ''}">
-                            <div class="validation-message" id="v_lab_internal_${cleanSubName}"></div>
-                        </div>`; 
-                } else if (details.type === 'Integrated') { 
-                    inputsHTML += `
-                        <div class="input-group">
-                            <label>Theory Internal (40)</label>
-                            <input type="number" min="0" max="40" id="internal_${cleanSubName}" oninput="calculateSubjectGrade('${subjectName}')" value="${saved.internal || ''}">
-                            <div class="validation-message" id="v_internal_${cleanSubName}"></div>
-                        </div>
-                        <div class="input-group">
-                            <label>Theory External (60)</label>
-                            <input type="number" min="0" max="60" id="external_${cleanSubName}" oninput="calculateSubjectGrade('${subjectName}')" value="${saved.external || ''}">
-                            <div class="validation-message" id="v_external_${cleanSubName}"></div>
-                        </div>
-                        <div class="input-group">
-                            <label>Lab Internal (100)</label>
-                            <input type="number" min="0" max="100" id="lab_internal_${cleanSubName}" oninput="calculateSubjectGrade('${subjectName}')" value="${saved.lab_internal || ''}">
-                            <div class="validation-message" id="v_lab_internal_${cleanSubName}"></div>
-                        </div>`; 
-                } 
-                const card = document.createElement('div'); 
-                card.className = 'card estimator-card'; 
-                card.innerHTML = `<h3>${subjectName} (${details.credits} Cr)</h3><div class="input-grid">${inputsHTML}</div><div class="result-area">Final Grade: <span id="result_${cleanSubName}">-</span></div>`; 
-                grid.appendChild(card); 
-            }); 
-        }
-
-        function calculateSubjectGrade(subjectName, forSGPA = false) { 
-            const details = courseDetailsByBranch[userDatabase.find(u=>u.regdNo === getCurrentUserRegdNo()).branch][subjectName]; 
-            const cleanSubName = subjectName.replace(/[\s&/]/g, ''); 
-            let finalScore = 0; 
-            let isFail = false; 
-
-            if (details.type === 'Theory' || details.type === 'Integrated') { 
-                const intEl = document.getElementById(`internal_${cleanSubName}`); 
-                const extEl = document.getElementById(`external_${cleanSubName}`); 
-                const v_int = document.getElementById(`v_internal_${cleanSubName}`); 
-                const v_ext = document.getElementById(`v_external_${cleanSubName}`); 
-                const internal = parseInt(intEl?.value) || 0; 
-                const external = parseInt(extEl?.value) || 0; 
-                let requiredExternal = 24; 
-                if(v_int) v_int.innerText = ''; 
-                if(v_ext) v_ext.innerText = ''; 
-                intEl?.classList.remove('invalid'); 
-                extEl?.classList.remove('invalid'); 
-
-                if (internal < 16) { 
-                    requiredExternal = 24 + (16 - internal); 
-                    if(v_int){ v_int.innerText = 'Min 16 needed'; intEl?.classList.add('invalid'); }
-                    if (external < requiredExternal) { 
-                        if(v_ext){ v_ext.innerText = `Min ${requiredExternal} needed`; extEl?.classList.add('invalid'); }
-                        isFail = true; 
-                    } 
-                } else if (external < 24) { 
-                    if(v_ext){ v_ext.innerText = 'Min 24 needed'; extEl?.classList.add('invalid'); }
-                    isFail = true; 
-                } 
-                const theoryTotal = internal + external; 
-                if (details.type === 'Theory') { 
-                    finalScore = theoryTotal; 
-                } else if (details.type === 'Integrated') { 
-                    const labEl = document.getElementById(`lab_internal_${cleanSubName}`); 
-                    const v_lab = document.getElementById(`v_lab_internal_${cleanSubName}`); 
-                    const labInternal = parseInt(labEl?.value) || 0; 
-                    if(v_lab) v_lab.innerText = ''; 
-                    labEl?.classList.remove('invalid'); 
-                    if (labInternal < 40) { 
-                        if(v_lab){ v_lab.innerText = 'Min 40 needed'; labEl?.classList.add('invalid'); }
-                        isFail = true; 
-                    } 
-                    finalScore = (theoryTotal * 0.7) + (labInternal * 0.3); 
-                } 
-            } else if (details.type === 'Lab') { 
-                const labEl = document.getElementById(`lab_internal_${cleanSubName}`); 
-                const v_lab = document.getElementById(`v_lab_internal_${cleanSubName}`); 
-                const labInternal = parseInt(labEl?.value) || 0; 
-                if(v_lab) v_lab.innerText = ''; 
-                labEl?.classList.remove('invalid'); 
-                if (labInternal < 40) { 
-                    if(v_lab){ v_lab.innerText = 'Min 40 needed'; labEl?.classList.add('invalid'); }
-                    isFail = true; 
-                } 
-                finalScore = labInternal; 
-            } 
-
-            const { grade, gradePoint } = getGradeFromMarks(finalScore, isFail); 
-            if (!forSGPA) { 
-                const out = document.getElementById(`result_${cleanSubName}`);
-                if(out) out.innerText = `${finalScore.toFixed(2)} (${grade})`; 
-                saveData('grades'); 
-            } 
-            return { gradePoint }; 
-        }
-
-        function getGradeFromMarks(marks, failStatus) { 
-            if (failStatus) return { grade: 'F', gradePoint: 0 }; 
-            if (marks >= 90) return { grade: 'O', gradePoint: 10 }; 
-            if (marks >= 80) return { grade: 'A+', gradePoint: 9 }; 
-            if (marks >= 70) return { grade: 'A', gradePoint: 8 }; 
-            if (marks >= 60) return { grade: 'B+', gradePoint: 7 }; 
-            if (marks >= 50) return { grade: 'B', gradePoint: 6 }; 
-            if (marks >= 45) return { grade: 'C', gradePoint: 5 }; 
-            if (marks >= 40) return { grade: 'P', gradePoint: 4 }; 
-            return { grade: 'F', gradePoint: 0 }; 
-        }
-
-        function calculateSGPA() { 
-            let totalCredits = 0, weightedGradePoints = 0; 
-            const branch = userDatabase.find(u=>u.regdNo === getCurrentUserRegdNo()).branch; 
-            getUniqueSubjects().forEach(subjectName => { 
-                const details = courseDetailsByBranch[branch][subjectName]; 
-                if (details && details.credits > 0) { 
-                    const { gradePoint } = calculateSubjectGrade(subjectName, true); 
-                    totalCredits += details.credits; 
-                    weightedGradePoints += gradePoint * details.credits; 
-                } 
-            }); 
-            const sgpa = totalCredits > 0 ? (weightedGradePoints / totalCredits) : 0; 
-            document.getElementById('sgpa-result').innerText = `Estimated SGPA: ${sgpa.toFixed(2)}`; 
-        }
-
-        // --- Simulator logic ---
-        function simulateDayBunk() { 
-            const select = document.getElementById('day-to-bunk-select');
-            const dayIndex = select.value; 
-            const dayName = select.options[select.selectedIndex].text; 
-            const resultDiv = document.getElementById('simulation-result'); 
-            const classesOnDay = currentUserTimetable.simple[dayIndex] || []; 
-            if (classesOnDay.length === 0) { 
-                resultDiv.innerHTML = `No classes to bunk on a ${dayName}!`; 
-                resultDiv.style.color = 'var(--text-dark-color)'; 
-                return; 
-            } 
-            let totalAttended = 0, totalBunked = 0, totalInSem = 0; 
-            for (const subjectName in subjectData) { 
-                totalAttended += subjectData[subjectName].attended; 
-                totalBunked += subjectData[subjectName].bunked; 
-                totalInSem += subjectData[subjectName].totalInSem; 
-            } 
-            const totalHeld = totalAttended + totalBunked; 
-            const minPercentage = getMinPercentage(); 
-            const newTotalBunked = totalBunked + classesOnDay.length; 
-            const newTotalHeld = totalHeld + classesOnDay.length; 
-            const newPercentage = newTotalHeld > 0 ? (totalAttended / newTotalHeld) * 100 : 100; 
-            const minClassesRequired = Math.ceil(totalInSem * (minPercentage / 100)); 
-            const maxBunksAllowed = totalInSem - minClassesRequired; 
-            const newBunksLeft = maxBunksAllowed - newTotalBunked; 
-            let message = `After bunking ${dayName} (${classesOnDay.length} classes):<br>`; 
-            message += `Your percentage would be <strong>${newPercentage.toFixed(1)}%</strong>.<br>`; 
-            message += `You would have <strong>${newBunksLeft}</strong> bunks left.`; 
-            resultDiv.innerHTML = message; 
-            resultDiv.style.color = newBunksLeft >= 0 ? 'var(--safe-color)' : 'var(--danger-color)'; 
-        }
-
-        // --- Events ---
         document.getElementById('login-form').addEventListener('submit', handleLogin);
         window.onload = init;
         window.onclick = function(event) { if (event.target.classList.contains('modal')) { closeSettings(); } }
