@@ -79,10 +79,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function loadDashboardForUser(regdNo) {
         const currentUser = userDatabase.find(u => u.regdNo === regdNo);
-        if (!currentUser) {
-            logout();
-            return;
-        }
+        if (!currentUser) { logout(); return; }
         
         const branch = currentUser.branch;
         currentUserTimetable = timetablesByBranch[branch];
@@ -130,47 +127,39 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function renderAttendanceView() {
-    const view = document.getElementById('attendance-view');
-    view.innerHTML = `
-        <div class="dashboard-grid">
-            <div id="today-schedule-card" class="card"></div>
-            <div id="total-attendance-card" class="card">
-                <div id="total-stats-container"></div>
+        const view = document.getElementById('attendance-view');
+        view.innerHTML = `
+            <div class="dashboard-grid">
+                <div id="today-schedule-card" class="card"></div>
+                <div id="total-attendance-card" class="card">
+                    <div id="total-stats-container"></div>
+                </div>
+                <div id="setup-card" class="card" style="align-items: center; justify-content: center; gap: 15px;">
+                    <div>
+                        <label for="start-date" style="display: block; text-align: center; margin-bottom: 10px; font-weight: 500;">Semester Start Date:</label>
+                        <input type="date" id="start-date" style="padding: 8px; border-radius: 5px; border: 1px solid var(--border-color); width: 100%;">
+                    </div>
+                    <button onclick="startTracking()" class="card-btn" style="background-color: var(--safe-color); max-width: 200px;">Calculate & Start</button>
+                </div>
+                <div id="bunk-simulator-card" class="card">
+                    <h2 style="font-size: 1.2em; margin-bottom: 15px;">Bunk Day Simulator</h2>
+                    <div class="login-form-group">
+                        <label for="day-to-bunk-select">Select a day:</label>
+                        <select id="day-to-bunk-select" style="width: 100%; padding: 8px; border-radius: 5px; border: 1px solid var(--border-color);">
+                            <option value="1">Monday</option><option value="2">Tuesday</option><option value="3">Wednesday</option><option value="4">Thursday</option><option value="5">Friday</option><option value="6">Saturday</option>
+                        </select>
+                    </div>
+                    <button onclick="simulateDayBunk()" class="card-btn" style="background-color: var(--primary-color);">Simulate</button>
+                    <div id="simulation-result" style="text-align:center; margin-top:15px; font-weight: 500;"></div>
+                </div>
             </div>
-            
-            <div id="setup-card" class="card" style="align-items: center; justify-content: center; gap: 15px;">
-                <div>
-                    <label for="start-date" style="display: block; text-align: center; margin-bottom: 10px; font-weight: 500;">Semester Start Date:</label>
-                    <input type="date" id="start-date" style="padding: 8px; border-radius: 5px; border: 1px solid var(--border-color); width: 100%;">
-                </div>
-                
-                <button onclick="startTracking()" class="card-btn" style="background-color: var(--safe-color); max-width: 200px;">Calculate & Start</button>
-                        <p style="text-align: center; color: var(--text-light-color); font-style: italic; margin-top: 15px;">Note: Classes started from 04-08-2025</p>
-           
-                </div>
-            <div id="bunk-simulator-card" class="card">
-                <h2 style="font-size: 1.2em; margin-bottom: 15px;">Bunk Day Simulator</h2>
-                <div class="login-form-group">
-                    <label for="day-to-bunk-select">Select a day:</label>
-                    <select id="day-to-bunk-select" style="width: 100%; padding: 8px; border-radius: 5px; border: 1px solid var(--border-color);">
-                        <option value="1">Monday</option>
-                        <option value="2">Tuesday</option>
-                        <option value="3">Wednesday</option>
-                        <option value="4">Thursday</option>
-                        <option value="5">Friday</option>
-                        <option value="6">Saturday</option>
-                    </select>
-                </div>
-                <button onclick="simulateDayBunk()" class="card-btn" style="background-color: var(--primary-color);">Simulate</button>
-                <div id="simulation-result" style="text-align:center; margin-top:15px; font-weight: 500;"></div>
-            </div>
-        </div>
-        <div id="subject-dashboard" style="margin-top: 30px;">
-            <h2>Individual Subjects</h2>
-            <div id="dashboard" class="dashboard-grid"></div>
-        </div>`;
-    renderTodaysSchedule();
-}
+            <p style="text-align: center; color: var(--text-light-color); font-style: italic; margin-top: 15px;">Note: Classes started from 04-08-2025</p>
+            <div id="subject-dashboard" style="margin-top: 30px;">
+                <h2>Individual Subjects</h2>
+                <div id="dashboard" class="dashboard-grid"></div>
+            </div>`;
+        renderTodaysSchedule();
+    }
     
     function renderDashboard() {
         const dashboard = document.getElementById('dashboard');
@@ -272,7 +261,7 @@ document.addEventListener("DOMContentLoaded", function() {
         const view = document.getElementById('grade-estimator-view');
         view.innerHTML = `
             <h2>Grade Estimator</h2>
-            <p style="text-align:center;max-width:600px;margin:-10px auto 20px;color:var(--text-light-color);">Enter marks to estimate grade and SGPA.</p>
+            <p style="text-align:center;max-width:600px;margin:-10px auto 20px;color:var(--text-light-color);">Enter marks to estimate your grade and SGPA.</p>
             <div id="grade-estimator-grid" class="dashboard-grid"></div>
             <div class="card" style="text-align:center;margin-top:20px;">
                 <button onclick="calculateSGPA()" class="card-btn" style="background-color:var(--safe-color);max-width:300px;display:inline-block;">
@@ -288,37 +277,101 @@ document.addEventListener("DOMContentLoaded", function() {
             const cleanSubName = subjectName.replace(/[\s&/]/g, '');
             let inputsHTML = '';
             if (details.type === 'Theory') {
-                inputsHTML += `<div class="input-group"><label>Internal (40)</label><input type="number" min="0" max="40" id="internal_${cleanSubName}"></div><div class="input-group"><label>External (60)</label><input type="number" min="0" max="60" id="external_${cleanSubName}"></div>`;
+                inputsHTML += `<div class="input-group"><label>Internal (40)</label><input oninput="calculateSubjectGrade('${subjectName}')" type="number" min="0" max="40" id="internal_${cleanSubName}"></div><div class="input-group"><label>External (60)</label><input oninput="calculateSubjectGrade('${subjectName}')" type="number" min="0" max="60" id="external_${cleanSubName}"></div>`;
             } else if (details.type === 'Lab') {
-                inputsHTML += `<div class="input-group"><label>Total Internal (100)</label><input type="number" min="0" max="100" id="lab_internal_${cleanSubName}"></div>`;
+                inputsHTML += `<div class="input-group"><label>Total Internal (100)</label><input oninput="calculateSubjectGrade('${subjectName}')" type="number" min="0" max="100" id="lab_internal_${cleanSubName}"></div>`;
             } else if (details.type === 'Integrated') {
-                inputsHTML += `<div class="input-group"><label>Theory Internal (40)</label><input type="number" min="0" max="40" id="internal_${cleanSubName}"></div><div class="input-group"><label>Theory External (60)</label><input type="number" min="0" max="60" id="external_${cleanSubName}"></div><div class="input-group"><label>Lab Internal (100)</label><input type="number" min="0" max="100" id="lab_internal_${cleanSubName}"></div>`;
+                inputsHTML += `<div class="input-group"><label>Theory Internal (40)</label><input oninput="calculateSubjectGrade('${subjectName}')" type="number" min="0" max="40" id="internal_${cleanSubName}"></div><div class="input-group"><label>Theory External (60)</label><input oninput="calculateSubjectGrade('${subjectName}')" type="number" min="0" max="60" id="external_${cleanSubName}"></div><div class="input-group"><label>Lab Internal (100)</label><input oninput="calculateSubjectGrade('${subjectName}')" type="number" min="0" max="100" id="lab_internal_${cleanSubName}"></div>`;
             }
             const card = document.createElement('div');
             card.className = 'card estimator-card';
-            card.innerHTML = `<h3>${subjectName} (${details.credits} Cr)</h3><div class="input-grid">${inputsHTML}</div><div class="result-area" style="text-align:center;margin-top:15px;">Grade: <span id="result_${cleanSubName}" style="font-weight:bold;font-size:1.4em;">-</span></div>`;
+            card.innerHTML = `<h3>${subjectName} (${details.credits} Cr)</h3><div class="input-grid">${inputsHTML}</div><div class="result-area" style="text-align:center;margin-top:15px;">Grade: <span id="result_${cleanSubName}" style="font-weight:bold;font-size:1.4em;">-</span><div id="validation_${cleanSubName}" style="font-size:0.8em; color:var(--danger-color); height: 1em; margin-top: 5px;"></div></div>`;
             grid.appendChild(card);
         });
     }
 
-    // --- Global Functions (attached to window) ---
+    function getGradeFromMarks(marks, failStatus) {
+        if (failStatus) return { grade: 'F', gradePoint: 0 };
+        if (marks >= 90) return { grade: 'O', gradePoint: 10 };
+        if (marks >= 80) return { grade: 'A+', gradePoint: 9 };
+        if (marks >= 70) return { grade: 'A', gradePoint: 8 };
+        if (marks >= 60) return { grade: 'B+', gradePoint: 7 };
+        if (marks >= 50) return { grade: 'B', gradePoint: 6 };
+        if (marks >= 45) return { grade: 'C', gradePoint: 5 };
+        if (marks >= 40) return { grade: 'P', gradePoint: 4 };
+        return { grade: 'F', gradePoint: 0 };
+    }
+
+    function calculateSubjectGrade(subjectName) {
+    const details = courseDetails[subjectName];
+    const cleanSubName = subjectName.replace(/[\s&/]/g, '');
+    let finalScore = 0;
+    let isFail = false; // Assume pass at the start
+    const validationDiv = document.getElementById(`validation_${cleanSubName}`);
+    if(validationDiv) validationDiv.textContent = '';
+    
+    if (details.type === 'Theory' || details.type === 'Integrated') {
+        const internal = parseInt(document.getElementById(`internal_${cleanSubName}`)?.value) || 0;
+        const external = parseInt(document.getElementById(`external_${cleanSubName}`)?.value) || 0;
+        
+        let minExternalRequired = 24;
+        let internalShortfall = 16 - internal;
+
+        if (internalShortfall > 0) {
+            minExternalRequired = 24 + internalShortfall;
+            if(validationDiv) validationDiv.textContent = `Short by ${internalShortfall} in internals. Need at least ${minExternalRequired} in externals.`;
+        }
+
+        // **THE FIX IS HERE:** Check all fail conditions together at the end.
+        if (internal < 16 && external < minExternalRequired) {
+            isFail = true;
+        } else if (internal >= 16 && external < 24) {
+            isFail = true;
+        } else if ((internal + external) < 40) {
+            isFail = true;
+        }
+        
+        const theoryTotal = internal + external;
+        
+        if (details.type === 'Theory') {
+            finalScore = theoryTotal;
+        } else { // Integrated
+            const labInternal = parseInt(document.getElementById(`lab_internal_${cleanSubName}`)?.value) || 0;
+            if (labInternal < 40) {
+                isFail = true;
+                if(validationDiv && !validationDiv.textContent) validationDiv.textContent = 'Lab internal requires a minimum of 40.';
+            }
+            finalScore = (theoryTotal * 0.7) + (labInternal * 0.3);
+        }
+    } else if (details.type === 'Lab') {
+        const labInternal = parseInt(document.getElementById(`lab_internal_${cleanSubName}`)?.value) || 0;
+        if (labInternal < 40) {
+            isFail = true;
+            if(validationDiv) validationDiv.textContent = 'Lab internal requires a minimum of 40.';
+        }
+        finalScore = labInternal;
+    }
+    
+    const { grade, gradePoint } = getGradeFromMarks(finalScore, isFail);
+    document.getElementById(`result_${cleanSubName}`).innerText = `${grade} (${finalScore.toFixed(2)})`;
+    return { gradePoint, credits: details.credits };
+}
+
+    function calculateSGPA() {
+        let totalCredits = 0, weightedGradePoints = 0;
+        getUniqueSubjects().forEach(subjectName => {
+            const details = courseDetails[subjectName];
+            if (details && details.credits > 0) {
+                const result = calculateSubjectGrade(subjectName);
+                totalCredits += result.credits;
+                weightedGradePoints += result.gradePoint * result.credits;
+            }
+        });
+        const sgpa = totalCredits > 0 ? (weightedGradePoints / totalCredits) : 0;
+        document.getElementById('sgpa-result').innerText = `Estimated SGPA: ${sgpa.toFixed(2)}`;
+    }
+
     window.getUniqueSubjects = () => Array.from(new Set(Object.values(currentUserTimetable.simple || {}).flat())).sort();
-    window.markBunked = (subjectName) => {
-        if (subjectData[subjectName].attended > 0) {
-            subjectData[subjectName].attended--;
-            subjectData[subjectName].bunked++;
-            saveData('attendance');
-            renderDashboard();
-        }
-    };
-    window.undoBunk = (subjectName) => {
-        if (subjectData[subjectName].bunked > 0) {
-            subjectData[subjectName].attended++;
-            subjectData[subjectName].bunked--;
-            saveData('attendance');
-            renderDashboard();
-        }
-    };
     window.showView = (viewId, element) => {
         document.querySelectorAll('.content-area.view').forEach(v => v.style.display = 'none');
         document.getElementById(viewId).style.display = 'block';
@@ -337,10 +390,76 @@ document.addEventListener("DOMContentLoaded", function() {
         document.getElementById(dayName).classList.add('active');
         evt.currentTarget.classList.add('active');
     };
+    window.markBunked = (subjectName) => {
+        if (subjectData[subjectName].attended > 0) {
+            subjectData[subjectName].attended--;
+            subjectData[subjectName].bunked++;
+            saveData('attendance');
+            renderDashboard();
+        }
+    };
+    window.undoBunk = (subjectName) => {
+        if (subjectData[subjectName].bunked > 0) {
+            subjectData[subjectName].attended++;
+            subjectData[subjectName].bunked--;
+            saveData('attendance');
+            renderDashboard();
+        }
+    };
+    window.startTracking = () => {
+        const startDateString = document.getElementById('start-date').value;
+        if (!startDateString) { alert("Please select a Semester Start Date first."); return; }
+        const startDate = new Date(startDateString);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        if (startDate > today) { alert("Start date cannot be in the future."); return; }
+        const heldCounts = {};
+        getUniqueSubjects().forEach(name => heldCounts[name] = 0);
+        let currentDate = new Date(startDate);
+        while (currentDate <= today) {
+            (currentUserTimetable.simple[currentDate.getDay()] || []).forEach(subjectName => {
+                if (heldCounts[subjectName] !== undefined) heldCounts[subjectName]++;
+            });
+            currentDate.setDate(currentDate.getDate() + 1);
+        }
+        for (const subjectName of getUniqueSubjects()) {
+            subjectData[subjectName] = subjectData[subjectName] || { totalInSem: 0 };
+            subjectData[subjectName].attended = heldCounts[subjectName] || 0;
+            subjectData[subjectName].bunked = 0;
+        }
+        saveData('attendance');
+        renderDashboard();
+        alert("Dashboard calculated and updated with 100% attendance until today!");
+    };
+    window.simulateDayBunk = () => {
+        const dayIndex = document.getElementById('day-to-bunk-select').value;
+        const resultDiv = document.getElementById('simulation-result');
+        const classesOnDay = currentUserTimetable.simple[dayIndex] || [];
+        if (classesOnDay.length === 0) {
+            resultDiv.innerHTML = `No classes to bunk on the selected day!`;
+            return;
+        }
+        let totalAttended = 0, totalBunked = 0;
+        Object.values(subjectData).forEach(data => {
+            totalAttended += data.attended;
+            totalBunked += data.bunked;
+        });
+        const newTotalHeld = (totalAttended + totalBunked) + classesOnDay.length;
+        const newPercentage = newTotalHeld > 0 ? (totalAttended / newTotalHeld) * 100 : 100;
+        resultDiv.innerHTML = `After bunking, your new overall percentage would be <strong>${newPercentage.toFixed(1)}%</strong>.`;
+    };
+    window.calculateSGPA = calculateSGPA;
+    window.calculateSubjectGrade = calculateSubjectGrade;
     
-    // --- Event Listeners ---
     document.getElementById('login-form').addEventListener('submit', handleLogin);
-    
-    // --- Initialize App ---
+    const passwordInput = document.getElementById('password-input');
+    const passwordToggleIcon = document.getElementById('password-toggle-icon');
+    passwordToggleIcon.addEventListener('click', function() {
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+        this.classList.toggle('ri-eye-line');
+        this.classList.toggle('ri-eye-off-line');
+    });
+
     init();
 });
