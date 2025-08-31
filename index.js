@@ -36,16 +36,21 @@ document.addEventListener("DOMContentLoaded", function() {
             colors: { 'Analog IC Design': '#8e44ad', 'Digital System Design': '#2980b9', 'Modeling and Design With HDLs': '#27ae60', 'Research Methodology & IPR': '#f39c12', 'Digital IC Design': '#d35400', 'VLSI Circuit Design Laboratory': '#c0392b', 'Digital Systems Testing and Testability': '#16a085', 'English For Research Paper Writing': '#7f8c8d', 'FPGA Design Laboratory': '#2c3e50' }
         }
     };
-
     const courseDetailsByBranch = {
         'CSE': { 'Advanced Data Structures': { credits: 4, type: 'Integrated' }, 'Mathematical Foundations of Computer Science': { credits: 3, type: 'Theory' }, 'Algorithms and Analysis': { credits: 4, type: 'Integrated' }, 'Machine Learning': { credits: 4, type: 'Integrated' }, 'Data Science': { credits: 4, 'type': 'Integrated' }, 'Research Methodology and IPR': { credits: 2, type: 'Theory' }, 'English for Research Paper Writing': { credits: 0, type: 'Theory' }, 'Data Science Lab':{credits:0, type:'Lab'},'Advanced Data Structures Lab':{credits:0, type:'Lab'},'Algorithms and Analysis Lab':{credits:0, type:'Lab'},'Machine Learning Lab':{credits:0, type:'Lab'} },
         'DS': { 'Advanced Data Structures': { credits: 4, type: 'Integrated' }, 'Algorithms and Analysis': { credits: 4, type: 'Integrated' }, 'Research Methodology & IPR': { credits: 2, type: 'Theory' }, 'Data Science': { credits: 4, 'type': 'Integrated' }, 'Advanced Data Structures Lab': { credits: 0, type: 'Lab' }, 'English for Research Paper Writing': { credits: 0, type: 'Theory' }, 'Algorithms and Analysis Lab': { credits: 0, type: 'Lab' }, 'Machine Learning': { credits: 4, type: 'Integrated' }, 'Statistical Modeling': { credits: 3, type: 'Theory' }, 'Data Science Lab': { credits: 0, type: 'Lab' }, 'Machine Learning Lab': { credits: 0, type: 'Lab' } },
         'VLSI': { 'Analog IC Design': { credits: 3, type: 'Theory' }, 'Digital System Design': { credits: 3, type: 'Theory' }, 'Modeling and Design With HDLs': { credits: 3, type: 'Theory' }, 'Research Methodology & IPR': { credits: 2, type: 'Theory' }, 'Digital IC Design': { credits: 3, type: 'Theory' }, 'VLSI Circuit Design Laboratory': { credits: 2, type: 'Lab' }, 'Digital Systems Testing and Testability': { credits: 3, type: 'Theory' }, 'English For Research Paper Writing': { credits: 0, type: 'Theory' }, 'FPGA Design Laboratory': { credits: 2, type: 'Lab' } }
     };
-
+    const syllabusLinks = {
+        'CSE': 'https://www.gitam.edu/sites/default/files/syllabus/MTech-CSE-2023-24_28-10-24_1.pdf',
+        'DS': 'https://www.gitam.edu/sites/default/files/syllabus/MTech-CSE-DS-2023-24_28-10-24_3.pdf',
+        'VLSI': 'https://www.gitam.edu/sites/default/files/syllabus/M.Tech-VLSI-Design-2024-25_06-12-24_0.pdf'
+    };
+    
     let subjectData = {};
     let currentUserTimetable = {};
     let courseDetails = {};
+    let currentUser = {};
 
     function init() {
         const currentUserRegdNo = sessionStorage.getItem('currentUserRegdNo');
@@ -76,23 +81,9 @@ document.addEventListener("DOMContentLoaded", function() {
         sessionStorage.removeItem('currentUserRegdNo');
         window.location.reload();
     }
-    function fetchAndDisplayIP() {
-    const ipElement = document.getElementById('user-ip');
-    if (!ipElement) return;
-
-    ipElement.textContent = 'Fetching IP...';
-    fetch("https://api.ipify.org?format=json")
-        .then(response => response.json())
-        .then(data => {
-            ipElement.textContent = `Your IP: ${data.ip}`;
-        })
-        .catch(() => {
-            ipElement.textContent = "IP not available";
-        });
-}
 
     function loadDashboardForUser(regdNo) {
-        const currentUser = userDatabase.find(u => u.regdNo === regdNo);
+        currentUser = userDatabase.find(u => u.regdNo === regdNo);
         if (!currentUser) { logout(); return; }
         
         const branch = currentUser.branch;
@@ -101,7 +92,6 @@ document.addEventListener("DOMContentLoaded", function() {
         
         document.getElementById('login-page').style.display = 'none';
         document.getElementById('dashboard-page').style.display = 'block';
-        fetchAndDisplayIP();
 
         document.getElementById('sidebar-profile-name').innerText = currentUser.name;
         document.getElementById('sidebar-profile-id').innerText = `(${currentUser.regdNo} - ${branch})`;
@@ -110,10 +100,19 @@ document.addEventListener("DOMContentLoaded", function() {
         profilePic.src = `https://doeresults.gitam.edu/photo/img.aspx?id=${currentUser.regdNo}`;
         profilePic.onerror = () => { profilePic.style.display = 'none'; };
 
+        fetchAndDisplayIP();
+
         renderAttendanceView();
+        renderUpdateAttendanceView();
+        renderAttendanceReportView();
+        renderPasteAttendanceView(); // Added this call
         renderGradeEstimator();
         renderFullTimetable();
+        renderSyllabusView();
+        
         showView('attendance-view', document.querySelector('.sidebar-nav a'));
+        
+        recalculateDailyAttendance();
         loadData();
     }
     
@@ -123,21 +122,33 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function loadData() {
-        const savedAttData = localStorage.getItem(getUserDataKey('attendance'));
-        if (savedAttData) {
-            subjectData = JSON.parse(savedAttData);
+        const attendanceData = JSON.parse(localStorage.getItem(getUserDataKey('attendance')));
+        const startDate = localStorage.getItem(getUserDataKey('startDate'));
+
+        if (attendanceData) {
+            subjectData = attendanceData;
         } else {
             subjectData = {};
             getUniqueSubjects().forEach(name => {
                 subjectData[name] = { attended: 0, bunked: 0, totalInSem: 0 };
             });
         }
+        
+        const startDateInput = document.getElementById('start-date');
+        if(startDateInput && startDate) {
+            startDateInput.value = startDate;
+        }
+
         renderDashboard();
     }
 
     function saveData(type) {
         if (type === 'attendance') {
             localStorage.setItem(getUserDataKey('attendance'), JSON.stringify(subjectData));
+            const startDate = document.getElementById('start-date')?.value;
+            if(startDate) {
+                localStorage.setItem(getUserDataKey('startDate'), startDate);
+            }
         }
     }
 
@@ -154,7 +165,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         <label for="start-date" style="display: block; text-align: center; margin-bottom: 10px; font-weight: 500;">Semester Start Date:</label>
                         <input type="date" id="start-date" style="padding: 8px; border-radius: 5px; border: 1px solid var(--border-color); width: 100%;">
                     </div>
-                    <button onclick="startTracking()" class="card-btn" style="background-color: var(--safe-color); max-width: 450px;">Calculate & Start</button>
+                    <button onclick="startTracking()" class="card-btn" style="background-color: var(--safe-color); max-width: 200px;">Recalculate Attendance</button>
                 </div>
                 <div id="bunk-simulator-card" class="card">
                     <h2 style="font-size: 1.2em; margin-bottom: 15px;">Bunk Day Simulator</h2>
@@ -167,15 +178,132 @@ document.addEventListener("DOMContentLoaded", function() {
                     <button onclick="simulateDayBunk()" class="card-btn" style="background-color: var(--primary-color);">Simulate</button>
                     <div id="simulation-result" style="text-align:center; margin-top:15px; font-weight: 500;"></div>
                 </div>
+                 <div id="reset-card" class="card">
+                     <h2>Reset Data</h2>
+                     <p style="color: var(--text-light-color); margin: 10px 0;">Clear all your saved attendance data to start fresh.</p>
+                     <button onclick="resetAttendance()" class="card-btn" style="background-color: var(--danger-color);"><i class="ri-delete-bin-line" style="margin-right: 8px;"></i> Reset Attendance</button>
+                </div>
             </div>
-            <p style="text-align: center; color: var(--text-light-color); font-style: italic; margin-top: 15px;">Note: Classes started from 04-08-2025</p>
             <div id="subject-dashboard" style="margin-top: 30px;">
                 <h2>Individual Subjects</h2>
                 <div id="dashboard" class="dashboard-grid"></div>
             </div>`;
         renderTodaysSchedule();
     }
+
+    function renderUpdateAttendanceView() {
+        const view = document.getElementById('update-attendance-view');
+        let formHTML = `<h2>Update Attendance Manually</h2>
+            <p style="color:var(--text-light-color);margin-bottom:20px;">Use this page to correct any discrepancies in your attendance.</p>
+            <div class="card">
+                <form id="manual-attendance-form">
+                <div style="display: grid; grid-template-columns: 1fr 80px 80px; align-items: center; gap: 15px; padding: 10px 0; font-weight: 600; border-bottom: 1px solid var(--border-color);">
+                    <span>Subject Name</span>
+                    <span style="text-align:center;">Present</span>
+                    <span style="text-align:center;">Total Held</span>
+                </div>`;
+
+        let totalAttended = 0;
+        let totalHeld = 0;
+        const subjects = getUniqueSubjects();
+        subjects.forEach(subject => {
+            const data = subjectData[subject] || { attended: 0, bunked: 0 };
+            const held = data.attended + data.bunked;
+            totalAttended += data.attended;
+            totalHeld += held;
+            formHTML += `
+                <div style="display: grid; grid-template-columns: 1fr 80px 80px; align-items: center; gap: 15px; padding: 10px 0; border-top: 1px solid var(--border-color);">
+                    <label style="font-weight: 500;">${subject}</label>
+                    <input type="number" value="${data.attended}" id="attended-${subject.replace(/[\s&/]/g, '')}" style="padding: 8px; border-radius: 5px; border: 1px solid var(--border-color); text-align: center;">
+                    <input type="number" value="${held}" id="held-${subject.replace(/[\s&/]/g, '')}" style="padding: 8px; border-radius: 5px; border: 1px solid var(--border-color); text-align: center;">
+                </div>`;
+        });
+
+        formHTML += `
+                <div style="display: grid; grid-template-columns: 1fr 80px 80px; align-items: center; gap: 15px; padding: 10px 0; border-top: 2px solid var(--text-dark-color); font-weight: 700; margin-top: 10px;">
+                    <span>TOTALS</span>
+                    <span style="text-align:center;">${totalAttended}</span>
+                    <span style="text-align:center;">${totalHeld}</span>
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button type="button" id="all-present-btn" class="card-btn" style="background-color: var(--primary-color);">
+                        <i class="ri-check-double-line" style="margin-right: 8px;"></i>All Present
+                    </button>
+                    <button type="submit" class="card-btn" style="background-color: var(--safe-color);">
+                        <i class="ri-save-line" style="margin-right: 8px;"></i>Save Manual Update
+                    </button>
+                </div>
+            </form>
+        </div>`;
+        
+        view.innerHTML = formHTML;
+        document.getElementById('manual-attendance-form').addEventListener('submit', handleUpdateAttendance);
+        document.getElementById('all-present-btn').addEventListener('click', handleAllPresent);
+    }
     
+    function handleAllPresent() {
+        const subjects = getUniqueSubjects();
+        subjects.forEach(subject => {
+            const cleanSubName = subject.replace(/[\s&/]/g, '');
+            const heldInput = document.getElementById(`held-${cleanSubName}`);
+            const attendedInput = document.getElementById(`attended-${cleanSubName}`);
+            if (heldInput && attendedInput) {
+                attendedInput.value = heldInput.value;
+            }
+        });
+    }
+
+    function renderAttendanceReportView() {
+        const view = document.getElementById('attendance-report-view');
+        let tableHTML = `<h2>Attendance Report</h2>
+            <div class="card">
+                <table class="attendance-report-table">
+                    <thead>
+                        <tr>
+                            <th>Subject Name</th>
+                            <th>Attended</th>
+                            <th>Bunked</th>
+                            <th>Total Held</th>
+                            <th>Percentage</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+        
+        const subjects = getUniqueSubjects();
+        subjects.forEach(subject => {
+            const data = subjectData[subject] || { attended: 0, bunked: 0 };
+            const held = data.attended + data.bunked;
+            const percentage = held > 0 ? ((data.attended / held) * 100).toFixed(1) : "100.0";
+            tableHTML += `
+                <tr>
+                    <td>${subject}</td>
+                    <td>${data.attended}</td>
+                    <td>${data.bunked}</td>
+                    <td>${held}</td>
+                    <td>${percentage}%</td>
+                </tr>`;
+        });
+
+        tableHTML += `</tbody></table></div>`;
+        view.innerHTML = tableHTML;
+    }
+    
+    function renderPasteAttendanceView() {
+        const view = document.getElementById('paste-attendance-view');
+        view.innerHTML = `
+            <h2>Paste Attendance Data</h2>
+            <p style="color: var(--text-light-color); margin-bottom: 20px;">
+                Go to the G-Learn portal, view your attendance "By subject", copy the entire table, and paste it into the box below.
+            </p>
+            <div class="card">
+                <textarea id="attendance-paste-area" style="width: 100%; height: 200px; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); font-family: monospace;"></textarea>
+                <button onclick="handlePasteAndUpdate()" class="card-btn" style="background-color: var(--primary-color); margin-top: 15px;">
+                    <i class="ri-upload-cloud-2-line" style="margin-right: 8px;"></i> Process Pasted Data
+                </button>
+            </div>
+        `;
+    }
+
     function renderDashboard() {
         const dashboard = document.getElementById('dashboard');
         if (!dashboard) return;
@@ -305,6 +433,24 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
+    function renderSyllabusView() {
+        const view = document.getElementById('syllabus-view');
+        const syllabusLink = syllabusLinks[currentUser.branch];
+        if (syllabusLink) {
+            view.innerHTML = `
+                <h2>Syllabus for ${currentUser.branch}</h2>
+                <div class="card" style="text-align: center;">
+                    <p style="margin-bottom: 20px; color: var(--text-light-color);">The official syllabus is hosted on the GITAM website. Click the button below to open it in a new tab.</p>
+                    <a href="${syllabusLink}" target="_blank" rel="noopener noreferrer" class="card-btn" style="background-color: var(--primary-color); max-width: 300px; display: inline-flex; text-decoration: none;">
+                        <i class="ri-external-link-line" style="margin-right: 8px;"></i>
+                        Open Syllabus in New Tab
+                    </a>
+                </div>`;
+        } else {
+            view.innerHTML = `<h2>Syllabus</h2><div class="card"><p>Syllabus for ${currentUser.branch} is not available.</p></div>`;
+        }
+    }
+
     function getGradeFromMarks(marks, failStatus) {
         if (failStatus) return { grade: 'F', gradePoint: 0 };
         if (marks >= 90) return { grade: 'O', gradePoint: 10 };
@@ -320,36 +466,27 @@ document.addEventListener("DOMContentLoaded", function() {
     function calculateSubjectGrade(subjectName) {
         const details = courseDetails[subjectName];
         const cleanSubName = subjectName.replace(/[\s&/]/g, '');
-        let finalScore = 0;
-        let isFail = false;
+        let finalScore = 0, isFail = false;
         const validationDiv = document.getElementById(`validation_${cleanSubName}`);
         if(validationDiv) validationDiv.textContent = '';
         
         if (details.type === 'Theory' || details.type === 'Integrated') {
             const internal = parseInt(document.getElementById(`internal_${cleanSubName}`)?.value) || 0;
             const external = parseInt(document.getElementById(`external_${cleanSubName}`)?.value) || 0;
-            
             let minExternalRequired = 24;
             let internalShortfall = 16 - internal;
-
             if (internalShortfall > 0) {
                 minExternalRequired = 24 + internalShortfall;
                 if(validationDiv) validationDiv.textContent = `Short by ${internalShortfall} in internals. Need at least ${minExternalRequired} in externals.`;
             }
-
-            if (internal < 16 && external < minExternalRequired) {
-                isFail = true;
-            } else if (internal >= 16 && external < 24) {
-                isFail = true;
-            } else if ((internal + external) < 40) {
-                isFail = true;
-            }
+            if (internal < 16 && external < minExternalRequired) { isFail = true; } 
+            else if (internal >= 16 && external < 24) { isFail = true; } 
+            else if ((internal + external) < 40) { isFail = true; }
             
             const theoryTotal = internal + external;
-            
             if (details.type === 'Theory') {
                 finalScore = theoryTotal;
-            } else { // Integrated
+            } else {
                 const labInternal = parseInt(document.getElementById(`lab_internal_${cleanSubName}`)?.value) || 0;
                 if (labInternal < 40) {
                     isFail = true;
@@ -365,15 +502,13 @@ document.addEventListener("DOMContentLoaded", function() {
             }
             finalScore = labInternal;
         }
-        
         const { grade, gradePoint } = getGradeFromMarks(finalScore, isFail);
         document.getElementById(`result_${cleanSubName}`).innerText = `${grade} (${finalScore.toFixed(2)})`;
         return { gradePoint, credits: details.credits };
     }
 
     function calculateSGPA() {
-        let totalCredits = 0;
-        let weightedGradePoints = 0;
+        let totalCredits = 0, weightedGradePoints = 0;
         getUniqueSubjects().forEach(subjectName => {
             const details = courseDetails[subjectName];
             if (details && details.credits > 0) {
@@ -386,9 +521,129 @@ document.addEventListener("DOMContentLoaded", function() {
         document.getElementById('sgpa-result').innerText = `Estimated SGPA: ${sgpa.toFixed(2)}`;
     }
 
+    function handleUpdateAttendance(event) {
+        event.preventDefault();
+        const subjects = getUniqueSubjects();
+        subjects.forEach(subject => {
+            const cleanSubName = subject.replace(/[\s&/]/g, '');
+            const attended = parseInt(document.getElementById(`attended-${cleanSubName}`).value) || 0;
+            const held = parseInt(document.getElementById(`held-${cleanSubName}`).value) || 0;
+            if (subjectData[subject]) {
+                subjectData[subject].attended = attended;
+                subjectData[subject].bunked = held - attended;
+            }
+        });
+        saveData('attendance');
+        renderDashboard();
+        renderAttendanceReportView();
+        alert('Attendance updated successfully!');
+        showView('attendance-view', document.querySelector('.sidebar-nav a.active'));
+    }
+    
+    function handlePasteAndUpdate() {
+        const rawText = document.getElementById('attendance-paste-area').value;
+        const knownSubjects = getUniqueSubjects();
+        let updatedCount = 0;
+
+        knownSubjects.forEach(subject => {
+            const escapedSubject = subject.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const regex = new RegExp(escapedSubject + '\\s*(\\d+)\\s*(\\d+)\\s*(\\d+)');
+            const match = rawText.match(regex);
+
+            if (match) {
+                const present = parseInt(match[1]);
+                const total = parseInt(match[2]);
+                if (!isNaN(present) && !isNaN(total)) {
+                    subjectData[subject].attended = present;
+                    subjectData[subject].bunked = total - present;
+                    updatedCount++;
+                }
+            }
+        });
+
+        if (updatedCount > 0) {
+            saveData('attendance');
+            renderDashboard();
+            renderAttendanceReportView();
+            alert(`${updatedCount} subjects were updated successfully!`);
+            showView('attendance-report-view', document.querySelector('[onclick*="attendance-report-view"]'));
+        } else {
+            alert("No matching subject data could be found in the pasted text. Please ensure you've copied the 'By subject' table from G-Learn.");
+        }
+    }
+
+    function fetchAndDisplayIP() {
+        const ipElement = document.getElementById('user-ip');
+        if (!ipElement) return;
+        ipElement.textContent = 'Fetching IP...';
+        fetch("https://api.ipify.org?format=json")
+            .then(response => response.json())
+            .then(data => { ipElement.textContent = `IP: ${data.ip}`; })
+            .catch(() => { ipElement.textContent = "IP not available"; });
+    }
+
+    function recalculateDailyAttendance() {
+        const savedStartDate = localStorage.getItem(getUserDataKey('startDate'));
+        if (!savedStartDate) return; 
+
+        const startDate = new Date(savedStartDate);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        if (startDate > today) return;
+
+        const heldCounts = {};
+        getUniqueSubjects().forEach(name => heldCounts[name] = 0);
+
+        let currentDate = new Date(startDate);
+        while (currentDate <= today) {
+            (currentUserTimetable.simple[currentDate.getDay()] || []).forEach(subjectName => {
+                if (heldCounts[subjectName] !== undefined) heldCounts[subjectName]++;
+            });
+            currentDate.setDate(currentDate.getDate() + 1);
+        }
+
+        const savedBunks = {};
+        for (const subjectName of getUniqueSubjects()) {
+            savedBunks[subjectName] = subjectData[subjectName]?.bunked || 0;
+        }
+
+        for (const subjectName of getUniqueSubjects()) {
+            const bunks = savedBunks[subjectName];
+            const totalHeld = heldCounts[subjectName] || 0;
+            subjectData[subjectName] = {
+                ...subjectData[subjectName],
+                attended: totalHeld - bunks,
+                bunked: bunks
+            };
+        }
+        saveData('attendance');
+        console.log("Attendance recalculated for today.");
+    }
+    
+    function resetAttendance() {
+        if (confirm("Are you sure you want to reset all attendance data? This action cannot be undone.")) {
+            localStorage.removeItem(getUserDataKey('attendance'));
+            localStorage.removeItem(getUserDataKey('startDate'));
+            
+            window.location.reload();
+        }
+    }
+    
     // --- Global Functions (attached to window for onclick) ---
-    window.getUniqueSubjects = () => Array.from(new Set(Object.values(currentUserTimetable.simple || {}).flat())).sort();
+    window.getUniqueSubjects = () => {
+        const subjectOrder = [];
+        const seen = new Set();
+        Object.values(currentUserTimetable.simple || {}).flat().forEach(subject => {
+            if (!seen.has(subject)) {
+                seen.add(subject);
+                subjectOrder.push(subject);
+            }
+        });
+        return subjectOrder;
+    }
     window.showView = (viewId, element) => {
+        if (viewId === 'attendance-report-view') renderAttendanceReportView();
+        if (viewId === 'update-attendance-view') renderUpdateAttendanceView();
         document.querySelectorAll('.content-area.view').forEach(v => v.style.display = 'none');
         document.getElementById(viewId).style.display = 'block';
         document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
@@ -407,45 +662,30 @@ document.addEventListener("DOMContentLoaded", function() {
         evt.currentTarget.classList.add('active');
     };
     window.markBunked = (subjectName) => {
-        if (subjectData[subjectName].attended > 0) {
-            subjectData[subjectName].attended--;
-            subjectData[subjectName].bunked++;
-            saveData('attendance');
-            renderDashboard();
-        }
+        subjectData[subjectName].bunked++;
+        saveData('attendance');
+        recalculateDailyAttendance();
+        renderDashboard();
     };
     window.undoBunk = (subjectName) => {
         if (subjectData[subjectName].bunked > 0) {
-            subjectData[subjectName].attended++;
             subjectData[subjectName].bunked--;
             saveData('attendance');
+            recalculateDailyAttendance();
             renderDashboard();
         }
     };
     window.startTracking = () => {
         const startDateString = document.getElementById('start-date').value;
         if (!startDateString) { alert("Please select a Semester Start Date first."); return; }
-        const startDate = new Date(startDateString);
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        if (startDate > today) { alert("Start date cannot be in the future."); return; }
-        const heldCounts = {};
-        getUniqueSubjects().forEach(name => heldCounts[name] = 0);
-        let currentDate = new Date(startDate);
-        while (currentDate <= today) {
-            (currentUserTimetable.simple[currentDate.getDay()] || []).forEach(subjectName => {
-                if (heldCounts[subjectName] !== undefined) heldCounts[subjectName]++;
-            });
-            currentDate.setDate(currentDate.getDate() + 1);
-        }
-        for (const subjectName of getUniqueSubjects()) {
-            subjectData[subjectName] = subjectData[subjectName] || { totalInSem: 0 };
-            subjectData[subjectName].attended = heldCounts[subjectName] || 0;
-            subjectData[subjectName].bunked = 0;
-        }
-        saveData('attendance');
-        renderDashboard();
-        alert("Dashboard calculated and updated with 100% attendance until today!");
+        
+        localStorage.setItem(getUserDataKey('startDate'), startDateString);
+        
+        Object.keys(subjectData).forEach(key => subjectData[key].bunked = 0);
+        
+        recalculateDailyAttendance();
+        loadData();
+        alert("Attendance has been recalculated from the new start date!");
     };
     window.simulateDayBunk = () => {
         const dayIndex = document.getElementById('day-to-bunk-select').value;
@@ -466,8 +706,12 @@ document.addEventListener("DOMContentLoaded", function() {
     };
     window.calculateSGPA = calculateSGPA;
     window.calculateSubjectGrade = calculateSubjectGrade;
+    window.resetAttendance = resetAttendance;
+    window.handlePasteAndUpdate = handlePasteAndUpdate;
     
+    // --- Event Listeners and Initializer ---
     document.getElementById('login-form').addEventListener('submit', handleLogin);
+    
     const passwordInput = document.getElementById('password-input');
     const passwordToggleIcon = document.getElementById('password-toggle-icon');
     passwordToggleIcon.addEventListener('click', function() {
@@ -476,7 +720,7 @@ document.addEventListener("DOMContentLoaded", function() {
         this.classList.toggle('ri-eye-line');
         this.classList.toggle('ri-eye-off-line');
     });
-// --- Dark Mode Toggle Logic ---
+
     const darkModeToggle = document.getElementById('dark-mode-toggle');
     const body = document.body;
     const moonIcon = 'ri-moon-line';
@@ -494,21 +738,16 @@ document.addEventListener("DOMContentLoaded", function() {
         } else {
             icon.classList.remove(sunIcon);
             icon.classList.add(moonIcon);
-            // In light mode, the button color should reflect the current text color
             darkModeToggle.style.color = getComputedStyle(body).getPropertyValue('--text-dark-color');
         }
     }
 
     darkModeToggle.addEventListener('click', () => {
-        // Toggle the class and get the new state
         const isDarkMode = body.classList.toggle('dark-mode');
-        // Save the new state to localStorage
-        localStorage.setItem('darkMode', isDarkMode);
-        // Apply the theme changes (icon and color)
+        localStorage.setItem('darkMode', String(isDarkMode));
         applyTheme();
     });
 
-    // Apply the saved theme when the page first loads
     applyTheme();
     init();
 });
