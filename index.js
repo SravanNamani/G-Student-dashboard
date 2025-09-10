@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
-    
+
     // --- DATABASE (Hardcoded Data) ---
     const userDatabase = [
         { name: 'SRAVAN NAMANI', regdNo: '2025228568', branch: 'CSE' },
@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", function() {
             timeSlots: ['08:00-08:50', '09:00-09:50', '10:00-10:50', '11:00-11:50', '11:50-13:00', '13:00-13:50', '14:00-14:50', '15:00-15:50'],
             simple: { 0: [], 1: ['Analog IC Design', 'Digital System Design', 'Modeling and Design With HDLs', 'Research Methodology & IPR', 'Digital IC Design', 'VLSI Circuit Design Laboratory', 'VLSI Circuit Design Laboratory'], 2: ['Digital Systems Testing and Testability', 'English For Research Paper Writing', 'FPGA Design Laboratory', 'FPGA Design Laboratory'], 3: ['Modeling and Design With HDLs', 'Digital IC Design', 'Analog IC Design', 'Digital Systems Testing and Testability', 'Digital System Design'], 4: ['FPGA Design Laboratory', 'FPGA Design Laboratory', 'English For Research Paper Writing', 'Analog IC Design', 'VLSI Circuit Design Laboratory', 'VLSI Circuit Design Laboratory'], 5: ['Digital IC Design', 'Research Methodology & IPR', 'Digital System Design', 'Digital Systems Testing and Testability', 'Modeling and Design With HDLs'], 6: [] },
             full: { 'Monday': [ { time: '08:00-08:50', subject: 'Analog IC Design' }, { time: '09:00-09:50', subject: 'Digital System Design' }, { time: '10:00-10:50', subject: 'Modeling and Design With HDLs' }, { time: '11:00-11:50', subject: 'Research Methodology & IPR' }, { time: '13:00-13:50', subject: 'Digital IC Design' }, { time: '14:00-14:50', subject: 'VLSI Circuit Design Laboratory', span: 2 } ], 'Tuesday': [ { time: '10:00-10:50', subject: 'Digital Systems Testing and Testability' }, { time: '11:00-11:50', subject: 'English For Research Paper Writing' }, { time: '14:00-14:50', subject: 'FPGA Design Laboratory', span: 2 } ], 'Wednesday': [ { time: '08:00-08:50', subject: 'Modeling and Design With HDLs' }, { time: '09:00-09:50', subject: 'Digital IC Design' }, { time: '10:00-10:50', subject: 'Analog IC Design' }, { time: '11:00-11:50', subject: 'Digital Systems Testing and Testability' }, { time: '13:00-13:50', subject: 'Digital System Design' } ], 'Thursday': [ { time: '08:00-08:50', subject: 'FPGA Design Laboratory', span: 2 }, { time: '10:00-10:50', subject: 'English For Research Paper Writing' }, { time: '11:00-11:50', subject: 'Analog IC Design' }, { time: '13:00-13:50', subject: 'VLSI Circuit Design Laboratory', span: 2 } ], 'Friday': [ { time: '08:00-08:50', subject: 'Digital IC Design' }, { time: '09:00-09:50', subject: 'Research Methodology & IPR' }, { time: '11:00-11:50', subject: 'Digital System Design' }, { time: '13:00-13:50', subject: 'Digital Systems Testing and Testability' }, { time: '14:00-14:50', subject: 'Modeling and Design With HDLs' } ] },
-            colors: { 'Analog IC Design': '#8e44ad', 'Digital System Design': '#2980b9', 'Modeling and Design With HDLs': '#27ae60', 'Research Methodology & IPR': '#f39c12', 'Digital IC Design': '#d35400', 'VLSI Circuit Design Laboratory': '#c0392b', 'Digital Systems Testing and Testability': '#16a085', 'English For Research Paper Writing': '#7f8c8d', 'FPGA Design Laboratory': '#2c3e50' }
+            colors: { 'Analog IC Design': '#8e44ad', 'Digital System Design': '#2980b9', 'Modeling and Design With HDLs': '#27ae60', 'Research Methodology & IPR': '#f39c12', 'Digital IC Design': '#d35400', 'VLSI Circuit Design Laboratory': '#c0392b', 'Digital Systems Testing and Testability': '#16a085', 'English for Research Paper Writing': '#7f8c8d', 'FPGA Design Laboratory': '#2c3e50' }
         }
     };
     const courseDetailsByBranch = {
@@ -101,11 +101,12 @@ document.addEventListener("DOMContentLoaded", function() {
         profilePic.onerror = () => { profilePic.style.display = 'none'; };
 
         fetchAndDisplayIP();
-
+        
         renderAttendanceView();
         renderUpdateAttendanceView();
         renderAttendanceReportView();
-        renderPasteAttendanceView(); // Added this call
+        renderPasteAttendanceView();
+        renderSemEndCalcView();
         renderGradeEstimator();
         renderFullTimetable();
         renderSyllabusView();
@@ -296,10 +297,48 @@ document.addEventListener("DOMContentLoaded", function() {
                 Go to the G-Learn portal, view your attendance "By subject", copy the entire table, and paste it into the box below.
             </p>
             <div class="card">
-                <textarea id="attendance-paste-area" style="width: 100%; height: 200px; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); font-family: monospace;"></textarea>
+                <textarea id="attendance-paste-area" style="width: 100%; height: 200px; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); font-family: monospace; background-color: var(--background-color); color: var(--text-dark-color);"></textarea>
                 <button onclick="handlePasteAndUpdate()" class="card-btn" style="background-color: var(--primary-color); margin-top: 15px;">
                     <i class="ri-upload-cloud-2-line" style="margin-right: 8px;"></i> Process Pasted Data
                 </button>
+            </div>
+        `;
+    }
+
+    function renderSemEndCalcView() {
+        const view = document.getElementById('sem-end-calc-view');
+        const today = new Date().toISOString().split('T')[0];
+        view.innerHTML = `
+            <h2>Semester End Attendance Calculator</h2>
+            <p style="color: var(--text-light-color); margin-bottom: 20px;">
+                Forecast your final attendance percentage based on a planned study leave.
+            </p>
+            <div class="card">
+                <div class="dashboard-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                    <div class="login-form-group">
+                        <label for="sem-start-date">Semester Start Date</label>
+                        <input type="date" id="sem-start-date" value="${localStorage.getItem(getUserDataKey('startDate')) || ''}" style="padding: 8px; border-radius: 5px; border: 1px solid var(--border-color); width: 100%;">
+                    </div>
+                    <div class="login-form-group">
+                        <label for="sem-exam-date">Semester End Date (Exams)</label>
+                        <input type="date" id="sem-exam-date" value="${today}" style="padding: 8px; border-radius: 5px; border: 1px solid var(--border-color); width: 100%;">
+                    </div>
+                    <div class="login-form-group">
+                        <label for="prep-leave-date">Prep Leave Start Date</label>
+                        <input type="date" id="prep-leave-date" value="${today}" style="padding: 8px; border-radius: 5px; border: 1px solid var(--border-color); width: 100%;">
+                    </div>
+                </div>
+                 <div class="login-form-group">
+                    <label>Current Attendance (As of Today)</label>
+                    <input type="number" id="current-attendance-input" placeholder="Enter your current total attended classes" style="padding: 8px; border-radius: 5px; border: 1px solid var(--border-color); width: 100%;">
+                </div>
+                <button onclick="handleSemEndCalculation()" class="card-btn" style="background-color: var(--primary-color);">
+                    <i class="ri-calculator-line" style="margin-right: 8px;"></i> Calculate Final Attendance
+                </button>
+            </div>
+            <div id="sem-end-results-card" class="card" style="margin-top: 20px; display: none;">
+                <h2>Projected Attendance</h2>
+                <div id="sem-end-results"></div>
             </div>
         `;
     }
@@ -420,11 +459,11 @@ document.addEventListener("DOMContentLoaded", function() {
             const cleanSubName = subjectName.replace(/[\s&/]/g, '');
             let inputsHTML = '';
             if (details.type === 'Theory') {
-                inputsHTML += `<div class="input-group"><label>Internal (40)</label><input oninput="if(parseInt(this.value)>40) this.value=40; calculateSubjectGrade('${subjectName}')" type="number" min="0" max="40" id="internal_${cleanSubName}"></div><div class="input-group"><label>External (60)</label><input oninput="if(parseInt(this.value)>60) this.value=60; calculateSubjectGrade('${subjectName}')" type="number" min="0" max="60" id="external_${cleanSubName}"></div>`;
-            } else if (details.type === 'Lab') {
-                inputsHTML += `<div class="input-group"><label>Total Internal (100)</label><input oninput="if(parseInt(this.value)>100) this.value=100; calculateSubjectGrade('${subjectName}')" type="number" min="0" max="100" id="lab_internal_${cleanSubName}"></div>`;
-            } else if (details.type === 'Integrated') {
-                inputsHTML += `<div class="input-group"><label>Theory Internal (40)</label><input oninput="if(parseInt(this.value)>40) this.value=40; calculateSubjectGrade('${subjectName}')" type="number" min="0" max="40" id="internal_${cleanSubName}"></div><div class="input-group"><label>Theory External (60)</label><input oninput="if(parseInt(this.value)>60) this.value=60; calculateSubjectGrade('${subjectName}')" type="number" min="0" max="60" id="external_${cleanSubName}"></div><div class="input-group"><label>Lab Internal (100)</label><input oninput="if(parseInt(this.value)>100) this.value=100; calculateSubjectGrade('${subjectName}')" type="number" min="0" max="100" id="lab_internal_${cleanSubName}"></div>`;
+                inputsHTML += `<div class="input-group"><label>Sessional I (30)</label><input oninput="if(parseInt(this.value)>30) this.value=30; calculateSubjectGrade('${subjectName}')" type="number" min="0" max="30" id="s1_${cleanSubName}"></div><div class="input-group"><label>Sessional II (45)</label><input oninput="if(parseInt(this.value)>45) this.value=45; calculateSubjectGrade('${subjectName}')" type="number" min="0" max="45" id="s2_${cleanSubName}"></div><div class="input-group"><label>Learning Eng. (25)</label><input oninput="if(parseInt(this.value)>25) this.value=25; calculateSubjectGrade('${subjectName}')" type="number" min="0" max="25" id="le_${cleanSubName}"></div>`;
+            } else if (details.type === 'Lab' || subjectName.includes('Project') || subjectName.includes('Internship')) {
+                inputsHTML += `<div class="input-group"><label>Total Marks (100)</label><input oninput="if(parseInt(this.value)>100) this.value=100; calculateSubjectGrade('${subjectName}')" type="number" min="0" max="100" id="total_marks_${cleanSubName}"></div>`;
+            } else if (details.type === 'Integrated') { // Re-using Theory structure, assuming combined scores are calculated on a different page or with a more complex UI
+                inputsHTML += `<div class="input-group"><label>Sessional I (30)</label><input oninput="if(parseInt(this.value)>30) this.value=30; calculateSubjectGrade('${subjectName}')" type="number" min="0" max="30" id="s1_${cleanSubName}"></div><div class="input-group"><label>Sessional II (45)</label><input oninput="if(parseInt(this.value)>45) this.value=45; calculateSubjectGrade('${subjectName}')" type="number" min="0" max="45" id="s2_${cleanSubName}"></div><div class="input-group"><label>Learning Eng. (25)</label><input oninput="if(parseInt(this.value)>25) this.value=25; calculateSubjectGrade('${subjectName}')" type="number" min="0" max="25" id="le_${cleanSubName}"></div><div class="input-group"><label>Lab Internal (100)</label><input oninput="if(parseInt(this.value)>100) this.value=100; calculateSubjectGrade('${subjectName}')" type="number" min="0" max="100" id="lab_internal_${cleanSubName}"></div>`;
             }
             const card = document.createElement('div');
             card.className = 'card estimator-card';
@@ -451,60 +490,130 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
-    function getGradeFromMarks(marks, failStatus) {
-        if (failStatus) return { grade: 'F', gradePoint: 0 };
-        if (marks >= 90) return { grade: 'O', gradePoint: 10 };
-        if (marks >= 80) return { grade: 'A+', gradePoint: 9 };
-        if (marks >= 70) return { grade: 'A', gradePoint: 8 };
-        if (marks >= 60) return { grade: 'B+', gradePoint: 7 };
-        if (marks >= 50) return { grade: 'B', gradePoint: 6 };
-        if (marks >= 45) return { grade: 'C', gradePoint: 5 };
-        if (marks >= 40) return { grade: 'P', gradePoint: 4 };
+    // New function to convert marks to a grade point based on Annexure II (Absolute Grading for Sessionals)
+    function getSessionalGradePoint(marks, totalMarks) {
+        const percentage = (marks / totalMarks) * 100;
+        if (marks < totalMarks / 3) return { grade: 'I', gradePoint: 0 }; // 'I' grade for < 1/3 marks [cite: 78]
+        if (percentage >= 90) return { grade: 'O', gradePoint: 10 };
+        if (percentage >= 80) return { grade: 'A+', gradePoint: 9 };
+        if (percentage >= 70) return { grade: 'A', gradePoint: 8 };
+        if (percentage >= 60) return { grade: 'B+', gradePoint: 7 };
+        if (percentage >= 50) return { grade: 'B', gradePoint: 6 };
+        if (percentage >= 40) return { grade: 'C', gradePoint: 5 };
+        if (percentage >= 33) return { grade: 'P', gradePoint: 4 }; // P grade for 33-39%
         return { grade: 'F', gradePoint: 0 };
     }
 
+    // New function to convert weighted grade point to final grade (Annexure IV)
+    function getFinalGradeFromWGP(wgp) {
+        if (wgp > 9) return { grade: 'O', gradePoint: 10 };
+        if (wgp > 8) return { grade: 'A+', gradePoint: 9 };
+        if (wgp > 7) return { grade: 'A', gradePoint: 8 };
+        if (wgp > 6) return { grade: 'B+', gradePoint: 7 };
+        if (wgp > 5) return { grade: 'B', gradePoint: 6 };
+        if (wgp > 4) return { grade: 'C', gradePoint: 5 };
+        if (wgp >= 4 && wgp <= 4) return { grade: 'P', gradePoint: 4 }; // Exact match for P grade with 4 GP
+        return { grade: 'F', gradePoint: 0 };
+    }
+
+    // UPDATED: Function to calculate subject grade based on new policy
     function calculateSubjectGrade(subjectName) {
         const details = courseDetails[subjectName];
         const cleanSubName = subjectName.replace(/[\s&/]/g, '');
-        let finalScore = 0, isFail = false;
         const validationDiv = document.getElementById(`validation_${cleanSubName}`);
         if(validationDiv) validationDiv.textContent = '';
         
-        if (details.type === 'Theory' || details.type === 'Integrated') {
-            const internal = parseInt(document.getElementById(`internal_${cleanSubName}`)?.value) || 0;
-            const external = parseInt(document.getElementById(`external_${cleanSubName}`)?.value) || 0;
-            let minExternalRequired = 24;
-            let internalShortfall = 16 - internal;
-            if (internalShortfall > 0) {
-                minExternalRequired = 24 + internalShortfall;
-                if(validationDiv) validationDiv.textContent = `Short by ${internalShortfall} in internals. Need at least ${minExternalRequired} in externals.`;
-            }
-            if (internal < 16 && external < minExternalRequired) { isFail = true; } 
-            else if (internal >= 16 && external < 24) { isFail = true; } 
-            else if ((internal + external) < 40) { isFail = true; }
+        let gradeResult = { gradePoint: 0, credits: details.credits };
+
+        if (details.type === 'Theory') {
+            const s1Marks = parseInt(document.getElementById(`s1_${cleanSubName}`)?.value) || 0;
+            const s2Marks = parseInt(document.getElementById(`s2_${cleanSubName}`)?.value) || 0;
+            const leMarks = parseInt(document.getElementById(`le_${cleanSubName}`)?.value) || 0;
             
-            const theoryTotal = internal + external;
-            if (details.type === 'Theory') {
-                finalScore = theoryTotal;
+            // Check overall pass criteria for sessionals
+            const sessionalTotal = s1Marks + s2Marks;
+            if (sessionalTotal < 25) {
+                gradeResult = { grade: 'F', gradePoint: 0 };
             } else {
-                const labInternal = parseInt(document.getElementById(`lab_internal_${cleanSubName}`)?.value) || 0;
-                if (labInternal < 40) {
-                    isFail = true;
-                    if(validationDiv && !validationDiv.textContent) validationDiv.textContent = 'Lab internal requires a minimum of 40.';
+                const s1GP_obj = getSessionalGradePoint(s1Marks, 30);
+                const s2GP_obj = getSessionalGradePoint(s2Marks, 45);
+                const leGP_obj = getSessionalGradePoint(leMarks, 25);
+                
+                // The 'I' grade is considered 4 GP at the end of the semester if criteria are met. [cite: 74, 79]
+                const s1FinalGP = (s1GP_obj.grade === 'I') ? 4 : s1GP_obj.gradePoint;
+                const s2FinalGP = (s2GP_obj.grade === 'I') ? 4 : s2GP_obj.gradePoint;
+                const leFinalGP = leGP_obj.gradePoint;
+
+                const weightedGradePoint = (s1FinalGP * 0.30) + (s2FinalGP * 0.45) + (leFinalGP * 0.25);
+                
+                gradeResult = getFinalGradeFromWGP(weightedGradePoint);
+            }
+
+            document.getElementById(`result_${cleanSubName}`).innerText = `${gradeResult.grade} (${(sessionalTotal).toFixed(0)})`;
+
+        } else if (details.type === 'Lab' || subjectName.includes('Project') || subjectName.includes('Internship')) {
+            const totalMarks = parseInt(document.getElementById(`total_marks_${cleanSubName}`)?.value) || 0;
+            let grade = 'F', gradePoint = 0;
+            if (totalMarks >= 50) { // Minimum 50% to pass for Lab/Project/Internship 
+                if (totalMarks >= 90) { grade = 'O'; gradePoint = 10; }
+                else if (totalMarks >= 80) { grade = 'A+'; gradePoint = 9; }
+                else if (totalMarks >= 70) { grade = 'A'; gradePoint = 8; }
+                else if (totalMarks >= 60) { grade = 'B+'; gradePoint = 7; }
+                else if (totalMarks >= 50) { grade = 'B'; gradePoint = 6; }
+            }
+            document.getElementById(`result_${cleanSubName}`).innerText = `${grade} (${totalMarks})`;
+            gradeResult = { gradePoint: gradePoint, credits: details.credits };
+
+        } else if (details.type === 'Integrated') { // Combined Theory & Practical [cite: 103, 104]
+            const s1Marks = parseInt(document.getElementById(`s1_${cleanSubName}`)?.value) || 0;
+            const s2Marks = parseInt(document.getElementById(`s2_${cleanSubName}`)?.value) || 0;
+            const leMarks = parseInt(document.getElementById(`le_${cleanSubName}`)?.value) || 0;
+            const labMarks = parseInt(document.getElementById(`lab_internal_${cleanSubName}`)?.value) || 0;
+            
+            const theorySessionalTotal = s1Marks + s2Marks;
+            let theoryPass = theorySessionalTotal >= 25; // Theory pass criteria [cite: 93]
+            
+            const s1GP_obj = getSessionalGradePoint(s1Marks, 30);
+            const s2GP_obj = getSessionalGradePoint(s2Marks, 45);
+            const leGP_obj = getSessionalGradePoint(leMarks, 25);
+            
+            const s1FinalGP = (s1GP_obj.grade === 'I') ? 4 : s1GP_obj.gradePoint;
+            const s2FinalGP = (s2GP_obj.grade === 'I') ? 4 : s2GP_obj.gradePoint;
+            const leFinalGP = leGP_obj.gradePoint;
+
+            const weightedTheoryGP = (s1FinalGP * 0.30) + (s2FinalGP * 0.45) + (leFinalGP * 0.25);
+            const theoryGradeResult = getFinalGradeFromWGP(weightedTheoryGP);
+
+            let labGrade = 'F', labGP = 0;
+            if (labMarks >= 50) { // Labs require 50% to pass [cite: 101]
+                if (labMarks >= 90) { labGrade = 'O'; labGP = 10; }
+                else if (labMarks >= 80) { labGrade = 'A+'; labGP = 9; }
+                else if (labMarks >= 70) { labGrade = 'A'; labGP = 8; }
+                else if (labMarks >= 60) { labGrade = 'B+'; labGP = 7; }
+                else if (labMarks >= 50) { labGrade = 'B'; labGP = 6; }
+            }
+            
+            // Student needs to secure a passing grade in both components [cite: 104]
+            if (theoryPass && theoryGradeResult.gradePoint > 0 && labGP > 0) {
+                const finalWGP = (theoryGradeResult.gradePoint * 0.7) + (labGP * 0.3); // 70% theory, 30% practical [cite: 103]
+                gradeResult = getFinalGradeFromWGP(finalWGP);
+                document.getElementById(`result_${cleanSubName}`).innerText = `${gradeResult.grade} (${finalWGP.toFixed(2)})`;
+            } else {
+                 if(validationDiv) {
+                    if(!theoryPass) {
+                        validationDiv.textContent = 'Failed: Combined Sessional marks must be at least 25.'; 
+                    } else if(theoryGradeResult.gradePoint <= 0) {
+                        validationDiv.textContent = 'Failed: Theory component grade is F.';
+                    } else if(labGP <= 0) {
+                        validationDiv.textContent = 'Failed: Lab component grade is F.';
+                    }
                 }
-                finalScore = (theoryTotal * 0.7) + (labInternal * 0.3);
+                document.getElementById(`result_${cleanSubName}`).innerText = `F (0.00)`;
+                gradeResult = { gradePoint: 0, credits: details.credits };
             }
-        } else if (details.type === 'Lab') {
-            const labInternal = parseInt(document.getElementById(`lab_internal_${cleanSubName}`)?.value) || 0;
-            if (labInternal < 40) {
-                isFail = true;
-                if(validationDiv) validationDiv.textContent = 'Lab internal requires a minimum of 40.';
-            }
-            finalScore = labInternal;
         }
-        const { grade, gradePoint } = getGradeFromMarks(finalScore, isFail);
-        document.getElementById(`result_${cleanSubName}`).innerText = `${grade} (${finalScore.toFixed(2)})`;
-        return { gradePoint, credits: details.credits };
+        
+        return gradeResult;
     }
 
     function calculateSGPA() {
@@ -513,8 +622,10 @@ document.addEventListener("DOMContentLoaded", function() {
             const details = courseDetails[subjectName];
             if (details && details.credits > 0) {
                 const result = calculateSubjectGrade(subjectName);
-                totalCredits += result.credits;
-                weightedGradePoints += result.gradePoint * result.credits;
+                if (result.gradePoint > 0) {
+                     totalCredits += result.credits;
+                     weightedGradePoints += result.gradePoint * result.credits;
+                }
             }
         });
         const sgpa = totalCredits > 0 ? (weightedGradePoints / totalCredits) : 0;
@@ -537,9 +648,9 @@ document.addEventListener("DOMContentLoaded", function() {
         renderDashboard();
         renderAttendanceReportView();
         alert('Attendance updated successfully!');
-        showView('attendance-view', document.querySelector('.sidebar-nav a.active'));
+        showView('attendance-view', document.querySelector('.sidebar-nav a'));
     }
-    
+
     function handlePasteAndUpdate() {
         const rawText = document.getElementById('attendance-paste-area').value;
         const knownSubjects = getUniqueSubjects();
@@ -584,7 +695,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function recalculateDailyAttendance() {
         const savedStartDate = localStorage.getItem(getUserDataKey('startDate'));
-        if (!savedStartDate) return; 
+        if (!savedStartDate) return;
 
         const startDate = new Date(savedStartDate);
         const today = new Date();
@@ -619,7 +730,7 @@ document.addEventListener("DOMContentLoaded", function() {
         saveData('attendance');
         console.log("Attendance recalculated for today.");
     }
-    
+
     function resetAttendance() {
         if (confirm("Are you sure you want to reset all attendance data? This action cannot be undone.")) {
             localStorage.removeItem(getUserDataKey('attendance'));
@@ -628,26 +739,20 @@ document.addEventListener("DOMContentLoaded", function() {
             window.location.reload();
         }
     }
-    
+
     // --- Global Functions (attached to window for onclick) ---
-    window.getUniqueSubjects = () => {
-        const subjectOrder = [];
-        const seen = new Set();
-        Object.values(currentUserTimetable.simple || {}).flat().forEach(subject => {
-            if (!seen.has(subject)) {
-                seen.add(subject);
-                subjectOrder.push(subject);
-            }
-        });
-        return subjectOrder;
-    }
+    window.getUniqueSubjects = () => Array.from(new Set(Object.values(currentUserTimetable.simple || {}).flat()));
     window.showView = (viewId, element) => {
         if (viewId === 'attendance-report-view') renderAttendanceReportView();
         if (viewId === 'update-attendance-view') renderUpdateAttendanceView();
         document.querySelectorAll('.content-area.view').forEach(v => v.style.display = 'none');
         document.getElementById(viewId).style.display = 'block';
+        
         document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
-        if (element) element.classList.add('active');
+        if (element) {
+            element.classList.add('active');
+        }
+        
         if (document.getElementById('sidebar').classList.contains('open')) window.toggleMobileMenu();
     };
     window.toggleMobileMenu = () => {
@@ -734,7 +839,7 @@ document.addEventListener("DOMContentLoaded", function() {
         if (isDarkMode) {
             icon.classList.remove(moonIcon);
             icon.classList.add(sunIcon);
-            darkModeToggle.style.color = '#ffc107'; // Sun color
+            darkModeToggle.style.color = '#ffc107';
         } else {
             icon.classList.remove(sunIcon);
             icon.classList.add(moonIcon);
