@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", function() {
             timeSlots: ['08:00-08:50', '09:00-09:50', '10:00-10:50', '11:00-11:50', '11:50-13:00', '13:00-13:50', '14:00-14:50', '15:00-15:50'],
             simple: { 0: [], 1: ['Analog IC Design', 'Digital System Design', 'Modeling and Design With HDLs', 'Research Methodology & IPR', 'Digital IC Design', 'VLSI Circuit Design Laboratory', 'VLSI Circuit Design Laboratory'], 2: ['Digital Systems Testing and Testability', 'English For Research Paper Writing', 'FPGA Design Laboratory', 'FPGA Design Laboratory'], 3: ['Modeling and Design With HDLs', 'Digital IC Design', 'Analog IC Design', 'Digital Systems Testing and Testability', 'Digital System Design'], 4: ['FPGA Design Laboratory', 'FPGA Design Laboratory', 'English For Research Paper Writing', 'Analog IC Design', 'VLSI Circuit Design Laboratory', 'VLSI Circuit Design Laboratory'], 5: ['Digital IC Design', 'Research Methodology & IPR', 'Digital System Design', 'Digital Systems Testing and Testability', 'Modeling and Design With HDLs'], 6: [] },
             full: { 'Monday': [ { time: '08:00-08:50', subject: 'Analog IC Design' }, { time: '09:00-09:50', subject: 'Digital System Design' }, { time: '10:00-10:50', subject: 'Modeling and Design With HDLs' }, { time: '11:00-11:50', subject: 'Research Methodology & IPR' }, { time: '13:00-13:50', subject: 'Digital IC Design' }, { time: '14:00-14:50', subject: 'VLSI Circuit Design Laboratory', span: 2 } ], 'Tuesday': [ { time: '10:00-10:50', subject: 'Digital Systems Testing and Testability' }, { time: '11:00-11:50', subject: 'English For Research Paper Writing' }, { time: '14:00-14:50', subject: 'FPGA Design Laboratory', span: 2 } ], 'Wednesday': [ { time: '08:00-08:50', subject: 'Modeling and Design With HDLs' }, { time: '09:00-09:50', subject: 'Digital IC Design' }, { time: '10:00-10:50', subject: 'Analog IC Design' }, { time: '11:00-11:50', subject: 'Digital Systems Testing and Testability' }, { time: '13:00-13:50', subject: 'Digital System Design' } ], 'Thursday': [ { time: '08:00-08:50', subject: 'FPGA Design Laboratory', span: 2 }, { time: '10:00-10:50', subject: 'English For Research Paper Writing' }, { time: '11:00-11:50', subject: 'Analog IC Design' }, { time: '13:00-13:50', subject: 'VLSI Circuit Design Laboratory', span: 2 } ], 'Friday': [ { time: '08:00-08:50', subject: 'Digital IC Design' }, { time: '09:00-09:50', subject: 'Research Methodology & IPR' }, { time: '11:00-11:50', subject: 'Digital System Design' }, { time: '13:00-13:50', subject: 'Digital Systems Testing and Testability' }, { time: '14:00-14:50', subject: 'Modeling and Design With HDLs' } ] },
-            colors: { 'Analog IC Design': '#8e44ad', 'Digital System Design': '#2980b9', 'Modeling and Design With HDLs': '#27ae60', 'Research Methodology & IPR': '#f39c12', 'Digital IC Design': '#d35400', 'VLSI Circuit Design Laboratory': '#c0392b', 'Digital Systems Testing and Testability': '#16a085', 'English for Research Paper Writing': '#7f8c8d', 'FPGA Design Laboratory': '#2c3e50' }
+            colors: { 'Analog IC Design': '#8e44ad', 'Digital System Design': '#2980b9', 'Modeling and Design With HDLs': '#27ae60', 'Research Methodology & IPR': '#f39c12', 'Digital IC Design': '#d35400', 'VLSI Circuit Design Laboratory': '#c0392b', 'Digital Systems Testing and Testability': '#16a085', 'English For Research Paper Writing': '#7f8c8d', 'FPGA Design Laboratory': '#2c3e50' }
         }
     };
     const courseDetailsByBranch = {
@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", function() {
     let currentUser = {};
 
     function init() {
-        const currentUserRegdNo = sessionStorage.getItem('currentUserRegdNo');
+        const currentUserRegdNo = localStorage.getItem('currentUserRegdNo');
         if (currentUserRegdNo) {
             loadDashboardForUser(currentUserRegdNo);
         } else {
@@ -61,7 +61,43 @@ document.addEventListener("DOMContentLoaded", function() {
             document.getElementById('dashboard-page').style.display = 'none';
         }
     }
+    // LOGIN PAGE: Live regd number validation
+    const regdInput = document.getElementById('regdNo-input');
+    const passwordInput = document.getElementById('password-input');
+    passwordInput.disabled = true;
 
+    regdInput.addEventListener('input', function() {
+        const regdNo = regdInput.value.trim();
+        if (regdNo.length === 10) {
+            const userExists = userDatabase.find(u => u.regdNo === regdNo);
+            if (!userExists) {
+                window.location.href = "error.html";
+            } else {
+                passwordInput.disabled = false;
+                passwordInput.focus();
+            }
+        } else {
+            passwordInput.value = "";
+            passwordInput.disabled = true;
+        }
+    });
+
+    document.getElementById('login-form').addEventListener('submit', handleLogin);
+
+    function handleLogin(event) {
+        event.preventDefault();
+        const regdNo = regdInput.value.trim();
+        const password = passwordInput.value.trim();
+        const correctPassword = regdNo + "@987";
+        const userExists = userDatabase.find(u => u.regdNo === regdNo);
+
+        if (userExists && password === correctPassword) {
+            localStorage.setItem('currentUserRegdNo', regdNo);
+            window.location.reload();
+        } else {
+            alert("Invalid Password.");
+        }
+    }
     function handleLogin(event) {
         event.preventDefault();
         const regdNo = document.getElementById('regdNo-input').value.trim();
@@ -70,18 +106,18 @@ document.addEventListener("DOMContentLoaded", function() {
         const userExists = userDatabase.find(u => u.regdNo === regdNo);
 
         if (userExists && password === correctPassword) {
-            sessionStorage.setItem('currentUserRegdNo', regdNo);
+            localStorage.setItem('currentUserRegdNo', regdNo);
             window.location.reload();
         } else {
             alert('Invalid Registration Number or Password.');
         }
     }
 
-    function logout() {
-        sessionStorage.removeItem('currentUserRegdNo');
+    window.logout = function() {
+        localStorage.removeItem('currentUserRegdNo');
         window.location.reload();
     }
-
+    
     function loadDashboardForUser(regdNo) {
         currentUser = userDatabase.find(u => u.regdNo === regdNo);
         if (!currentUser) { logout(); return; }
@@ -106,7 +142,6 @@ document.addEventListener("DOMContentLoaded", function() {
         renderUpdateAttendanceView();
         renderAttendanceReportView();
         renderPasteAttendanceView();
-        renderSemEndCalcView();
         renderGradeEstimator();
         renderFullTimetable();
         renderSyllabusView();
@@ -118,22 +153,14 @@ document.addEventListener("DOMContentLoaded", function() {
     }
     
     function getUserDataKey(type) {
-        const regdNo = sessionStorage.getItem('currentUserRegdNo');
+        const regdNo = localStorage.getItem('currentUserRegdNo');
         return `${type}Data_${regdNo}`;
     }
 
     function loadData() {
-        const attendanceData = JSON.parse(localStorage.getItem(getUserDataKey('attendance')));
+        const attendanceData = JSON.parse(localStorage.getItem(getUserDataKey('attendance')) || '{}');
         const startDate = localStorage.getItem(getUserDataKey('startDate'));
-
-        if (attendanceData) {
-            subjectData = attendanceData;
-        } else {
-            subjectData = {};
-            getUniqueSubjects().forEach(name => {
-                subjectData[name] = { attended: 0, bunked: 0, totalInSem: 0 };
-            });
-        }
+        subjectData = attendanceData;
         
         const startDateInput = document.getElementById('start-date');
         if(startDateInput && startDate) {
@@ -179,10 +206,10 @@ document.addEventListener("DOMContentLoaded", function() {
                     <button onclick="simulateDayBunk()" class="card-btn" style="background-color: var(--primary-color);">Simulate</button>
                     <div id="simulation-result" style="text-align:center; margin-top:15px; font-weight: 500;"></div>
                 </div>
-                 <div id="reset-card" class="card">
-                     <h2>Reset Data</h2>
-                     <p style="color: var(--text-light-color); margin: 10px 0;">Clear all your saved attendance data to start fresh.</p>
-                     <button onclick="resetAttendance()" class="card-btn" style="background-color: var(--danger-color);"><i class="ri-delete-bin-line" style="margin-right: 8px;"></i> Reset Attendance</button>
+                <div id="reset-card" class="card">
+                    <h2>Reset Data</h2>
+                    <p style="color: var(--text-light-color); margin: 10px 0;">Clear all your saved attendance data to start fresh.</p>
+                    <button onclick="resetAttendance()" class="card-btn" style="background-color: var(--danger-color);"><i class="ri-delete-bin-line" style="margin-right: 8px;"></i> Reset Attendance</button>
                 </div>
             </div>
             <div id="subject-dashboard" style="margin-top: 30px;">
@@ -285,7 +312,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 </tr>`;
         });
 
-        tableHTML += `</tbody></table></div>`;
+        tableHTML += '</tbody></table></div>';
         view.innerHTML = tableHTML;
     }
     
@@ -301,44 +328,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 <button onclick="handlePasteAndUpdate()" class="card-btn" style="background-color: var(--primary-color); margin-top: 15px;">
                     <i class="ri-upload-cloud-2-line" style="margin-right: 8px;"></i> Process Pasted Data
                 </button>
-            </div>
-        `;
-    }
-
-    function renderSemEndCalcView() {
-        const view = document.getElementById('sem-end-calc-view');
-        const today = new Date().toISOString().split('T')[0];
-        view.innerHTML = `
-            <h2>Semester End Attendance Calculator</h2>
-            <p style="color: var(--text-light-color); margin-bottom: 20px;">
-                Forecast your final attendance percentage based on a planned study leave.
-            </p>
-            <div class="card">
-                <div class="dashboard-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
-                    <div class="login-form-group">
-                        <label for="sem-start-date">Semester Start Date</label>
-                        <input type="date" id="sem-start-date" value="${localStorage.getItem(getUserDataKey('startDate')) || ''}" style="padding: 8px; border-radius: 5px; border: 1px solid var(--border-color); width: 100%;">
-                    </div>
-                    <div class="login-form-group">
-                        <label for="sem-exam-date">Semester End Date (Exams)</label>
-                        <input type="date" id="sem-exam-date" value="${today}" style="padding: 8px; border-radius: 5px; border: 1px solid var(--border-color); width: 100%;">
-                    </div>
-                    <div class="login-form-group">
-                        <label for="prep-leave-date">Prep Leave Start Date</label>
-                        <input type="date" id="prep-leave-date" value="${today}" style="padding: 8px; border-radius: 5px; border: 1px solid var(--border-color); width: 100%;">
-                    </div>
-                </div>
-                 <div class="login-form-group">
-                    <label>Current Attendance (As of Today)</label>
-                    <input type="number" id="current-attendance-input" placeholder="Enter your current total attended classes" style="padding: 8px; border-radius: 5px; border: 1px solid var(--border-color); width: 100%;">
-                </div>
-                <button onclick="handleSemEndCalculation()" class="card-btn" style="background-color: var(--primary-color);">
-                    <i class="ri-calculator-line" style="margin-right: 8px;"></i> Calculate Final Attendance
-                </button>
-            </div>
-            <div id="sem-end-results-card" class="card" style="margin-top: 20px; display: none;">
-                <h2>Projected Attendance</h2>
-                <div id="sem-end-results"></div>
             </div>
         `;
     }
@@ -385,7 +374,7 @@ document.addEventListener("DOMContentLoaded", function() {
         const classesToday = currentUserTimetable.simple[today.getDay()] || [];
         let cardContent = `<h2>Today's Schedule</h2><p style="text-align:center;font-weight:500;margin-bottom:15px;color:var(--text-light-color);">${dateString}</p>`;
         if (classesToday.length > 0) {
-            cardContent += `<ul>${classesToday.map(s => `<li>${s}</li>`).join('')}</ul>`;
+            cardContent += `<p style="text-align:center;">${classesToday.join(' | ')}</p>`;
         } else {
             cardContent += `<p style="text-align:center;font-weight:500;">No classes today! 🎉</p>`;
         }
@@ -438,7 +427,7 @@ document.addEventListener("DOMContentLoaded", function() {
         tabsHTML += '</div>';
         container.innerHTML = tableHTML + tabsHTML;
     }
-    
+
     function renderGradeEstimator() {
         const view = document.getElementById('grade-estimator-view');
         view.innerHTML = `
@@ -493,7 +482,7 @@ document.addEventListener("DOMContentLoaded", function() {
     // New function to convert marks to a grade point based on Annexure II (Absolute Grading for Sessionals)
     function getSessionalGradePoint(marks, totalMarks) {
         const percentage = (marks / totalMarks) * 100;
-        if (marks < totalMarks / 3) return { grade: 'I', gradePoint: 0 }; // 'I' grade for < 1/3 marks [cite: 78]
+        if (marks < totalMarks / 3) return { grade: 'I', gradePoint: 0 }; // 'I' grade for < 1/3 marks
         if (percentage >= 90) return { grade: 'O', gradePoint: 10 };
         if (percentage >= 80) return { grade: 'A+', gradePoint: 9 };
         if (percentage >= 70) return { grade: 'A', gradePoint: 8 };
@@ -539,7 +528,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 const s2GP_obj = getSessionalGradePoint(s2Marks, 45);
                 const leGP_obj = getSessionalGradePoint(leMarks, 25);
                 
-                // The 'I' grade is considered 4 GP at the end of the semester if criteria are met. [cite: 74, 79]
+                // The 'I' grade is considered 4 GP at the end of the semester if criteria are met.
                 const s1FinalGP = (s1GP_obj.grade === 'I') ? 4 : s1GP_obj.gradePoint;
                 const s2FinalGP = (s2GP_obj.grade === 'I') ? 4 : s2GP_obj.gradePoint;
                 const leFinalGP = leGP_obj.gradePoint;
@@ -564,14 +553,14 @@ document.addEventListener("DOMContentLoaded", function() {
             document.getElementById(`result_${cleanSubName}`).innerText = `${grade} (${totalMarks})`;
             gradeResult = { gradePoint: gradePoint, credits: details.credits };
 
-        } else if (details.type === 'Integrated') { // Combined Theory & Practical [cite: 103, 104]
+        } else if (details.type === 'Integrated') { // Combined Theory & Practical
             const s1Marks = parseInt(document.getElementById(`s1_${cleanSubName}`)?.value) || 0;
             const s2Marks = parseInt(document.getElementById(`s2_${cleanSubName}`)?.value) || 0;
             const leMarks = parseInt(document.getElementById(`le_${cleanSubName}`)?.value) || 0;
             const labMarks = parseInt(document.getElementById(`lab_internal_${cleanSubName}`)?.value) || 0;
             
             const theorySessionalTotal = s1Marks + s2Marks;
-            let theoryPass = theorySessionalTotal >= 25; // Theory pass criteria [cite: 93]
+            let theoryPass = theorySessionalTotal >= 25; // Theory pass criteria
             
             const s1GP_obj = getSessionalGradePoint(s1Marks, 30);
             const s2GP_obj = getSessionalGradePoint(s2Marks, 45);
@@ -585,7 +574,7 @@ document.addEventListener("DOMContentLoaded", function() {
             const theoryGradeResult = getFinalGradeFromWGP(weightedTheoryGP);
 
             let labGrade = 'F', labGP = 0;
-            if (labMarks >= 50) { // Labs require 50% to pass [cite: 101]
+            if (labMarks >= 50) { // Labs require 50% to pass
                 if (labMarks >= 90) { labGrade = 'O'; labGP = 10; }
                 else if (labMarks >= 80) { labGrade = 'A+'; labGP = 9; }
                 else if (labMarks >= 70) { labGrade = 'A'; labGP = 8; }
@@ -593,9 +582,9 @@ document.addEventListener("DOMContentLoaded", function() {
                 else if (labMarks >= 50) { labGrade = 'B'; labGP = 6; }
             }
             
-            // Student needs to secure a passing grade in both components [cite: 104]
+            // Student needs to secure a passing grade in both components
             if (theoryPass && theoryGradeResult.gradePoint > 0 && labGP > 0) {
-                const finalWGP = (theoryGradeResult.gradePoint * 0.7) + (labGP * 0.3); // 70% theory, 30% practical [cite: 103]
+                const finalWGP = (theoryGradeResult.gradePoint * 0.7) + (labGP * 0.3); // 70% theory, 30% practical
                 gradeResult = getFinalGradeFromWGP(finalWGP);
                 document.getElementById(`result_${cleanSubName}`).innerText = `${gradeResult.grade} (${finalWGP.toFixed(2)})`;
             } else {
@@ -645,13 +634,14 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         });
         saveData('attendance');
+        recalculateDailyAttendance();
         renderDashboard();
         renderAttendanceReportView();
         alert('Attendance updated successfully!');
         showView('attendance-view', document.querySelector('.sidebar-nav a'));
     }
 
-    function handlePasteAndUpdate() {
+    window.handlePasteAndUpdate = function() {
         const rawText = document.getElementById('attendance-paste-area').value;
         const knownSubjects = getUniqueSubjects();
         let updatedCount = 0;
@@ -665,6 +655,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 const present = parseInt(match[1]);
                 const total = parseInt(match[2]);
                 if (!isNaN(present) && !isNaN(total)) {
+                    if (!subjectData[subject]) subjectData[subject] = { attended: 0, bunked: 0 };
                     subjectData[subject].attended = present;
                     subjectData[subject].bunked = total - present;
                     updatedCount++;
@@ -724,14 +715,15 @@ document.addEventListener("DOMContentLoaded", function() {
             subjectData[subjectName] = {
                 ...subjectData[subjectName],
                 attended: totalHeld - bunks,
-                bunked: bunks
+                bunked: bunks,
+                totalInSem: totalHeld
             };
         }
         saveData('attendance');
         console.log("Attendance recalculated for today.");
     }
 
-    function resetAttendance() {
+    window.resetAttendance = function() {
         if (confirm("Are you sure you want to reset all attendance data? This action cannot be undone.")) {
             localStorage.removeItem(getUserDataKey('attendance'));
             localStorage.removeItem(getUserDataKey('startDate'));
@@ -759,24 +751,19 @@ document.addEventListener("DOMContentLoaded", function() {
         document.getElementById('sidebar').classList.toggle('open');
         document.getElementById('overlay').classList.toggle('open');
     };
-    window.logout = logout;
-    window.openTimetableTab = (evt, dayName) => {
-        document.querySelectorAll('#timetable-container .tab-content').forEach(tc => tc.classList.remove('active'));
-        document.querySelectorAll('#timetable-container .tab-nav-btn').forEach(tb => tb.classList.remove('active'));
-        document.getElementById(dayName).classList.add('active');
-        evt.currentTarget.classList.add('active');
-    };
     window.markBunked = (subjectName) => {
+        if (!subjectData[subjectName]) subjectData[subjectName] = { attended: 0, bunked: 0 };
         subjectData[subjectName].bunked++;
+        subjectData[subjectName].attended--;
         saveData('attendance');
-        recalculateDailyAttendance();
         renderDashboard();
     };
     window.undoBunk = (subjectName) => {
+        if (!subjectData[subjectName]) subjectData[subjectName] = { attended: 0, bunked: 0 };
         if (subjectData[subjectName].bunked > 0) {
             subjectData[subjectName].bunked--;
+            subjectData[subjectName].attended++;
             saveData('attendance');
-            recalculateDailyAttendance();
             renderDashboard();
         }
     };
@@ -786,7 +773,11 @@ document.addEventListener("DOMContentLoaded", function() {
         
         localStorage.setItem(getUserDataKey('startDate'), startDateString);
         
-        Object.keys(subjectData).forEach(key => subjectData[key].bunked = 0);
+        Object.keys(subjectData).forEach(key => {
+            if (subjectData[key]) {
+                subjectData[key].bunked = 0;
+            }
+        });
         
         recalculateDailyAttendance();
         loadData();
@@ -795,8 +786,8 @@ document.addEventListener("DOMContentLoaded", function() {
     window.simulateDayBunk = () => {
         const dayIndex = document.getElementById('day-to-bunk-select').value;
         const resultDiv = document.getElementById('simulation-result');
-        const classesOnDay = currentUserTimetable.simple[dayIndex] || [];
-        if (classesOnDay.length === 0) {
+        const classesToday = currentUserTimetable.simple[dayIndex] || [];
+        if (classesToday.length === 0) {
             resultDiv.innerHTML = `No classes to bunk on the selected day!`;
             return;
         }
@@ -805,19 +796,16 @@ document.addEventListener("DOMContentLoaded", function() {
             totalAttended += data.attended;
             totalBunked += data.bunked;
         });
-        const newTotalHeld = (totalAttended + totalBunked) + classesOnDay.length;
+        const newTotalHeld = (totalAttended + totalBunked) + classesToday.length;
         const newPercentage = newTotalHeld > 0 ? (totalAttended / newTotalHeld) * 100 : 100;
         resultDiv.innerHTML = `After bunking, your new overall percentage would be <strong>${newPercentage.toFixed(1)}%</strong>.`;
     };
     window.calculateSGPA = calculateSGPA;
     window.calculateSubjectGrade = calculateSubjectGrade;
-    window.resetAttendance = resetAttendance;
-    window.handlePasteAndUpdate = handlePasteAndUpdate;
     
     // --- Event Listeners and Initializer ---
     document.getElementById('login-form').addEventListener('submit', handleLogin);
     
-    const passwordInput = document.getElementById('password-input');
     const passwordToggleIcon = document.getElementById('password-toggle-icon');
     passwordToggleIcon.addEventListener('click', function() {
         const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
@@ -836,22 +824,26 @@ document.addEventListener("DOMContentLoaded", function() {
         body.classList.toggle('dark-mode', isDarkMode);
         
         const icon = darkModeToggle.querySelector('i');
-        if (isDarkMode) {
-            icon.classList.remove(moonIcon);
-            icon.classList.add(sunIcon);
-            darkModeToggle.style.color = '#ffc107';
-        } else {
-            icon.classList.remove(sunIcon);
-            icon.classList.add(moonIcon);
-            darkModeToggle.style.color = getComputedStyle(body).getPropertyValue('--text-dark-color');
+        if (icon) {
+            if (isDarkMode) {
+                icon.classList.remove(moonIcon);
+                icon.classList.add(sunIcon);
+                darkModeToggle.style.color = '#ffc107';
+            } else {
+                icon.classList.remove(sunIcon);
+                icon.classList.add(moonIcon);
+                darkModeToggle.style.color = getComputedStyle(body).getPropertyValue('--text-dark-color');
+            }
         }
     }
 
-    darkModeToggle.addEventListener('click', () => {
-        const isDarkMode = body.classList.toggle('dark-mode');
-        localStorage.setItem('darkMode', String(isDarkMode));
-        applyTheme();
-    });
+    if (darkModeToggle) {
+        darkModeToggle.addEventListener('click', () => {
+            const isDarkMode = body.classList.toggle('dark-mode');
+            localStorage.setItem('darkMode', String(isDarkMode));
+            applyTheme();
+        });
+    }
 
     applyTheme();
     init();
