@@ -1,115 +1,519 @@
-function calculateFinalAttendance() {
-    // 1. Get all inputs from the user
-    const startDateString = document.getElementById('sem-start-date').value;
-    const examDateString = document.getElementById('sem-exam-date').value; // Note: This is no longer used in the calculation loop but can be kept for other purposes.
-    const prepLeaveDateString = document.getElementById('prep-leave-date').value;
-    const expectedPercentage = parseFloat(document.getElementById('expected-percentage').value);
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>G-Student | Attendance Calculator</title>
+    <link rel="icon" type="image/png" href="https://login.gitam.edu/Images/gitam-Logo-new.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet"/>
+    <style>
+        :root {
+            --primary-color: #008374;
+            --primary-light: #e6f3f1;
+            --danger-color: #dc3545;
+            --safe-color: #28a745;
+            --background-color: #f8f9fa;
+            --card-bg-color: #ffffff;
+            --text-dark-color: #343a40;
+            --text-light-color: #6c757d;
+            --border-color: #dee2e6;
+            --font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --shadow-subtle: 0 4px 6px rgba(0, 0, 0, 0.05);
+            --shadow-strong: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        body.dark-mode {
+            --background-color: #1a1a1a;
+            --card-bg-color: #2b2b2b;
+            --text-dark-color: #e0e0e0;
+            --text-light-color: #a0a0a0;
+            --border-color: #444444;
+            --shadow-subtle: 0 4px 6px rgba(0, 0, 0, 0.2);
+            --shadow-strong: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: var(--font-family);
+            background-color: var(--background-color);
+            color: var(--text-dark-color);
+            transition: background-color 0.3s, color 0.3s;
+        }
+        h1, h2, h3, h4, h5, h6 { font-weight: 600; color: var(--text-dark-color); }
+        .app-wrapper {
+            display: flex;
+            min-height: 100vh;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .main-content { 
+            flex-grow: 1; 
+            display: flex; 
+            flex-direction: column; 
+            width: 100%;
+            max-width: 800px;
+            margin: auto;
+        }
+        .header {
+            background-color: var(--card-bg-color);
+            color: var(--text-dark-color);
+            padding: 0 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            min-height: 70px;
+            border-bottom: 1px solid var(--border-color);
+            transition: background-color 0.3s;
+        }
+        .header-title { font-weight: 700; font-size: 1.5em; color: var(--primary-color); }
+        .login-form-group { text-align: left; margin-bottom: 20px; }
+        .login-form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1em;
+            font-family: var(--font-family);
+            background-color: var(--background-color);
+            color: var(--text-dark-color);
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .dashboard-grid { 
+            display: grid; 
+            gap: 25px; 
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+        }
+        .card { 
+            background-color: var(--card-bg-color); 
+            padding: 25px; 
+            border-radius: 12px; 
+            box-shadow: var(--shadow-subtle); 
+            border: 1px solid var(--border-color); 
+            transition: background-color 0.3s; 
+        }
+        .card-btn { 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 8px; 
+            width: 100%; 
+            padding: 14px; 
+            font-size: 1em; 
+            border: none; 
+            border-radius: 8px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            color: white; 
+            transition: opacity 0.3s; 
+        }
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; text-align: center; }
+        .stat .label { font-size: 0.9em; color: var(--text-light-color); margin-bottom: 5px; }
+        .stat .value { font-size: 2em; font-weight: 700; }
+        .content-area { padding: 30px; flex-grow: 1; overflow-y: auto; }
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            background: var(--primary-light);
+            color: var(--primary-color);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+        .classes-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 0.9em;
+        }
+        .classes-table th, .classes-table td {
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            text-align: left;
+        }
+        .classes-table th {
+            background-color: var(--background-color);
+            font-weight: 600;
+            text-align: center;
+        }
+        .classes-table td {
+            text-align: center;
+        }
+        .classes-table td:first-child { text-align: left; }
+    </style>
+</head>
+<body>
 
-    if (!startDateString || !examDateString || !prepLeaveDateString || isNaN(expectedPercentage)) {
-        alert("Please fill in all four fields to calculate.");
-        return;
-    }
+    <div class="app-wrapper">
+        <div class="main-content">
+            <header class="header">
+                <a href="index.html" class="back-btn"><i class="ri-arrow-left-line"></i> Back</a>
+                <span class="header-title">G-Student</span>
+            </header>
+            
+            <main id="sem-end-calc-view" class="content-area view" style="display: block;">
+                <h2>Semester End Attendance Calculator</h2>
+                <p style="color: var(--text-light-color); text-align: center; margin-bottom: 20px;">
+                    Forecast your final attendance percentage based on a planned study leave.
+                </p>
+                <div class="card">
+                    <div class="dashboard-grid">
+                        <div class="login-form-group">
+                            <label for="sem-start-date">Semester Start Date</label>
+                            <input type="date" id="sem-start-date" style="padding: 8px; border-radius: 5px; border: 1px solid var(--border-color); width: 100%;">
+                        </div>
+                        <div class="login-form-group">
+                            <label for="prep-leave-date">Prep Leave Start Date</label>
+                            <input type="date" id="prep-leave-date" style="padding: 8px; border-radius: 5px; border: 1px solid var(--border-color); width: 100%;">
+                        </div>
+                        <div class="login-form-group">
+                            <label for="sem-exam-date">Semester End Date (Exams)</label>
+                            <input type="date" id="sem-exam-date" style="padding: 8px; border-radius: 5px; border: 1px solid var(--border-color); width: 100%;">
+                        </div>
+                    </div>
+                    <div class="login-form-group" style="margin-top: 20px;">
+                        <label>Current Attended Classes (Today's count)</label>
+                        <input type="number" id="current-attended-input" placeholder="Attended classes up to today" style="padding: 8px; border-radius: 5px; border: 1px solid var(--border-color); width: 100%;" disabled>
+                    </div>
+                    <button onclick="initialCalculationAndRender()" class="card-btn" style="background-color: var(--primary-color);">
+                        <i class="ri-calculator-line" style="margin-right: 8px;"></i> Calculate Final Attendance
+                    </button>
+                </div>
+                
+                <div id="leave-period-card" class="card" style="margin-top: 20px; display: none;">
+                    <h3>Classes during your leave period</h3>
+                    <p style="text-align: center; margin: 10px 0; font-size: 0.9em; color: var(--text-light-color);">Mark days as holidays to exclude them from the calculation.</p>
+                    <div style="overflow-x: auto;">
+                        <table id="classes-table" class="classes-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Day</th>
+                                    <th>Classes</th>
+                                    <th>Holiday?</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
 
-    const startDate = new Date(startDateString);
-    const prepLeaveDate = new Date(prepLeaveDateString);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+                <div id="sem-end-results-card" class="card" style="margin-top: 20px; display: none;">
+                    <h2 style="text-align: center;">Projected Attendance</h2>
+                    <div id="sem-end-results"></div>
+                </div>
+            </main>
+        </div>
+    </div>
 
-    // Using the first student's data as a template for the timetable
-    const currentUser = userDatabase[0];
-    const timetable = timetablesByBranch[currentUser.branch];
-    const subjects = Array.from(new Set(Object.values(timetable.simple).flat()));
+    <script>
+        // --- DATABASE (Hardcoded Data) ---
+        const userDatabase = [
+            { name: 'SRAVAN NAMANI', regdNo: '2025228568', branch: 'CSE' },
+            { name: 'Dhanush', regdNo: '2025143209', branch: 'VLSI' },
+            { name: 'Bhargav', regdNo: '2025090927', branch: 'VLSI' },
+            { name: 'DATA SCIENCE FRIEND', regdNo: '2025221234', branch: 'DS' },
+            { name: 'Eswar', regdNo: '2025143281', branch: 'DS' },
+            { name: 'Vaibhav', regdNo: '2025000512', branch: 'DS' },
+            { name: 'Sreelakshmi', regdNo: '2025257316', branch: 'CSE' },
+            { name: 'Sowmya', regdNo: '2025203382', branch: 'CSE' },
+            { name: 'Shanthi', regdNo: '2025268900', branch: 'CSE' },
+            { name: 'Karthik', regdNo: '2025008823', branch: 'DS' },
+            { name: 'Harshini', regdNo: '2025053721', branch: 'CSE' },
+            { name: 'Sahithi', regdNo: '2025060863', branch: 'CSE' }
+        ];
 
-    // 2. Calculate total classes for the entire semester (until prep leave)
-    const totalSemClasses = {};
-    subjects.forEach(name => totalSemClasses[name] = 0);
+        const timetablesByBranch = {
+            'CSE': {
+                timeSlots: ['08:00-08:50', '09:00-09:50', '10:00-10:50', '11:00-11:50', '11:50-1:00', '1:00-1:50', '2:00-2:50'],
+                simple: { 0: [], 1: ['Mathematical Foundations of Computer Science', 'Advanced Data Structures', 'Algorithms and Analysis', 'Research Methodology and IPR', 'Data Science Lab', 'Data Science Lab'],
+                    2: ['Advanced Data Structures Lab', 'Advanced Data Structures Lab', 'Algorithms and Analysis', 'English for Research Paper Writing', 'Algorithms and Analysis Lab', 'Algorithms and Analysis Lab'],
+                    3: ['Machine Learning', 'Mathematical Foundations of Computer Science', 'Advanced Data Structures', 'Data Science', 'Machine Learning Lab', 'Machine Learning Lab'],
+                    4: ['Machine Learning', 'English for Research Paper Writing', 'Algorithms and Analysis', 'Data Science'],
+                    5: ['Machine Learning', 'Research Methodology and IPR', 'Data Science', 'Advanced Data Structures', 'Mathematical Foundations of Computer Science'],
+                    6: []
+                },
+            },
+            'DS': {
+                timeSlots: ['08:00-08:50', '09:00-09:50', '10:00-10:50', '11:00-11:50', '11:50-1:00', '1:00-1:50', '2:00-2:50'],
+                simple: { 0: [], 1: ['Advanced Data Structures', 'Algorithms and Analysis', 'Research Methodology & IPR', 'Data Science Lab', 'Data Science Lab'],
+                    2: ['Advanced Data Structures Lab', 'Advanced Data Structures Lab', 'Algorithms and Analysis', 'English for Research Paper Writing', 'Algorithms and Analysis Lab', 'Algorithms and Analysis Lab'],
+                    3: ['Machine Learning', 'Statistical Modeling', 'Advanced Data Structures', 'Data Science', 'Machine Learning Lab', 'Machine Learning Lab'],
+                    4: ['Machine Learning', 'Statistical Modeling', 'English for Research Paper Writing', 'Algorithms and Analysis', 'Data Science'],
+                    5: ['Machine Learning', 'Research Methodology & IPR', 'Data Science', 'Advanced Data Structures', 'Statistical Modeling'],
+                    6: []
+                },
+            },
+            'VLSI': {
+                timeSlots: ['08:00-08:50', '09:00-09:50', '10:00-10:50', '11:00-11:50', '11:50-13:00', '13:00-13:50', '14:00-14:50', '15:00-15:50'],
+                simple: { 0: [], 1: ['Analog IC Design', 'Digital System Design', 'Modeling and Design With HDLs', 'Research Methodology & IPR', 'Digital IC Design', 'VLSI Circuit Design Laboratory', 'VLSI Circuit Design Laboratory'],
+                    2: ['Digital Systems Testing and Testability', 'English For Research Paper Writing', 'FPGA Design Laboratory', 'FPGA Design Laboratory'],
+                    3: ['Modeling and Design With HDLs', 'Digital IC Design', 'Analog IC Design', 'Digital Systems Testing and Testability', 'Digital System Design'],
+                    4: ['FPGA Design Laboratory', 'FPGA Design Laboratory', 'English For Research Paper Writing', 'Analog IC Design', 'VLSI Circuit Design Laboratory', 'VLSI Circuit Design Laboratory'],
+                    5: ['Digital IC Design', 'Research Methodology & IPR', 'Digital System Design', 'Digital Systems Testing and Testability', 'Modeling and Design With HDLs'],
+                    6: []
+                },
+            }
+        };
 
-    let currentDate = new Date(startDate);
-    // ✅ CORRECTED LOOP: Iterates up to the prep leave date, not the exam date.
-    while (currentDate < prepLeaveDate) {
-        (timetable.simple[currentDate.getDay()] || []).forEach(subjectName => {
-            if (totalSemClasses[subjectName] !== undefined) totalSemClasses[subjectName]++;
-        });
-        currentDate.setDate(currentDate.getDate() + 1);
-    }
+        let subjectData = {};
+        let currentUserTimetable = {};
 
-    // 3. Calculate classes held from start date until today
-    const classesHeldUntilToday = {};
-    subjects.forEach(name => classesHeldUntilToday[name] = 0);
-    currentDate = new Date(startDate);
-    while (currentDate <= today) {
-        (timetable.simple[currentDate.getDay()] || []).forEach(subjectName => {
-            if (classesHeldUntilToday[subjectName] !== undefined) classesHeldUntilToday[subjectName]++;
-        });
-        currentDate.setDate(currentDate.getDate() + 1);
-    }
+        function getUserDataKey(type) {
+            const regdNo = localStorage.getItem('currentUserRegdNo');
+            return `${type}Data_${regdNo}`;
+        }
 
-    // 4. Calculate classes from tomorrow until prep leave starts
-    const futureClassesToAttend = {};
-    subjects.forEach(name => futureClassesToAttend[name] = 0);
-    currentDate = new Date();
-    currentDate.setDate(currentDate.getDate() + 1); // Start from tomorrow
-    while (currentDate < prepLeaveDate) {
-        (timetable.simple[currentDate.getDay()] || []).forEach(subjectName => {
-            if (futureClassesToAttend[subjectName] !== undefined) futureClassesToAttend[subjectName]++;
-        });
-        currentDate.setDate(currentDate.getDate() + 1);
-    }
+        function getUniqueSubjects() { 
+            return Array.from(new Set(Object.values(currentUserTimetable.simple || {}).flat()));
+        }
 
-    // 5. Generate and display the results table
-    const resultsContainer = document.getElementById('results-output');
-    let resultsHTML = `
-        <table class="results-table">
-            <thead>
-                <tr>
-                    <th>Subject</th>
-                    <th>Total Classes</th>
-                    <th>Classes to Attend</th>
-                    <th>Final Attended</th>
-                    <th>Final %</th>
-                </tr>
-            </thead>
-            <tbody>`;
+        function parseDate(dateString) {
+            if (!dateString) return null;
+            const parts = dateString.split('-');
+            const year = parseInt(parts[0], 10);
+            const month = parseInt(parts[1], 10) - 1;
+            const day = parseInt(parts[2], 10);
+            if (isNaN(year) || isNaN(month) || isNaN(day)) {
+                return null;
+            }
+            return new Date(year, month, day);
+        }
 
-    let totalAllClasses = 0;
-    let totalAllAttended = 0;
+        function loadData() {
+            const currentUserRegdNo = localStorage.getItem('currentUserRegdNo');
+            if (!currentUserRegdNo) {
+                alert("You are not logged in. Redirecting to the main page.");
+                window.location.href = "index.html";
+                return;
+            }
 
-    subjects.forEach(subject => {
-        const totalClasses = totalSemClasses[subject];
-        const classesHeld = classesHeldUntilToday[subject];
-        const futureClasses = futureClassesToAttend[subject];
+            const currentUser = userDatabase.find(u => u.regdNo === currentUserRegdNo);
+            if (!currentUser) {
+                alert("User not found. Redirecting to the main page.");
+                window.location.href = "index.html";
+                return;
+            }
 
-        const attendedSoFar = Math.round(classesHeld * (expectedPercentage / 100));
-        const finalAttended = attendedSoFar + futureClasses;
-        const finalPercentage = totalClasses > 0 ? ((finalAttended / totalClasses) * 100).toFixed(1) : "100.0";
+            currentUserTimetable = timetablesByBranch[currentUser.branch];
+            const attendanceData = JSON.parse(localStorage.getItem(getUserDataKey('attendance')) || '{}');
+            subjectData = attendanceData;
 
-        totalAllClasses += totalClasses;
-        totalAllAttended += finalAttended;
+            const totalAttended = Object.values(subjectData).reduce((a, b) => a + (b.attended || 0), 0);
+            document.getElementById('current-attended-input').value = totalAttended;
+            
+            document.getElementById('sem-start-date').value = localStorage.getItem(getUserDataKey('startDate')) || '';
+            document.getElementById('prep-leave-date').value = new Date().toISOString().split('T')[0];
+            
+            const semStartDate = document.getElementById('sem-start-date').value;
+            const prepLeaveDate = document.getElementById('prep-leave-date').value;
+            const semExamDate = document.getElementById('sem-exam-date').value;
+            if (semStartDate && prepLeaveDate && semExamDate) {
+                renderLeavePeriodTable(parseDate(prepLeaveDate), parseDate(semExamDate));
+            }
+        }
 
-        resultsHTML += `
-            <tr>
-                <td>${subject}</td>
-                <td>${totalClasses}</td>
-                <td>${futureClasses}</td>
-                <td>${finalAttended}</td>
-                <td style="font-weight: bold; color: ${finalPercentage >= 75 ? 'var(--safe-color)' : 'var(--danger-color)'};">
-                    ${finalPercentage}%
-                </td>
-            </tr>`;
-    });
+        function renderLeavePeriodTable(startDate, endDate) {
+            const tableBody = document.querySelector('#classes-table tbody');
+            const card = document.getElementById('leave-period-card');
+            tableBody.innerHTML = '';
 
-    const overallPercentage = totalAllClasses > 0 ? ((totalAllAttended / totalAllClasses) * 100).toFixed(1) : "100.0";
+            const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            let currentDate = new Date(startDate);
 
-    resultsHTML += `
-        <tr style="background-color: #e9ecef; font-weight: bold;">
-            <td colspan="3">Overall</td>
-            <td>${totalAllAttended}</td>
-            <td style="color: ${overallPercentage >= 75 ? 'var(--safe-color)' : 'var(--danger-color)'};">
-                ${overallPercentage}%
-            </td>
-        </tr>
-    </tbody></table>`;
+            while (currentDate <= endDate) {
+                const dayIndex = currentDate.getDay();
+                const classesToday = (currentUserTimetable.simple[dayIndex] || []).length;
+                const row = document.createElement('tr');
+                const formattedDate = currentDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                const dayName = daysOfWeek[dayIndex];
 
-    resultsContainer.innerHTML = resultsHTML;
-    document.getElementById('results-card').style.display = 'block';
-}
+                if (dayIndex === 0 || dayIndex === 6) {
+                    row.classList.add('weekend');
+                }
+
+                row.innerHTML = `
+                    <td>${formattedDate}</td>
+                    <td>${dayName}</td>
+                    <td>${classesToday}</td>
+                    <td><input type="checkbox" class="holiday-checkbox" data-classes="${classesToday}"></td>
+                `;
+                tableBody.appendChild(row);
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+            card.style.display = 'block';
+        }
+
+        function handleFinalResultUpdate() {
+            try {
+                const semStartDate = document.getElementById('sem-start-date').value;
+                const prepLeaveDate = document.getElementById('prep-leave-date').value;
+                const semExamDate = document.getElementById('sem-exam-date').value;
+                const resultsCard = document.getElementById('sem-end-results-card');
+                
+                if (!semStartDate || !prepLeaveDate || !semExamDate) {
+                    resultsCard.style.display = 'none';
+                    return;
+                }
+
+                const startDate = parseDate(semStartDate);
+                const prepLeaveDateObj = parseDate(prepLeaveDate);
+                const examDateObj = parseDate(semExamDate);
+
+                if (!startDate || !prepLeaveDateObj || !examDateObj) {
+                    throw new Error("Invalid date input. Please use YYYY-MM-DD format.");
+                }
+
+                let currentAttended = Object.values(subjectData).reduce((a, b) => a + (b.attended || 0), 0);
+                let currentBunked = Object.values(subjectData).reduce((a, b) => a + (b.bunked || 0), 0);
+                let totalClassesHeldToDate = currentAttended + currentBunked;
+
+                const holidayCheckboxes = document.querySelectorAll('.holiday-checkbox');
+                let totalClassesMissedDuringLeave = 0;
+                const classesMissedDuringLeaveBySubject = {};
+                getUniqueSubjects().forEach(subject => classesMissedDuringLeaveBySubject[subject] = 0);
+
+                let currentDate = new Date(prepLeaveDateObj);
+                let checkboxIndex = 0;
+                while (currentDate <= examDateObj) {
+                    const dayClasses = currentUserTimetable.simple[currentDate.getDay()] || [];
+                    if (holidayCheckboxes[checkboxIndex] && !holidayCheckboxes[checkboxIndex].checked) {
+                        dayClasses.forEach(subject => {
+                            if (classesMissedDuringLeaveBySubject[subject] !== undefined) {
+                                classesMissedDuringLeaveBySubject[subject]++;
+                            }
+                        });
+                        totalClassesMissedDuringLeave += dayClasses.length;
+                    }
+                    currentDate.setDate(currentDate.getDate() + 1);
+                    checkboxIndex++;
+                }
+
+                const finalAttended = currentAttended;
+                const finalBunked = currentBunked + totalClassesMissedDuringLeave;
+                const totalFinalHeld = totalClassesHeldToDate + totalClassesMissedDuringLeave;
+                const finalPercentage = totalFinalHeld > 0 ? (finalAttended / totalFinalHeld) * 100 : 0;
+                
+                // Overall summary grid
+                let overallAttendanceHTML = `
+                    <h2 style="text-align: center; margin-bottom: 10px;">Overall Attendance Forecast</h2>
+                    <div class="stats-grid" style="grid-template-columns: repeat(4, 1fr);">
+                        <div class="stat">
+                            <div class="label">Attended</div>
+                            <div class="value">${finalAttended}</div>
+                        </div>
+                        <div class="stat">
+                            <div class="label">Bunked</div>
+                            <div class="value">${finalBunked}</div>
+                        </div>
+                        <div class="stat">
+                            <div class="label">Total Classes</div>
+                            <div class="value">${totalFinalHeld}</div>
+                        </div>
+                        <div class="stat">
+                            <div class="label">Percentage</div>
+                            <div class="value">${finalPercentage.toFixed(1)}%</div>
+                        </div>
+                    </div>
+                `;
+
+                let subjectTableHTML = `
+                    <h2 style="margin-top: 20px; text-align: center;">Subject-Wise Attendance</h2>
+                    <div style="overflow-x: auto;">
+                        <table class="classes-table">
+                            <thead>
+                                <tr>
+                                    <th>Subject</th>
+                                    <th>Attended</th>
+                                    <th>Bunked</th>
+                                    <th>Total</th>
+                                    <th>Percentage</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+
+                getUniqueSubjects().forEach(subject => {
+                    const initialAttended = subjectData[subject]?.attended || 0;
+                    const initialBunked = subjectData[subject]?.bunked || 0;
+                    const bunkedDuringLeave = classesMissedDuringLeaveBySubject[subject] || 0;
+                    
+                    const finalAttended = initialAttended;
+                    const finalBunked = initialBunked + bunkedDuringLeave;
+                    const finalTotal = finalAttended + finalBunked;
+                    const finalPercentage = finalTotal > 0 ? ((finalAttended / finalTotal) * 100).toFixed(1) : '100.0';
+
+                    subjectTableHTML += `
+                        <tr>
+                            <td>${subject}</td>
+                            <td>${finalAttended}</td>
+                            <td>${finalBunked}</td>
+                            <td>${finalTotal}</td>
+                            <td>${finalPercentage}%</td>
+                        </tr>
+                    `;
+                });
+
+                subjectTableHTML += `</tbody></table></div>`;
+                
+                const noteText = `Note: This calculation uses your current attended count of ${currentAttended} and assumes you bunk all classes from ${prepLeaveDate} to ${semExamDate} except for the days marked as holidays.`;
+                
+                document.getElementById('sem-end-results').innerHTML = 
+                    overallAttendanceHTML + 
+                    subjectTableHTML + 
+                    `<p style="text-align: center; margin-top: 20px; font-weight: 500;">${noteText}</p>`;
+
+                resultsCard.style.display = 'block';
+            } catch (error) {
+                console.error("An error occurred during calculation:", error);
+                alert("An error occurred during the calculation. Please check your dates and try again.");
+            }
+        }
+
+        // Initial function to run on button click
+        function initialCalculationAndRender() {
+            const semStartDate = document.getElementById('sem-start-date').value;
+            const prepLeaveDate = document.getElementById('prep-leave-date').value;
+            const semExamDate = document.getElementById('sem-exam-date').value;
+
+            if (!semStartDate || !prepLeaveDate || !semExamDate) {
+                alert("Please enter all the required dates.");
+                return;
+            }
+            
+            const leaveDate = parseDate(prepLeaveDate);
+            const examDate = parseDate(semExamDate);
+
+            if (!leaveDate || !examDate) {
+                alert("Please enter valid dates in the YYYY-MM-DD format.");
+                return;
+            }
+
+            if (leaveDate < new Date(new Date().setHours(0, 0, 0, 0))) {
+                alert("Prep leave date must be in the future.");
+                return;
+            }
+            if (examDate < leaveDate) {
+                alert("Exam date must be after the prep leave date.");
+                return;
+            }
+
+            renderLeavePeriodTable(leaveDate, examDate);
+            handleFinalResultUpdate();
+            
+            document.querySelectorAll('.holiday-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', handleFinalResultUpdate);
+            });
+        }
+
+        // Initialize the page on load
+        document.addEventListener('DOMContentLoaded', loadData);
+    </script>
+</body>
+</html>
